@@ -318,7 +318,7 @@
             this.labelRecent.Name = "labelRecent";
             this.labelRecent.Size = new System.Drawing.Size(158, 23);
             this.labelRecent.TabIndex = 8;
-            this.labelRecent.Text = "Recent check-ins";
+            this.labelRecent.Text = "Recent activity";
             // 
             // DGV_RecentCustomers
             // 

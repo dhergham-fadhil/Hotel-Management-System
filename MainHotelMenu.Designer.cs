@@ -40,6 +40,7 @@
             this.staffbtn = new Guna.UI2.WinForms.Guna2Button();
             this.customersbtn = new Guna.UI2.WinForms.Guna2Button();
             this.roomsbtn = new Guna.UI2.WinForms.Guna2Button();
+            this.guestsbtn = new Guna.UI2.WinForms.Guna2Button();
             this.UC_Panel = new System.Windows.Forms.Panel();
             this.guna2DragControl1 = new Guna.UI2.WinForms.Guna2DragControl(this.components);
             this.panel1.SuspendLayout();
@@ -130,6 +131,7 @@
             this.panel2.Controls.Add(this.staffbtn);
             this.panel2.Controls.Add(this.customersbtn);
             this.panel2.Controls.Add(this.roomsbtn);
+            this.panel2.Controls.Add(this.guestsbtn);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Top;
             this.panel2.Location = new System.Drawing.Point(0, 94);
             this.panel2.Name = "panel2";
@@ -198,6 +200,27 @@
             this.customersbtn.TabIndex = 1;
             this.customersbtn.Text = "Customers";
             this.customersbtn.Click += new System.EventHandler(this.customersbtn_Click);
+            // 
+            // guestsbtn
+            // 
+            this.guestsbtn.ButtonMode = Guna.UI2.WinForms.Enums.ButtonMode.RadioButton;
+            this.guestsbtn.CheckedState.CustomBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(52)))), ((int)(((byte)(152)))), ((int)(((byte)(219)))));
+            this.guestsbtn.CustomBorderColor = System.Drawing.Color.White;
+            this.guestsbtn.CustomBorderThickness = new System.Windows.Forms.Padding(0, 0, 0, 2);
+            this.guestsbtn.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
+            this.guestsbtn.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
+            this.guestsbtn.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
+            this.guestsbtn.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
+            this.guestsbtn.FillColor = System.Drawing.Color.White;
+            this.guestsbtn.Font = new System.Drawing.Font("Cooper Black", 10.2F);
+            this.guestsbtn.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.guestsbtn.HoverState.CustomBorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(52)))), ((int)(((byte)(152)))), ((int)(((byte)(219)))));
+            this.guestsbtn.Location = new System.Drawing.Point(840, 0);
+            this.guestsbtn.Name = "guestsbtn";
+            this.guestsbtn.Size = new System.Drawing.Size(210, 88);
+            this.guestsbtn.TabIndex = 5;
+            this.guestsbtn.Text = "Guests";
+            this.guestsbtn.Click += new System.EventHandler(this.guestsbtn_Click);
             // 
             // roomsbtn
             // 
@@ -272,5 +295,6 @@
         private System.Windows.Forms.Panel UC_Panel;
         private Guna.UI2.WinForms.Guna2Button bookingsbtn;
         private Guna.UI2.WinForms.Guna2DragControl guna2DragControl1;
+        private Guna.UI2.WinForms.Guna2Button guestsbtn;
     }
 }

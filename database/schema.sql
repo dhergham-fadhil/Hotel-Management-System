@@ -30,11 +30,12 @@ BEGIN
         Room_Type VARCHAR(10)   NOT NULL,
         Bed       VARCHAR(10)   NOT NULL,
         Price     DECIMAL(10,2) NOT NULL,
-        Status    VARCHAR(5)    NULL
-                  CONSTRAINT DF_Rooms_Status DEFAULT ('No'),
+        Status    VARCHAR(5)    NOT NULL
+                  CONSTRAINT DF_Rooms_Status DEFAULT ('Free'),
 
         CONSTRAINT PK_Rooms PRIMARY KEY CLUSTERED (Room_ID),
-        CONSTRAINT UQ_Rooms_Room_NO UNIQUE (Room_NO)
+        CONSTRAINT UQ_Rooms_Room_NO UNIQUE (Room_NO),
+        CONSTRAINT CK_Rooms_Status CHECK (Status IN ('Free', 'Busy'))
     );
 END
 GO
@@ -59,10 +60,14 @@ BEGIN
         Customer_IsCheckOut VARCHAR(5)    NOT NULL
                             CONSTRAINT DF_Customers_IsCheckOut DEFAULT ('No'),
         Customer_Room_ID    INT           NOT NULL,
+        Customer_Rate       DECIMAL(10,2) NULL,
+        Customer_Total      DECIMAL(12,2) NULL,
 
         CONSTRAINT PK_Customers PRIMARY KEY CLUSTERED (Customer_ID),
         CONSTRAINT FK_Customers_Rooms
-            FOREIGN KEY (Customer_Room_ID) REFERENCES dbo.Rooms (Room_ID)
+            FOREIGN KEY (Customer_Room_ID) REFERENCES dbo.Rooms (Room_ID),
+        CONSTRAINT CK_Customers_IsCheckOut
+            CHECK (Customer_IsCheckOut IN ('Yes', 'No'))
     );
 END
 GO
@@ -105,11 +110,11 @@ GO
 -- GO
 
 /* =====================================================================
-   NOTE (intentional): this schema matches the legacy application
-   exactly, including known limitations that will be addressed later:
+   NOTE: known limitations that will be addressed later.
      - text columns use VARCHAR (no Unicode / Arabic support)
-     - no CHECK constraints on Rooms.Status / Customer.Gender
-     - Rooms.Status default is 'No' instead of 'Free'
+     - there is no CHECK constraint on Customer.Gender
      - Staff_Password stores PBKDF2 hashes; legacy plain-text rows are
        upgraded automatically after the first successful login
+     - Customer_Rate is captured at check-in and Customer_Total is
+       written at check-out; there are no taxes, discounts, or payments
    ===================================================================== */

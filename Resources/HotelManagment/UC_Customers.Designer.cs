@@ -134,7 +134,7 @@
             "Double",
             "Twin",
             "Triple",
-            "Suit"});
+            "Suite"});
             this.cmBoxRoomType.Location = new System.Drawing.Point(851, 167);
             this.cmBoxRoomType.Name = "cmBoxRoomType";
             this.cmBoxRoomType.Size = new System.Drawing.Size(316, 36);

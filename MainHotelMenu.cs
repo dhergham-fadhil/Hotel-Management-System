@@ -83,6 +83,10 @@ namespace Hotel_Managment_System
             {
                 control = new UC_Booking();
             }
+            else if (sender == guestsbtn)
+            {
+                control = new UC_Guests();
+            }
 
             if (control != null)
                 AddUserControl(control);
@@ -108,6 +112,11 @@ namespace Hotel_Managment_System
             NavigationButton_Click(sender, e);
         }
 
+        private void guestsbtn_Click(object sender, EventArgs e)
+        {
+            NavigationButton_Click(sender, e);
+        }
+
         private void MainHotelMenu_Load(object sender, EventArgs e)
         {
             if (currentUser == null)
@@ -123,6 +132,7 @@ namespace Hotel_Managment_System
             if (!currentUser.IsAdmin)
             {
                 staffbtn.Visible = false;
+                guestsbtn.Location = new System.Drawing.Point(630, 0);
             }
 
             // Open on the dashboard so the user sees the hotel overview first.

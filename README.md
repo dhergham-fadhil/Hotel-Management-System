@@ -11,10 +11,11 @@ A desktop hotel management application built with **C# / WinForms** and **SQL Se
 | Module | Status |
 |---|---|
 | Login + PBKDF2 password hashing + roles (Admin / Staff) | ✅ |
-| Room management (add + list) | ✅ |
+| Room management (add, edit, delete, list) | ✅ |
 | Room allocation to a customer (register + set status to Busy) | ✅ |
+| Active-guest list, check-out, and billing | ✅ |
 | Staff registration, listing, and deletion (Admin only) | ✅ |
-| Dashboard (hotel overview + recent check-ins) | ✅ |
+| Dashboard (hotel overview, revenue, recent activity) | ✅ |
 | Logout (returns to the login screen) | ✅ |
 
 ---
@@ -44,6 +45,7 @@ Hotel_Managment_System/
 │   └── HotelManagment/         User controls
 │       ├── UC_Rooms.cs
 │       ├── UC_Customers.cs
+│       ├── UC_Guests.cs        Active guests + check-out
 │       ├── UC_Staff.cs
 │       └── UC_Booking.cs       Dashboard
 ├── database/
@@ -88,6 +90,21 @@ SET Staff_Role = 'Admin'
 WHERE Staff_UserName = 'your.user.name';
 ```
 
+Databases created before Phase 4 must also run `database/migrations/003_rooms_and_billing.sql` once. It is idempotent and:
+
+1. normalizes the room type `Suit` to `Suite`;
+2. replaces the legacy `'No'` status default with `'Free'`, makes `Rooms.Status` `NOT NULL`, and restricts it to `Free` / `Busy`;
+3. adds `Customers.Customer_Rate` (the rate captured at check-in) and `Customers.Customer_Total` (the final bill);
+4. backfills `Customer_Rate` from the current room price for active guests;
+5. adds a `CHECK` constraint for `Customer_IsCheckOut` and an index for active-room lookups.
+
+Run both scripts with `sqlcmd` before starting the new build:
+
+```bash
+sqlcmd -S . -d HotelDB -E -b -i database/migrations/002_add_staff_role.sql
+sqlcmd -S . -d HotelDB -E -b -i database/migrations/003_rooms_and_billing.sql
+```
+
 ---
 
 ## Authentication and Roles
@@ -105,6 +122,17 @@ WHERE Staff_UserName = 'your.user.name';
 - **Forgot password:** there is no self-service reset yet; the screen tells the user to contact an administrator.
 
 > **Security note:** role checks in a WinForms client can be bypassed by anyone with direct database access. A real deployment also needs restricted database permissions, server-side authorization, and audit logging.
+
+---
+
+## Billing and Check-out
+
+- The nightly rate is copied from `Rooms.Price` into `Customers.Customer_Rate` when the guest is registered, so later price changes do not alter an active stay.
+- Check-out is available from the **Guests** screen. The operator chooses the check-out date; it cannot be before the check-in date or in the future.
+- Billable nights = `max(1, check-out − check-in)`. The final bill = nights × `Customer_Rate`.
+- Check-out writes `Customer_CheckOut`, `Customer_IsCheckOut = 'Yes'`, and `Customer_Total` in one transaction. The room returns to `Free` only when no other active guest uses it.
+- The dashboard shows completed revenue, today's revenue, and recent activity. Active stays display an estimate using today as the provisional check-out date.
+- There are no taxes, discounts, partial payments, refunds, or printed invoices yet.
 
 ---
 
@@ -151,10 +179,11 @@ The following issues are known and will be addressed in order (see the roadmap):
 - There is no self-service password reset, account lockout, or idle-session timeout.
 - Legacy plain-text passwords are upgraded lazily on first login; there is no bulk migration for accounts that never sign in.
 - Role checks are enforced by the UI. Anyone with direct database access can bypass them.
-- Most validation rules live in the UI; only `Staff_Role` has a database `CHECK` constraint.
+- Most validation rules live in the UI; only `Staff_Role`, `Rooms.Status`, and `Customers.Customer_IsCheckOut` have database `CHECK` constraints.
 - Phone numbers are validated as digits, spaces, hyphens and an optional leading `+`; there is no country-aware format.
-- The **Edit / Delete** buttons on the Rooms screen are not implemented.
-- There is no customer check-out flow.
+- Billing has no taxes, discounts, partial payments, refunds, or invoice printing.
+- The nightly rate is fixed at check-in; changing it mid-stay is not supported.
+- Some legacy rooms are marked `Busy` without an active guest; they are not repaired automatically.
 - Text columns use `VARCHAR` and do not support Unicode (e.g. Arabic).
 
 ---
@@ -170,8 +199,8 @@ The following issues are known and will be addressed in order (see the roadmap):
 - [x] Dashboard replacing the Bookings placeholder
 - [x] Real login + PBKDF2 password hashing + roles
 - [ ] Password reset, account lockout, and idle-session timeout
-- [ ] Complete the Rooms screen (Edit / Delete)
-- [ ] Customer list + check-out + billing
+- [x] Complete the Rooms screen (Edit / Delete)
+- [x] Customer list + check-out + billing
 - [ ] Separate layers (Repositories / Services)
 - [ ] Convert read operations to `async/await`
 - [ ] Tests + continuous integration (CI)
