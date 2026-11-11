@@ -1,49 +1,48 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Data.SqlClient;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Hotel_Managment_System.Resources.HotelManagment
 {
     public partial class UC_Customers : UserControl
     {
+        private readonly function fn = new function();
+        private int roomId;
 
-        function fn = new function();
-        string query;
         public UC_Customers()
         {
             InitializeComponent();
-        }
-
-        private void setComboBox(string query, ComboBox comboBox)
-        {
-            SqlDataReader sdr = fn.getForCombo(query);
-            while (sdr.Read())
-            {
-                for (short i = 0; i < sdr.FieldCount; i++)
-                {
-                    comboBox.Items.Add(sdr.GetString(i));
-                }
-            }
-            sdr.Close();
         }
 
         private void UpdateRoomNumbers()
         {
             cmBoxRoomNo.Items.Clear();
             txtPrice.Clear();
-            string query = "SELECT Room_NO FROM Rooms " +
-                           "WHERE UPPER(LTRIM(RTRIM(Bed))) = '" + cmboxBed.Text.Trim().ToUpper() + "' " +
-                           "AND UPPER(LTRIM(RTRIM(Room_Type))) = '" + cmBoxRoomType.Text.Trim().ToUpper() + "' " +
-                           "AND Status = 'Free'";
+            roomId = 0;
 
-            setComboBox(query, cmBoxRoomNo);
+            if (string.IsNullOrWhiteSpace(cmBoxRoomType.Text)
+                || string.IsNullOrWhiteSpace(cmboxBed.Text))
+            {
+                return;
+            }
+
+            const string query = @"
+                SELECT Room_NO
+                FROM Rooms
+                WHERE UPPER(LTRIM(RTRIM(Bed))) = UPPER(@bed)
+                  AND UPPER(LTRIM(RTRIM(Room_Type))) = UPPER(@roomType)
+                  AND Status = 'Free'
+                ORDER BY Room_NO";
+
+            SqlParameter[] parameters =
+            {
+                new SqlParameter("@bed", SqlDbType.VarChar, 10) { Value = cmboxBed.Text.Trim() },
+                new SqlParameter("@roomType", SqlDbType.VarChar, 10) { Value = cmBoxRoomType.Text.Trim() }
+            };
+
+            foreach (string roomNo in fn.getForCombo(query, parameters))
+                cmBoxRoomNo.Items.Add(roomNo);
         }
 
         private void cmBoxRoomType_SelectedIndexChanged(object sender, EventArgs e)
@@ -56,13 +55,29 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             UpdateRoomNumbers();
         }
 
-        int Room_ID;
         private void cmBoxRoomNo_SelectedIndexChanged(object sender, EventArgs e)
         {
-            query = "Select Price,Room_ID From Rooms Where Room_NO = '"+cmBoxRoomNo.Text+"'";
-            DataSet ds = fn.getData(query);
-            txtPrice.Text = ds.Tables[0].Rows[0][0].ToString();
-            Room_ID = int.Parse(ds.Tables[0].Rows [0][1].ToString());
+            txtPrice.Clear();
+            roomId = 0;
+
+            string roomNo = cmBoxRoomNo.Text;
+            if (string.IsNullOrWhiteSpace(roomNo))
+                return;
+
+            const string query = "SELECT Price, Room_ID FROM Rooms WHERE Room_NO = @roomNo";
+
+            SqlParameter[] parameters =
+            {
+                new SqlParameter("@roomNo", SqlDbType.VarChar, 10) { Value = roomNo }
+            };
+
+            DataTable table = fn.getData(query, parameters);
+            if (table.Rows.Count == 0)
+                return;
+
+            DataRow row = table.Rows[0];
+            txtPrice.Text = Convert.ToDecimal(row["Price"]).ToString("N2");
+            roomId = Convert.ToInt32(row["Room_ID"]);
         }
 
         private void ClearALL()
@@ -79,37 +94,58 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             cmBoxRoomNo.Items.Clear();
             cmBoxRoomType.SelectedIndex = -1;
             txtPrice.Clear();
+            roomId = 0;
         }
 
         private void allotebtn_Click(object sender, EventArgs e)
         {
-
-            if (string.IsNullOrWhiteSpace(txtName.Text) || string.IsNullOrWhiteSpace(txtNationality.Text) || string.IsNullOrWhiteSpace(txtMobileNo.Text)
-                 || string.IsNullOrWhiteSpace(txtIDProof.Text) || string.IsNullOrWhiteSpace(cmBoxGender.Text)
-                 || string.IsNullOrWhiteSpace(txtAddress.Text) || string.IsNullOrWhiteSpace(txtPrice.Text)
-                 || string.IsNullOrWhiteSpace(DTP_DateOfBirth.Text) || string.IsNullOrWhiteSpace(DTP_CheckIn.Text))
+            if (string.IsNullOrWhiteSpace(txtName.Text)
+                || string.IsNullOrWhiteSpace(txtNationality.Text)
+                || string.IsNullOrWhiteSpace(txtMobileNo.Text)
+                || string.IsNullOrWhiteSpace(txtIDProof.Text)
+                || string.IsNullOrWhiteSpace(cmBoxGender.Text)
+                || string.IsNullOrWhiteSpace(txtAddress.Text)
+                || string.IsNullOrWhiteSpace(txtPrice.Text))
             {
-                MessageBox.Show("All Fields Mandatory", "Information!!", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("All fields are mandatory.", "Information",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            if (roomId <= 0)
+            {
+                MessageBox.Show("Select a room first.", "Information",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            string selectedRoom = cmBoxRoomNo.Text;
+
+            string error;
+            bool allocated = fn.AllocateRoom(
+                roomId,
+                txtName.Text.Trim(),
+                txtMobileNo.Text.Trim(),
+                txtNationality.Text.Trim(),
+                cmBoxGender.Text,
+                DTP_DateOfBirth.Value.Date,
+                txtIDProof.Text.Trim(),
+                txtAddress.Text.Trim(),
+                DTP_CheckIn.Value.Date,
+                out error);
+
+            if (allocated)
+            {
+                MessageBox.Show("Room " + selectedRoom + " allocated successfully.",
+                    "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                ClearALL();
             }
             else
             {
-                string Name        = txtName.Text;
-                string Nationality = txtNationality.Text;
-                string MobileNo    = txtMobileNo.Text;
-                string IDProof     = txtIDProof.Text;
-                string Address     = txtAddress.Text;
-                string Gender      = cmBoxGender.Text;
-                DateTime DateOfBirth = DTP_DateOfBirth.Value.Date;
-                DateTime CheckIn     = DTP_CheckIn.Value.Date;
-
-                query = $"insert into Customers (Customer_Name,Customer_Mobile, Customer_Nationality, Customer_Gender,Customer_DateOfBirth," +
-                    $"Customer_ID_Proof, Customer_Address, Customer_CheckIn, Customer_Room_ID)" +
-                    $" values ('" + Name + "','" + MobileNo+ "'," + "'" + Nationality  + "','" + Gender + "','" + DateOfBirth + "','" + IDProof +
-                    "','" + Address + "'" +",'" + CheckIn + "'," + Room_ID + ") update Rooms set Status = 'Busy' where Room_NO ='"+cmBoxRoomNo.Text+"'  ";
-                fn.setData(query, "Room NO " + cmBoxRoomNo.Text + " Allocation Successfully.");
-                ClearALL();
+                MessageBox.Show(error ?? "The room could not be allocated.",
+                    "Allocation Failed", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
-
         }
     }
 }

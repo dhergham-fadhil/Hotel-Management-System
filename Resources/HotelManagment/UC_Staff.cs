@@ -1,12 +1,6 @@
 ﻿using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
-using System.Drawing;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Data.SqlClient;
 using System.Windows.Forms;
 using Guna.UI2.WinForms;
 
@@ -14,8 +8,8 @@ namespace Hotel_Managment_System.Resources.HotelManagment
 {
     public partial class UC_Staff : UserControl
     {
-        function fn = new function();
-        string query;
+        private readonly function fn = new function();
+
         public UC_Staff()
         {
             InitializeComponent();
@@ -33,69 +27,113 @@ namespace Hotel_Managment_System.Resources.HotelManagment
 
         private void registerbtn_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(txtName.Text) || string.IsNullOrWhiteSpace(txtMobileNo.Text) || string.IsNullOrWhiteSpace(cmBoxGender.Text)
-                                        || string.IsNullOrWhiteSpace(txtEmail.Text) || string.IsNullOrWhiteSpace(txtUserName.Text) || string.IsNullOrWhiteSpace(txtPassword.Text))
+            if (string.IsNullOrWhiteSpace(txtName.Text)
+                || string.IsNullOrWhiteSpace(txtMobileNo.Text)
+                || string.IsNullOrWhiteSpace(cmBoxGender.Text)
+                || string.IsNullOrWhiteSpace(txtEmail.Text)
+                || string.IsNullOrWhiteSpace(txtUserName.Text)
+                || string.IsNullOrWhiteSpace(txtPassword.Text))
             {
-                MessageBox.Show("Fill All Fields", "Warning!!", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("Fill all fields.", "Warning",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
             }
-            else
+
+            const string query = @"
+                INSERT INTO Staff
+                    (Staff_Name, Staff_Mobile, Staff_Gender, Staff_Email, Staff_UserName, Staff_Password)
+                VALUES
+                    (@name, @mobile, @gender, @email, @userName, @password)";
+
+            // TODO: hash the password before storing it (Phase 3).
+            SqlParameter[] parameters =
             {
-                string Name = txtName.Text;
-                string Mobile = txtMobileNo.Text;
-                string Gender = cmBoxGender.Text;
-                string Email = txtEmail.Text;
-                string UserName = txtUserName.Text;
-                string Password = txtPassword.Text;
-                query = $"insert into Staff (Staff_Name,Staff_Mobile,Staff_Gender,Staff_Email,Staff_UserName,Staff_Password) values ('" + Name + "','" + Mobile + "'," +
-                    "'" + Gender + "','" + Email + "','" + UserName + "','" + Password + "')";
-                fn.setData(query, "Staff Registered.");
+                new SqlParameter("@name", SqlDbType.VarChar, 75) { Value = txtName.Text.Trim() },
+                new SqlParameter("@mobile", SqlDbType.VarChar, 25) { Value = txtMobileNo.Text.Trim() },
+                new SqlParameter("@gender", SqlDbType.VarChar, 50) { Value = cmBoxGender.Text },
+                new SqlParameter("@email", SqlDbType.VarChar, 120) { Value = txtEmail.Text.Trim() },
+                new SqlParameter("@userName", SqlDbType.VarChar, 150) { Value = txtUserName.Text.Trim() },
+                new SqlParameter("@password", SqlDbType.VarChar, 150) { Value = txtPassword.Text }
+            };
+
+            int affected = fn.setData(query, parameters);
+
+            if (affected > 0)
+            {
+                MessageBox.Show("Staff registered.", "Success",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+
                 ClearALL();
-
-
+            }
+            else if (affected == 0)
+            {
+                MessageBox.Show("No staff record was added.", "Notice",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
-        private void UpdateStaffTabSelectedIndex(Guna2DataGridView DGV)
+        private void LoadStaff(Guna2DataGridView grid)
         {
-            query = "Select * From Staff";
-            DataSet ds = fn.getData(query);
-            DGV.DataSource = ds.Tables[0];
+            // Never select Staff_Password: it must not be shown on screen.
+            const string query = @"
+                SELECT Staff_ID, Staff_Name, Staff_Mobile, Staff_Gender, Staff_Email, Staff_UserName
+                FROM Staff
+                ORDER BY Staff_ID";
+
+            grid.DataSource = fn.getData(query);
         }
+
         private void tabStaff_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if(tabStaff.SelectedIndex == 1)
+            if (tabStaff.SelectedIndex == 1)
             {
-                UpdateStaffTabSelectedIndex(DGV_StaffDetails);
+                LoadStaff(DGV_StaffDetails);
             }
-            else if(tabStaff.SelectedIndex == 2)
+            else if (tabStaff.SelectedIndex == 2)
             {
-                UpdateStaffTabSelectedIndex(DGV_StaffDelete);
+                LoadStaff(DGV_StaffDelete);
             }
         }
 
         private void staffDeletebtn_Click(object sender, EventArgs e)
         {
-            if (!string.IsNullOrEmpty(txtStaffDeleteID.Text))
+            if (!int.TryParse(txtStaffDeleteID.Text.Trim(), out int staffId))
             {
-                string checkQuery = "SELECT * FROM Staff WHERE Staff_ID = " + txtStaffDeleteID.Text;
-                DataSet ds = fn.getData(checkQuery); // existing helper returns a DataSet
-
-                if (ds.Tables[0].Rows.Count > 0) // the ID exists
-                {
-                    if (MessageBox.Show("Are You Sure?", "Confirmation...!", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
-                    {
-                        query = "DELETE FROM Staff WHERE Staff_ID = " + txtStaffDeleteID.Text;
-                        fn.setData(query, "Record Deleted.");
-                        tabStaff_SelectedIndexChanged(this, null);
-                    }
-                }
-                else
-                {
-                    MessageBox.Show("Staff ID not found.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                }
+                MessageBox.Show("Enter a valid staff ID.", "Warning",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                txtStaffDeleteID.Focus();
+                return;
             }
 
+            if (MessageBox.Show("Are you sure?", "Confirmation",
+                    MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
+            {
+                return;
+            }
 
+            const string query = "DELETE FROM Staff WHERE Staff_ID = @staffId";
+
+            SqlParameter[] parameters =
+            {
+                new SqlParameter("@staffId", SqlDbType.Int) { Value = staffId }
+            };
+
+            int affected = fn.setData(query, parameters);
+
+            if (affected > 0)
+            {
+                MessageBox.Show("Record deleted.", "Success",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+                txtStaffDeleteID.Clear();
+                LoadStaff(DGV_StaffDetails);
+                LoadStaff(DGV_StaffDelete);
+            }
+            else if (affected == 0)
+            {
+                MessageBox.Show("Staff ID not found.", "Notice",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
         }
     }
 }
