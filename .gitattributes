@@ -1,0 +1,18 @@
+# Normalize line endings on commit, restore native endings on checkout.
+* text=auto
+
+# Source code
+*.cs       text diff=csharp
+*.csproj   text
+*.sln      text eol=crlf
+*.config   text
+*.resx     text
+*.sql      text
+*.md       text
+
+# Binary assets
+*.png      binary
+*.jpg      binary
+*.jpeg     binary
+*.gif      binary
+*.ico      binary
