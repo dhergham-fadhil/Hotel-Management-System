@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using System.Data.SqlClient;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace Hotel_Managment_System.Resources.HotelManagment
@@ -13,6 +14,7 @@ namespace Hotel_Managment_System.Resources.HotelManagment
         public UC_Customers()
         {
             InitializeComponent();
+            ApplyTheme();
         }
 
         private void UpdateRoomNumbers()
@@ -185,6 +187,55 @@ namespace Hotel_Managment_System.Resources.HotelManagment
 
             focus.Focus();
             return false;
+        }
+
+        private void ApplyTheme()
+        {
+            labelTitle.ForeColor = Theme.TextPrimary;
+            labelTitle.Font = new Font("Segoe UI", 20F, FontStyle.Bold);
+
+            labelSubtitle.ForeColor = Theme.TextSecondary;
+            labelSubtitle.Font = new Font("Segoe UI", 10F);
+
+            Theme.StyleInput(txtName);
+            Theme.StyleInput(txtMobileNo);
+            Theme.StyleInput(txtNationality);
+            Theme.StyleInput(txtIDProof);
+            Theme.StyleInput(txtAddress);
+            Theme.StyleInput(txtPrice);
+
+            Theme.StyleCombo(cmBoxGender);
+            Theme.StyleCombo(cmboxBed);
+            Theme.StyleCombo(cmBoxRoomType);
+            Theme.StyleCombo(cmBoxRoomNo);
+
+            Theme.StyleActionButton(allotebtn, true);
+
+            label1.ForeColor = Theme.TextSecondary;
+            label9.ForeColor = Theme.TextSecondary;
+            label8.ForeColor = Theme.TextSecondary;
+            label4.ForeColor = Theme.TextSecondary;
+            label7.ForeColor = Theme.TextSecondary;
+            label5.ForeColor = Theme.TextSecondary;
+            label11.ForeColor = Theme.TextSecondary;
+            label12.ForeColor = Theme.TextSecondary;
+            label3.ForeColor = Theme.TextSecondary;
+            label2.ForeColor = Theme.TextSecondary;
+            label6.ForeColor = Theme.TextSecondary;
+            label10.ForeColor = Theme.TextSecondary;
+
+            label1.Font = new Font("Segoe UI", 9.5F);
+            label9.Font = new Font("Segoe UI", 9.5F);
+            label8.Font = new Font("Segoe UI", 9.5F);
+            label4.Font = new Font("Segoe UI", 9.5F);
+            label7.Font = new Font("Segoe UI", 9.5F);
+            label5.Font = new Font("Segoe UI", 9.5F);
+            label11.Font = new Font("Segoe UI", 9.5F);
+            label12.Font = new Font("Segoe UI", 9.5F);
+            label3.Font = new Font("Segoe UI", 9.5F);
+            label2.Font = new Font("Segoe UI", 9.5F);
+            label6.Font = new Font("Segoe UI", 9.5F);
+            label10.Font = new Font("Segoe UI", 9.5F);
         }
     }
 }
