@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Data;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace Hotel_Managment_System.Resources.HotelManagment
@@ -15,6 +16,7 @@ namespace Hotel_Managment_System.Resources.HotelManagment
 
         private void UC_Booking_Load(object sender, EventArgs e)
         {
+            ApplyTheme();
             LoadDashboard();
         }
 
@@ -60,9 +62,6 @@ namespace Hotel_Managment_System.Resources.HotelManagment
                     }
                 }
 
-                labelSubtitle.Text = "Active guests: " + activeCustomers +
-                                     "   |   Updated " + DateTime.Now.ToString("HH:mm");
-
                 DataTable billing = fn.GetBillingSummary();
                 decimal totalRevenue = 0;
                 decimal todayRevenue = 0;
@@ -73,34 +72,84 @@ namespace Hotel_Managment_System.Resources.HotelManagment
                     todayRevenue = Convert.ToDecimal(billing.Rows[0]["TodayRevenue"]);
                 }
 
-                labelSubtitle.Text = "Active guests: " + activeCustomers +
-                                     "   |   Revenue: " + totalRevenue.ToString("N2") +
-                                     "   |   Today: " + todayRevenue.ToString("N2") +
-                                     "   |   " + DateTime.Now.ToString("HH:mm");
+                lblTotalRevenueValue.Text = totalRevenue.ToString("N2");
+                lblTodayRevenueValue.Text = todayRevenue.ToString("N2");
+
+                labelSubtitle.Text = "نزلاء نشطون: " + activeCustomers +
+                                     "   |   الإيرادات: " + totalRevenue.ToString("N2") +
+                                     "   |   محدث: " + DateTime.Now.ToString("HH:mm");
 
                 DGV_RecentCustomers.DataSource = fn.GetRecentCustomers(10);
 
+                if (DGV_RecentCustomers.Columns["Customer"] != null)
+                    DGV_RecentCustomers.Columns["Customer"].HeaderText = "الضيف";
+                if (DGV_RecentCustomers.Columns["Room"] != null)
+                    DGV_RecentCustomers.Columns["Room"].HeaderText = "الغرفة";
                 if (DGV_RecentCustomers.Columns["Check In"] != null)
+                {
+                    DGV_RecentCustomers.Columns["Check In"].HeaderText = "تسجيل الوصول";
                     DGV_RecentCustomers.Columns["Check In"].DefaultCellStyle.Format = "yyyy-MM-dd";
-
+                }
                 if (DGV_RecentCustomers.Columns["Check Out"] != null)
+                {
+                    DGV_RecentCustomers.Columns["Check Out"].HeaderText = "تسجيل المغادرة";
                     DGV_RecentCustomers.Columns["Check Out"].DefaultCellStyle.Format = "yyyy-MM-dd";
-
+                }
                 if (DGV_RecentCustomers.Columns["Nights"] != null)
+                {
+                    DGV_RecentCustomers.Columns["Nights"].HeaderText = "ليالي";
                     DGV_RecentCustomers.Columns["Nights"].DefaultCellStyle.Alignment =
                         DataGridViewContentAlignment.MiddleRight;
-
+                }
                 if (DGV_RecentCustomers.Columns["Bill"] != null)
                 {
+                    DGV_RecentCustomers.Columns["Bill"].HeaderText = "الفاتورة";
                     DGV_RecentCustomers.Columns["Bill"].DefaultCellStyle.Format = "N2";
                     DGV_RecentCustomers.Columns["Bill"].DefaultCellStyle.Alignment =
                         DataGridViewContentAlignment.MiddleRight;
                 }
+                if (DGV_RecentCustomers.Columns["Status"] != null)
+                    DGV_RecentCustomers.Columns["Status"].HeaderText = "الحالة";
             }
             finally
             {
                 Cursor = Cursors.Default;
             }
+        }
+
+        private void ApplyTheme()
+        {
+            // Title
+            labelTitle.ForeColor = Theme.TextPrimary;
+            labelTitle.Font = new Font("Segoe UI", 20F, FontStyle.Bold);
+
+            // Subtitle
+            labelSubtitle.ForeColor = Theme.TextSecondary;
+            labelSubtitle.Font = new Font("Segoe UI", 10F);
+
+            // Refresh button
+            Theme.StyleActionButton(refreshbtn, true);
+
+            // Cards
+            Theme.StyleCard(pnlTotalRooms);
+            Theme.StyleCard(pnlFreeRooms);
+            Theme.StyleCard(pnlBusyRooms);
+            Theme.StyleCard(pnlCustomers);
+            Theme.StyleCard(pnlStaff);
+            Theme.StyleCard(pnlTotalRevenue);
+            Theme.StyleCard(pnlTodayRevenue);
+
+            // Card titles
+            Theme.StyleSmall(lblTotalRoomsTitle);
+            Theme.StyleSmall(lblFreeRoomsTitle);
+            Theme.StyleSmall(lblBusyRoomsTitle);
+            Theme.StyleSmall(lblCustomersTitle);
+            Theme.StyleSmall(lblStaffTitle);
+            Theme.StyleSmall(lblTotalRevenueTitle);
+            Theme.StyleSmall(lblTodayRevenueTitle);
+
+            // Recent section
+            Theme.StyleHeading(labelRecent);
         }
     }
 }
