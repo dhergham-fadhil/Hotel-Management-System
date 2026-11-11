@@ -194,13 +194,12 @@ namespace Hotel_Managment_System
         }
 
         /// <summary>
-        /// Replaces a staff member's password with a fresh PBKDF2 hash.        /// <summary>
         /// Replaces a staff member's password with a fresh PBKDF2 hash.
-        /// The policy is enforced by AuthRepository; this method delegates to it.
+        /// The policy is enforced by StaffService; this method delegates to it.
         /// </summary>
         public bool ResetStaffPassword(int staffId, string newPassword, out string error)
         {
-            return AuthRepository.ResetStaffPassword(staffId, newPassword, out error);        }
+            return StaffService.ResetStaffPassword(staffId, newPassword, out error);        }
 
         /// <summary>
         /// Returns the values of the first column of a SELECT statement.
