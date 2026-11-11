@@ -108,11 +108,9 @@ cd Hotel_Managment_System
 
 The following issues are known and will be addressed in order (see the roadmap):
 
-- SQL queries are built with string concatenation and are **vulnerable to SQL injection**.
 - The login screen is not connected to the application — there is currently no authentication.
 - Staff passwords are stored in plain text.
-- Error handling and input validation are limited.
-- The room allocation operation is not protected by a transaction.
+- Input validation still covers required fields only (scheduled for Phase 2).
 - The **Edit / Delete** buttons on the Rooms screen are not implemented.
 - There is no customer check-out flow.
 - Text columns use `VARCHAR` and do not support Unicode (e.g. Arabic).
@@ -123,9 +121,10 @@ The following issues are known and will be addressed in order (see the roadmap):
 
 - [x] Repository setup and database schema script
 - [x] Move the connection string to `App.config`
-- [ ] Secure queries (`SqlParameter`) + `using` + error handling
+- [x] Secure queries (`SqlParameter`) + `using` + error handling
+- [x] Transactional room allocation with a concurrency guard
+- [x] File logging and a global exception handler
 - [ ] Input validation (`TryParse` + per-field messages)
-- [ ] Transactions for booking operations
 - [ ] Real login + password hashing (PBKDF2/BCrypt) + roles
 - [ ] Complete the Rooms screen (Edit / Delete)
 - [ ] Customer list + check-out + billing
