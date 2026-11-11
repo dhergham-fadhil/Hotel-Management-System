@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Windows.Forms;
-using Hotel_Managment_System;
 
-namespace Pizza_Project
+namespace Hotel_Managment_System
 {
     internal static class Program
     {
@@ -24,7 +23,29 @@ namespace Pizza_Project
 
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
-            Application.Run(new MainHotelMenu());
+
+            // Sign in first, then run the main window. "Logout" closes the menu
+            // and returns here so another user can sign in without restarting.
+            while (true)
+            {
+                StaffUser user;
+
+                using (LoginForm login = new LoginForm())
+                {
+                    if (login.ShowDialog() != DialogResult.OK || login.AuthenticatedUser == null)
+                        return;
+
+                    user = login.AuthenticatedUser;
+                }
+
+                using (MainHotelMenu menu = new MainHotelMenu(user))
+                {
+                    Application.Run(menu);
+
+                    if (!menu.LogoutRequested)
+                        return;
+                }
+            }
         }
 
         private static void OnThreadException(object sender, System.Threading.ThreadExceptionEventArgs e)

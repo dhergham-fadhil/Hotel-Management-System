@@ -31,6 +31,8 @@
             this.components = new System.ComponentModel.Container();
             this.panel1 = new System.Windows.Forms.Panel();
             this.closebtn = new System.Windows.Forms.Button();
+            this.logoutbtn = new Guna.UI2.WinForms.Guna2Button();
+            this.labelUser = new System.Windows.Forms.Label();
             this.label1 = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.panel2 = new System.Windows.Forms.Panel();
@@ -49,6 +51,8 @@
             // 
             this.panel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(62)))), ((int)(((byte)(80)))));
             this.panel1.Controls.Add(this.closebtn);
+            this.panel1.Controls.Add(this.logoutbtn);
+            this.panel1.Controls.Add(this.labelUser);
             this.panel1.Controls.Add(this.label1);
             this.panel1.Controls.Add(this.pictureBox1);
             this.panel1.Dock = System.Windows.Forms.DockStyle.Top;
@@ -72,6 +76,32 @@
             this.closebtn.Text = "X";
             this.closebtn.UseVisualStyleBackColor = false;
             this.closebtn.Click += new System.EventHandler(this.closebtn_Click);
+            // 
+            // logoutbtn
+            // 
+            this.logoutbtn.BorderRadius = 6;
+            this.logoutbtn.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.logoutbtn.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(52)))), ((int)(((byte)(73)))), ((int)(((byte)(94)))));
+            this.logoutbtn.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.logoutbtn.ForeColor = System.Drawing.Color.White;
+            this.logoutbtn.HoverState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(57)))), ((int)(((byte)(43)))));
+            this.logoutbtn.Location = new System.Drawing.Point(1000, 27);
+            this.logoutbtn.Name = "logoutbtn";
+            this.logoutbtn.Size = new System.Drawing.Size(140, 40);
+            this.logoutbtn.TabIndex = 4;
+            this.logoutbtn.Text = "Logout";
+            this.logoutbtn.Click += new System.EventHandler(this.logoutbtn_Click);
+            // 
+            // labelUser
+            // 
+            this.labelUser.AutoEllipsis = true;
+            this.labelUser.Font = new System.Drawing.Font("Century Gothic", 9.75F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelUser.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(189)))), ((int)(((byte)(195)))), ((int)(((byte)(199)))));
+            this.labelUser.Location = new System.Drawing.Point(640, 32);
+            this.labelUser.Name = "labelUser";
+            this.labelUser.Size = new System.Drawing.Size(340, 30);
+            this.labelUser.TabIndex = 3;
+            this.labelUser.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
             // label1
             // 
@@ -233,6 +263,8 @@
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Button closebtn;
+        private Guna.UI2.WinForms.Guna2Button logoutbtn;
+        private System.Windows.Forms.Label labelUser;
         private System.Windows.Forms.Panel panel2;
         private Guna.UI2.WinForms.Guna2Button roomsbtn;
         private Guna.UI2.WinForms.Guna2Button staffbtn;

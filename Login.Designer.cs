@@ -41,6 +41,7 @@
             this.textBox1 = new System.Windows.Forms.TextBox();
             this.label3 = new System.Windows.Forms.Label();
             this.closebtn = new System.Windows.Forms.Button();
+            this.labelError = new System.Windows.Forms.Label();
             this.pictureBox3 = new System.Windows.Forms.PictureBox();
             this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
@@ -108,6 +109,7 @@
             this.panel2.Controls.Add(this.panel3);
             this.panel2.Controls.Add(this.label3);
             this.panel2.Controls.Add(this.closebtn);
+            this.panel2.Controls.Add(this.labelError);
             this.panel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panel2.Location = new System.Drawing.Point(300, 0);
             this.panel2.Name = "panel2";
@@ -127,6 +129,18 @@
             this.forgetbtn.TabIndex = 5;
             this.forgetbtn.Text = "Forget Password ?";
             this.forgetbtn.UseVisualStyleBackColor = false;
+            this.forgetbtn.Click += new System.EventHandler(this.forgetbtn_Click);
+            // 
+            // labelError
+            // 
+            this.labelError.Font = new System.Drawing.Font("Century Gothic", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelError.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(192)))), ((int)(((byte)(57)))), ((int)(((byte)(43)))));
+            this.labelError.Location = new System.Drawing.Point(15, 365);
+            this.labelError.Name = "labelError";
+            this.labelError.Size = new System.Drawing.Size(420, 42);
+            this.labelError.TabIndex = 6;
+            this.labelError.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.labelError.Visible = false;
             // 
             // loginbtn
             // 
@@ -140,6 +154,7 @@
             this.loginbtn.TabIndex = 4;
             this.loginbtn.Text = "LOGIN";
             this.loginbtn.UseVisualStyleBackColor = false;
+            this.loginbtn.Click += new System.EventHandler(this.loginbtn_Click);
             // 
             // panel4
             // 
@@ -163,6 +178,7 @@
             this.textBox2.TabIndex = 4;
             this.textBox2.UseSystemPasswordChar = true;
             this.textBox2.Click += new System.EventHandler(this.textBox2_Click);
+            this.textBox2.TextChanged += new System.EventHandler(this.textBox2_TextChanged);
             // 
             // panel3
             // 
@@ -249,6 +265,7 @@
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
+            this.AcceptButton = this.loginbtn;
             this.ClientSize = new System.Drawing.Size(750, 530);
             this.ControlBox = false;
             this.Controls.Add(this.panel2);
@@ -291,6 +308,7 @@
         private System.Windows.Forms.TextBox textBox2;
         private System.Windows.Forms.Button loginbtn;
         private System.Windows.Forms.Button forgetbtn;
+        private System.Windows.Forms.Label labelError;
     }
 }
 
