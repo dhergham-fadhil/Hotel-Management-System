@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using System.Data.SqlClient;
+using System.Drawing;
 using System.Windows.Forms;
 using Guna.UI2.WinForms;
 
@@ -13,6 +14,7 @@ namespace Hotel_Managment_System.Resources.HotelManagment
         public UC_Staff()
         {
             InitializeComponent();
+            ApplyTheme();
         }
 
         private void ClearALL()
@@ -299,6 +301,54 @@ namespace Hotel_Managment_System.Resources.HotelManagment
 
             focus.Focus();
             return false;
+        }
+
+        private void ApplyTheme()
+        {
+            // Form fields
+            Theme.StyleInput(txtName);
+            Theme.StyleInput(txtMobileNo);
+            Theme.StyleInput(txtEmail);
+            Theme.StyleInput(txtUserName);
+            Theme.StyleInput(txtPassword);
+
+            Theme.StyleCombo(cmBoxGender);
+            Theme.StyleCombo(cmBoxRole);
+
+            Theme.StyleActionButton(registerbtn, true);
+
+            // Buttons
+            Theme.StyleDangerButton(staffDeletebtn);
+            Theme.StyleActionButton(btnResetPassword, true);
+
+            // Inputs for delete/reset
+            Theme.StyleInput(txtStaffDeleteID);
+
+            // Labels
+            label1.ForeColor = Theme.TextSecondary;
+            label2.ForeColor = Theme.TextSecondary;
+            label4.ForeColor = Theme.TextSecondary;
+            label8.ForeColor = Theme.TextSecondary;
+            label9.ForeColor = Theme.TextSecondary;
+            label10.ForeColor = Theme.TextSecondary;
+            label11.ForeColor = Theme.TextSecondary;
+            label3.ForeColor = Theme.TextSecondary;
+            label6.ForeColor = Theme.TextSecondary;
+            labelResetTitle.ForeColor = Theme.TextSecondary;
+            labelResetStaff.ForeColor = Theme.TextSecondary;
+            labelNewPassword.ForeColor = Theme.TextSecondary;
+            labelConfirmPassword.ForeColor = Theme.TextSecondary;
+            lblResetHint.ForeColor = Theme.TextMuted;
+
+            label1.Font = new Font("Segoe UI", 9.5F);
+            label2.Font = new Font("Segoe UI", 9.5F);
+            label4.Font = new Font("Segoe UI", 9.5F);
+            label8.Font = new Font("Segoe UI", 9.5F);
+            label9.Font = new Font("Segoe UI", 9.5F);
+            label10.Font = new Font("Segoe UI", 9.5F);
+            label11.Font = new Font("Segoe UI", 9.5F);
+            label3.Font = new Font("Segoe UI", 9.5F);
+            label6.Font = new Font("Segoe UI", 9.5F);
         }
     }
 }
