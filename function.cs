@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Configuration;
 using System.Data;
 using System.Data.SqlClient;
 using System.Windows.Forms;
@@ -20,23 +19,7 @@ namespace Hotel_Managment_System
         public int Nights { get; set; }
         public decimal Rate { get; set; }
         public decimal Total { get; set; }
-    }
-
-    internal class function
-    {
-        private SqlConnection getConnection()
-        {
-            ConnectionStringSettings settings =
-                ConfigurationManager.ConnectionStrings["HotelDb"];
-
-            if (settings == null)
-            {
-                throw new ConfigurationErrorsException(
-                    "Connection string 'HotelDb' was not found in App.config.");
-            }
-
-            return new SqlConnection(settings.ConnectionString);
-        }
+    }internal class function
 
         /// <summary>
         /// Validates a user name / password pair.
@@ -46,102 +29,18 @@ namespace Hotel_Managment_System
         /// </summary>
         public StaffUser AuthenticateUser(string userName, string password, out bool databaseError)
         {
-            databaseError = false;
-
-            const string query = @"
-                SELECT Staff_ID, Staff_Name, Staff_UserName, Staff_Password, Staff_Role
-                FROM Staff
-                WHERE Staff_UserName = @userName";
-
-            DataTable table = new DataTable();
-
-            try
-            {
-                using (SqlConnection con = getConnection())
-                using (SqlCommand cmd = new SqlCommand(query, con))
-                using (SqlDataAdapter adapter = new SqlDataAdapter(cmd))
-                {
-                    cmd.Parameters.Add(new SqlParameter("@userName", SqlDbType.VarChar, 150)
-                    {
-                        Value = userName
-                    });
-
-                    adapter.Fill(table);
-                }
-            }
-            catch (SqlException ex)
-            {
-                ShowDatabaseError(ex);
-                databaseError = true;
-                return null;
-            }
-
-            if (table.Rows.Count == 0)
-            {
-                // Keep the response time similar to a real verification.
-                PasswordHasher.VerifyDummy(password);
-                return null;
-            }
-
-            DataRow row = table.Rows[0];
-            string storedPassword = Convert.ToString(row["Staff_Password"]);
-            PasswordVerificationResult result = PasswordHasher.Verify(storedPassword, password);
-
-            if (result == PasswordVerificationResult.Failed)
-                return null;
-
-            int staffId = Convert.ToInt32(row["Staff_ID"]);
-
-            if (result == PasswordVerificationResult.SuccessRehashNeeded)
-            {
-                UpgradePasswordHash(staffId, password);
-            }
-
-            return new StaffUser(
-                staffId,
-                Convert.ToString(row["Staff_Name"]),
-                Convert.ToString(row["Staff_UserName"]),
-                Convert.ToString(row["Staff_Role"]));
-        }
-
-        private void UpgradePasswordHash(int staffId, string password)
-        {
-            const string query = "UPDATE Staff SET Staff_Password = @password WHERE Staff_ID = @staffId";
-
-            try
-            {
-                using (SqlConnection con = getConnection())
-                using (SqlCommand cmd = new SqlCommand(query, con))
-                {
-                    cmd.Parameters.Add(new SqlParameter("@password", SqlDbType.VarChar, 150)
-                    {
-                        Value = PasswordHasher.Hash(password)
-                    });
-                    cmd.Parameters.Add(new SqlParameter("@staffId", SqlDbType.Int)
-                    {
-                        Value = staffId
-                    });
-
-                    con.Open();
-                    cmd.ExecuteNonQuery();
-                }
-            }
-            catch (SqlException ex)
-            {
-                // The login itself succeeded; the upgrade will be retried next time.
-                Logger.Error(ex);
-            }
-        }
-
-        /// <summary>
+            return AuthRepository.AuthenticateUser(userName, password, out databaseError);
+        }        /// <summary>
         /// Executes a SELECT statement and returns the result as a DataTable.
         /// Always returns a table (empty when a database error occurs).
         /// </summary>
         public DataTable getData(string query, params SqlParameter[] parameters)
+
+
         {
             try
             {
-                using (SqlConnection con = getConnection())
+                using (SqlConnection con = SqlRepository.GetConnection())
                 using (SqlCommand cmd = new SqlCommand(query, con))
                 using (SqlDataAdapter adapter = new SqlDataAdapter(cmd))
                 {
@@ -161,13 +60,14 @@ namespace Hotel_Managment_System
 
         /// <summary>
         /// Executes INSERT / UPDATE / DELETE and returns the number of affected rows,
+
+
         /// or -1 when a database error occurs.
-        /// </summary>
-        public int setData(string query, params SqlParameter[] parameters)
+        /// </summary>        public int setData(string query, params SqlParameter[] parameters)
         {
             try
             {
-                using (SqlConnection con = getConnection())
+                using (SqlConnection con = SqlRepository.GetConnection())
                 using (SqlCommand cmd = new SqlCommand(query, con))
                 {
                     AddParameters(cmd, parameters);
@@ -182,6 +82,9 @@ namespace Hotel_Managment_System
                 return -1;
             }
         }
+
+
+
 
         /// <summary>
         /// Allocates a free room to a new customer inside a single transaction.
@@ -220,8 +123,7 @@ namespace Hotel_Managment_System
                 WHERE Room_ID = @roomId AND Status = 'Free'";
 
             try
-            {
-                using (SqlConnection con = getConnection())
+            {                using (SqlConnection con = SqlRepository.GetConnection())
                 {
                     con.Open();
 
@@ -242,6 +144,8 @@ namespace Hotel_Managment_System
                                 cmd.Parameters.Add("@roomId", SqlDbType.Int).Value = roomId;
 
                                 cmd.ExecuteNonQuery();
+
+
                             }
 
                             using (SqlCommand cmd = new SqlCommand(updateSql, con, tx))
@@ -328,8 +232,7 @@ namespace Hotel_Managment_System
                 WHERE Room_ID = @roomId";
 
             try
-            {
-                using (SqlConnection con = getConnection())
+            {                using (SqlConnection con = SqlRepository.GetConnection())
                 {
                     con.Open();
 
@@ -350,6 +253,8 @@ namespace Hotel_Managment_System
                                 using (SqlDataReader reader = cmd.ExecuteReader())
                                 {
                                     if (!reader.Read())
+
+
                                     {
                                         reader.Close();
                                         tx.Rollback();
@@ -498,8 +403,7 @@ namespace Hotel_Managment_System
                 WHERE Room_ID = @roomId";
 
             try
-            {
-                using (SqlConnection con = getConnection())
+            {                using (SqlConnection con = SqlRepository.GetConnection())
                 {
                     con.Open();
 
@@ -515,6 +419,8 @@ namespace Hotel_Managment_System
                             }
 
                             if (RoomHasActiveCustomer(con, tx, roomId) && status != "Busy")
+
+
                             {
                                 tx.Rollback();
                                 error = "This room is occupied. Check out the guest before changing its status.";
@@ -571,8 +477,7 @@ namespace Hotel_Managment_System
             error = null;
 
             try
-            {
-                using (SqlConnection con = getConnection())
+            {                using (SqlConnection con = SqlRepository.GetConnection())
                 {
                     con.Open();
 
@@ -588,6 +493,8 @@ namespace Hotel_Managment_System
                             }
 
                             if (RoomHasActiveCustomer(con, tx, roomId))
+
+
                             {
                                 tx.Rollback();
                                 error = "This room is occupied. Check out the guest first.";
@@ -687,74 +594,25 @@ namespace Hotel_Managment_System
         }
 
         /// <summary>
+        /// Replaces a staff member's password with a fresh PBKDF2 hash.        /// <summary>
         /// Replaces a staff member's password with a fresh PBKDF2 hash.
-        /// The policy is enforced here as well as in the UI so the data layer
-        /// cannot be called with a weak password.
+        /// The policy is enforced by AuthRepository; this method delegates to it.
         /// </summary>
         public bool ResetStaffPassword(int staffId, string newPassword, out string error)
         {
-            error = null;
-
-            if (staffId <= 0)
-            {
-                error = "Select a staff member.";
-                return false;
-            }
-
-            if (!Validation.IsValidPassword(newPassword))
-            {
-                error = "Password must be at least 8 characters and contain a letter and a digit.";
-                return false;
-            }
-
-            if (newPassword.Length > 128)
-            {
-                error = "Password cannot exceed 128 characters.";
-                return false;
-            }
-
-            const string query = @"
-                UPDATE Staff
-                SET Staff_Password = @password
-                WHERE Staff_ID = @staffId";
-
-            try
-            {
-                using (SqlConnection con = getConnection())
-                using (SqlCommand cmd = new SqlCommand(query, con))
-                {
-                    cmd.Parameters.Add("@password", SqlDbType.VarChar, 150).Value =
-                        PasswordHasher.Hash(newPassword);
-                    cmd.Parameters.Add("@staffId", SqlDbType.Int).Value = staffId;
-
-                    con.Open();
-
-                    if (cmd.ExecuteNonQuery() > 0)
-                        return true;
-
-                    error = "Staff member not found.";
-                    return false;
-                }
-            }
-            catch (SqlException ex)
-            {
-                Logger.Error(ex);
-                error = GetFriendlyMessage(ex);
-                return false;
-            }
-        }
+            return AuthRepository.ResetStaffPassword(staffId, newPassword, out error);        }
 
         /// <summary>
         /// Returns the values of the first column of a SELECT statement.
         /// The reader and connection are always disposed before returning.
         /// </summary>
         public List<string> getForCombo(string query, params SqlParameter[] parameters)
-        {
-            List<string> items = new List<string>();
 
-            try
+
+        {
+            List<string> items = new List<string>();            try
             {
-                using (SqlConnection con = getConnection())
+                using (SqlConnection con = SqlRepository.GetConnection())
                 using (SqlCommand cmd = new SqlCommand(query, con))
                 {
                     AddParameters(cmd, parameters);
@@ -771,6 +629,8 @@ namespace Hotel_Managment_System
                 }
             }
             catch (SqlException ex)
+
+
             {
                 ShowDatabaseError(ex);
             }
