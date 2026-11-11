@@ -208,8 +208,8 @@ The following issues are known and will be addressed in order (see the roadmap):
 - [x] Complete the Rooms screen (Edit / Delete)
 - [x] Customer list + check-out + billing
 - [ ] Separate layers (Repositories / Services)
-- [ ] Convert read operations to `async/await`
-- [ ] Tests + continuous integration (CI)
+- [x] Convert read operations to `async/await`
+- [ ] Tests + continuous integration (CI) - basic unit tests for repositories
 
 ---
 
