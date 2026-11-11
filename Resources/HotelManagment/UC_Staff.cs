@@ -27,15 +27,12 @@ namespace Hotel_Managment_System.Resources.HotelManagment
 
         private void registerbtn_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(txtName.Text)
-                || string.IsNullOrWhiteSpace(txtMobileNo.Text)
-                || string.IsNullOrWhiteSpace(cmBoxGender.Text)
-                || string.IsNullOrWhiteSpace(txtEmail.Text)
-                || string.IsNullOrWhiteSpace(txtUserName.Text)
-                || string.IsNullOrWhiteSpace(txtPassword.Text))
+            if (!ValidateStaffInput(out string userName))
+                return;
+
+            if (UserNameExists(userName))
             {
-                MessageBox.Show("Fill all fields.", "Warning",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                Fail("This user name is already taken.", txtUserName);
                 return;
             }
 
@@ -52,7 +49,7 @@ namespace Hotel_Managment_System.Resources.HotelManagment
                 new SqlParameter("@mobile", SqlDbType.VarChar, 25) { Value = txtMobileNo.Text.Trim() },
                 new SqlParameter("@gender", SqlDbType.VarChar, 50) { Value = cmBoxGender.Text },
                 new SqlParameter("@email", SqlDbType.VarChar, 120) { Value = txtEmail.Text.Trim() },
-                new SqlParameter("@userName", SqlDbType.VarChar, 150) { Value = txtUserName.Text.Trim() },
+                new SqlParameter("@userName", SqlDbType.VarChar, 150) { Value = userName },
                 new SqlParameter("@password", SqlDbType.VarChar, 150) { Value = txtPassword.Text }
             };
 
@@ -70,6 +67,50 @@ namespace Hotel_Managment_System.Resources.HotelManagment
                 MessageBox.Show("No staff record was added.", "Notice",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
+        }
+
+        private bool ValidateStaffInput(out string userName)
+        {
+            userName = (txtUserName.Text ?? string.Empty).Trim();
+
+            string name = (txtName.Text ?? string.Empty).Trim();
+            if (name.Length == 0)
+                return Fail("Staff name is required.", txtName);
+            if (name.Length < 2)
+                return Fail("Staff name must be at least 2 characters.", txtName);
+            if (name.Length > 75)
+                return Fail("Staff name cannot exceed 75 characters.", txtName);
+
+            if (!Validation.IsValidMobile(txtMobileNo.Text))
+                return Fail("Enter a valid mobile number (7-15 digits).", txtMobileNo);
+
+            if (cmBoxGender.SelectedIndex < 0)
+                return Fail("Select a gender.", cmBoxGender);
+
+            string email = (txtEmail.Text ?? string.Empty).Trim();
+            if (!Validation.IsValidEmail(email))
+                return Fail("Enter a valid e-mail address.", txtEmail);
+            if (email.Length > 120)
+                return Fail("E-mail cannot exceed 120 characters.", txtEmail);
+
+            if (!Validation.IsValidUserName(userName))
+                return Fail("User name must be 3-150 characters (letters, digits, dot, underscore, hyphen).",
+                    txtUserName);
+
+            if (!Validation.IsValidPassword(txtPassword.Text))
+                return Fail("Password must be at least 8 characters and contain a letter and a digit.",
+                    txtPassword);
+
+            return true;
+        }
+
+        private bool UserNameExists(string userName)
+        {
+            DataTable table = fn.getData(
+                "SELECT Staff_ID FROM Staff WHERE Staff_UserName = @userName",
+                new SqlParameter("@userName", SqlDbType.VarChar, 150) { Value = userName });
+
+            return table.Rows.Count > 0;
         }
 
         private void LoadStaff(Guna2DataGridView grid)
@@ -134,6 +175,15 @@ namespace Hotel_Managment_System.Resources.HotelManagment
                 MessageBox.Show("Staff ID not found.", "Notice",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
+        }
+
+        private bool Fail(string message, Control focus)
+        {
+            MessageBox.Show(message, "Validation",
+                MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
+            focus.Focus();
+            return false;
         }
     }
 }
