@@ -19,6 +19,7 @@ namespace Hotel_Managment_System.Resources.HotelManagment
         public UC_Guests()
         {
             InitializeComponent();
+            ApplyTheme();
         }
 
         private void UC_Guests_Load(object sender, EventArgs e)
@@ -265,6 +266,31 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             {
                 Cursor = Cursors.Default;
             }
+        }
+
+        private void ApplyTheme()
+        {
+            labelTitle.ForeColor = Theme.TextPrimary;
+            labelTitle.Font = new Font("Segoe UI", 20F, FontStyle.Bold);
+
+            labelSubtitle.ForeColor = Theme.TextSecondary;
+            labelSubtitle.Font = new Font("Segoe UI", 10F);
+
+            labelActive.ForeColor = Theme.TextPrimary;
+            labelActive.Font = new Font("Segoe UI", 11F, FontStyle.Bold);
+
+            Theme.StyleActionButton(refreshbtn, true);
+
+            Theme.StyleDangerButton(btnCheckout);
+
+            labelSelected.ForeColor = Theme.TextPrimary;
+            labelSelected.Font = new Font("Segoe UI", 9.5F);
+
+            labelCheckOut.ForeColor = Theme.TextSecondary;
+            labelCheckOut.Font = new Font("Segoe UI", 9.5F);
+
+            labelSummary.ForeColor = Theme.TextSecondary;
+            labelSummary.Font = new Font("Segoe UI", 9.5F);
         }
     }
 }
