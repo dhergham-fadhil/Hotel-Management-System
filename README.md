@@ -10,11 +10,12 @@ A desktop hotel management application built with **C# / WinForms** and **SQL Se
 
 | Module | Status |
 |---|---|
+| Login + PBKDF2 password hashing + roles (Admin / Staff) | ✅ |
 | Room management (add + list) | ✅ |
 | Room allocation to a customer (register + set status to Busy) | ✅ |
-| Staff registration, listing, and deletion | ✅ |
+| Staff registration, listing, and deletion (Admin only) | ✅ |
 | Dashboard (hotel overview + recent check-ins) | ✅ |
-| Login screen | ⚠️ UI only (not wired yet) |
+| Logout (returns to the login screen) | ✅ |
 
 ---
 
@@ -31,9 +32,11 @@ A desktop hotel management application built with **C# / WinForms** and **SQL Se
 
 ```
 Hotel_Managment_System/
-├── Program.cs                  Application entry point
-├── MainHotelMenu.cs            Main window + navigation
-├── Login.cs                    Login screen (not wired yet)
+├── Program.cs                  Entry point: login → main window → logout loop
+├── MainHotelMenu.cs            Main window + role-aware navigation
+├── Login.cs                    Login screen (authentication)
+├── PasswordHasher.cs           PBKDF2-HMAC-SHA256 hashing + legacy migration
+├── StaffUser.cs                Signed-in user model (id, name, role)
 ├── function.cs                 Data access layer (temporary)
 ├── Logger.cs                   File logger
 ├── Validation.cs               Shared input validation rules
@@ -44,7 +47,8 @@ Hotel_Managment_System/
 │       ├── UC_Staff.cs
 │       └── UC_Booking.cs       Dashboard
 ├── database/
-│   └── schema.sql              Creates the database from scratch
+│   ├── schema.sql              Creates the database from scratch
+│   └── migrations/             Incremental scripts for existing databases
 └── App.config                  Application settings (connection string)
 ```
 
@@ -67,6 +71,40 @@ Hotel_Managment_System/
 4. For sample data, uncomment the `INSERT` section at the end of the script.
 
 > The database is **not** committed to Git. `schema.sql` is the single source of truth for the schema.
+
+### Upgrading an existing database
+
+Databases created before Phase 3 must run `database/migrations/002_add_staff_role.sql` once. It is idempotent and:
+
+1. adds `Staff_Role` (`Admin` / `Staff`, default `Staff`);
+2. verifies that `Staff_UserName` values are unique, then adds a `UNIQUE` constraint;
+3. promotes the **first** staff member to `Admin` if no administrator exists yet.
+
+After running it, sign in with the promoted account and create a dedicated administrator from the Staff screen. To promote another account manually:
+
+```sql
+UPDATE dbo.Staff
+SET Staff_Role = 'Admin'
+WHERE Staff_UserName = 'your.user.name';
+```
+
+---
+
+## Authentication and Roles
+
+- **Hashing:** PBKDF2-HMAC-SHA256, 100,000 iterations, a random 16-byte salt, and a 32-byte hash.
+- **Storage format:** `PBKDF2$100000$<base64 salt>$<base64 hash>` in `Staff_Password`.
+- **Comparison:** constant-time, so a wrong password does not leak information through timing.
+- **Unknown user names:** the app still performs a dummy hash verification and shows the same generic message, so the response does not reveal whether the account exists.
+- **Legacy passwords:** rows still stored as plain text are accepted once and immediately replaced with a PBKDF2 hash after a successful login. Every staff member is upgraded the first time they sign in.
+- **Password policy:** at least 8 characters, including a letter and a digit (maximum 128).
+- **Roles:**
+  - `Admin` — full access, including staff registration and deletion. The app also prevents deleting the last administrator.
+  - `Staff` — dashboard, rooms, and customers. The Staff tab is hidden and the navigation handler rejects the request.
+- **Logout:** the Logout button closes the main window and returns to the login screen without restarting the process.
+- **Forgot password:** there is no self-service reset yet; the screen tells the user to contact an administrator.
+
+> **Security note:** role checks in a WinForms client can be bypassed by anyone with direct database access. A real deployment also needs restricted database permissions, server-side authorization, and audit logging.
 
 ---
 
@@ -110,9 +148,10 @@ cd Hotel_Managment_System
 
 The following issues are known and will be addressed in order (see the roadmap):
 
-- The login screen is not connected to the application — there is currently no authentication.
-- Staff passwords are stored in plain text.
-- Validation rules (lengths, formats, dates, duplicates) live in the UI; the database still has no `CHECK` constraints.
+- There is no self-service password reset, account lockout, or idle-session timeout.
+- Legacy plain-text passwords are upgraded lazily on first login; there is no bulk migration for accounts that never sign in.
+- Role checks are enforced by the UI. Anyone with direct database access can bypass them.
+- Most validation rules live in the UI; only `Staff_Role` has a database `CHECK` constraint.
 - Phone numbers are validated as digits, spaces, hyphens and an optional leading `+`; there is no country-aware format.
 - The **Edit / Delete** buttons on the Rooms screen are not implemented.
 - There is no customer check-out flow.
@@ -129,7 +168,8 @@ The following issues are known and will be addressed in order (see the roadmap):
 - [x] File logging and a global exception handler
 - [x] Per-field input validation (lengths, formats, dates, duplicate checks)
 - [x] Dashboard replacing the Bookings placeholder
-- [ ] Real login + password hashing (PBKDF2/BCrypt) + roles
+- [x] Real login + PBKDF2 password hashing + roles
+- [ ] Password reset, account lockout, and idle-session timeout
 - [ ] Complete the Rooms screen (Edit / Delete)
 - [ ] Customer list + check-out + billing
 - [ ] Separate layers (Repositories / Services)
