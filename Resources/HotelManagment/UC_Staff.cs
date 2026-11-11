@@ -142,6 +142,86 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             {
                 LoadStaff(DGV_StaffDelete);
             }
+            else if (tabStaff.SelectedIndex == 3)
+            {
+                LoadResetStaff();
+            }
+        }
+
+        private void LoadResetStaff()
+        {
+            DataTable table = fn.getData(
+                "SELECT Staff_ID, Staff_UserName, Staff_Name FROM Staff ORDER BY Staff_ID");
+
+            cmBoxResetStaff.Items.Clear();
+
+            foreach (DataRow row in table.Rows)
+            {
+                cmBoxResetStaff.Items.Add(
+                    Convert.ToInt32(row["Staff_ID"]) + " - " + Convert.ToString(row["Staff_UserName"]));
+            }
+        }
+
+        private void btnResetPassword_Click(object sender, EventArgs e)
+        {
+            if (cmBoxResetStaff.SelectedIndex < 0)
+            {
+                MessageBox.Show("Select a staff member.", "Warning",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            string selection = cmBoxResetStaff.SelectedItem.ToString();
+
+            if (!int.TryParse(selection.Split('-')[0], out int staffId))
+            {
+                MessageBox.Show("Select a staff member.", "Warning",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            string newPassword = txtNewPassword.Text;
+            string confirmPassword = txtConfirmPassword.Text;
+
+            if (!Validation.IsValidPassword(newPassword))
+            {
+                MessageBox.Show("Password must be at least 8 characters and contain a letter and a digit.",
+                    "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (newPassword.Length > 128)
+            {
+                MessageBox.Show("Password cannot exceed 128 characters.", "Validation",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (newPassword != confirmPassword)
+            {
+                MessageBox.Show("The two passwords do not match.", "Validation",
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            if (!fn.ResetStaffPassword(staffId, newPassword, out string error))
+            {
+                MessageBox.Show(error ?? "The password could not be reset.", "Reset Failed",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            MessageBox.Show("Password reset successfully.", "Success",
+                MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+            ClearResetForm();
+        }
+
+        private void ClearResetForm()
+        {
+            cmBoxResetStaff.SelectedIndex = -1;
+            txtNewPassword.Clear();
+            txtConfirmPassword.Clear();
         }
 
         private void staffDeletebtn_Click(object sender, EventArgs e)

@@ -59,12 +59,23 @@
             this.staffDeletebtn = new Guna.UI2.WinForms.Guna2Button();
             this.txtStaffDeleteID = new Guna.UI2.WinForms.Guna2TextBox();
             this.label6 = new System.Windows.Forms.Label();
+            this.tabResetPassword = new System.Windows.Forms.TabPage();
+            this.labelResetTitle = new System.Windows.Forms.Label();
+            this.cmBoxResetStaff = new Guna.UI2.WinForms.Guna2ComboBox();
+            this.labelResetStaff = new System.Windows.Forms.Label();
+            this.txtNewPassword = new Guna.UI2.WinForms.Guna2TextBox();
+            this.labelNewPassword = new System.Windows.Forms.Label();
+            this.txtConfirmPassword = new Guna.UI2.WinForms.Guna2TextBox();
+            this.labelConfirmPassword = new System.Windows.Forms.Label();
+            this.btnResetPassword = new Guna.UI2.WinForms.Guna2Button();
+            this.lblResetHint = new System.Windows.Forms.Label();
             this.tabStaff.SuspendLayout();
             this.tabRegisteration.SuspendLayout();
             this.tabDetails.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.DGV_StaffDetails)).BeginInit();
             this.tabDelete.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.DGV_StaffDelete)).BeginInit();
+            this.tabResetPassword.SuspendLayout();
             this.SuspendLayout();
             // 
             // tabStaff
@@ -73,6 +84,16 @@
             this.tabStaff.Controls.Add(this.tabRegisteration);
             this.tabStaff.Controls.Add(this.tabDetails);
             this.tabStaff.Controls.Add(this.tabDelete);
+            this.tabStaff.Controls.Add(this.tabResetPassword);
+            this.tabResetPassword.Controls.Add(this.labelResetTitle);
+            this.tabResetPassword.Controls.Add(this.cmBoxResetStaff);
+            this.tabResetPassword.Controls.Add(this.labelResetStaff);
+            this.tabResetPassword.Controls.Add(this.txtNewPassword);
+            this.tabResetPassword.Controls.Add(this.labelNewPassword);
+            this.tabResetPassword.Controls.Add(this.txtConfirmPassword);
+            this.tabResetPassword.Controls.Add(this.labelConfirmPassword);
+            this.tabResetPassword.Controls.Add(this.btnResetPassword);
+            this.tabResetPassword.Controls.Add(this.lblResetHint);
             this.tabStaff.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabStaff.ItemSize = new System.Drawing.Size(180, 40);
             this.tabStaff.Location = new System.Drawing.Point(0, 0);
@@ -98,6 +119,175 @@
             this.tabStaff.TabIndex = 0;
             this.tabStaff.TabMenuBackColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(62)))), ((int)(((byte)(80)))));
             this.tabStaff.SelectedIndexChanged += new System.EventHandler(this.tabStaff_SelectedIndexChanged);
+            // 
+            // tabResetPassword
+            // 
+            this.tabResetPassword.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(218)))), ((int)(((byte)(218)))), ((int)(((byte)(218)))));
+            this.tabResetPassword.Controls.Add(this.lblResetHint);
+            this.tabResetPassword.Controls.Add(this.btnResetPassword);
+            this.tabResetPassword.Controls.Add(this.txtConfirmPassword);
+            this.tabResetPassword.Controls.Add(this.labelConfirmPassword);
+            this.tabResetPassword.Controls.Add(this.txtNewPassword);
+            this.tabResetPassword.Controls.Add(this.labelNewPassword);
+            this.tabResetPassword.Controls.Add(this.labelResetStaff);
+            this.tabResetPassword.Controls.Add(this.cmBoxResetStaff);
+            this.tabResetPassword.Controls.Add(this.labelResetTitle);
+            this.tabResetPassword.Location = new System.Drawing.Point(184, 4);
+            this.tabResetPassword.Name = "tabResetPassword";
+            this.tabResetPassword.Padding = new System.Windows.Forms.Padding(3);
+            this.tabResetPassword.Size = new System.Drawing.Size(1012, 510);
+            this.tabResetPassword.TabIndex = 3;
+            this.tabResetPassword.Text = "Reset Password";
+            this.tabResetPassword.ResumeLayout(false);
+            this.tabResetPassword.PerformLayout();
+            // 
+            // labelResetTitle
+            // 
+            this.labelResetTitle.AutoSize = true;
+            this.labelResetTitle.Font = new System.Drawing.Font("Century Gothic", 12F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelResetTitle.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(62)))), ((int)(((byte)(80)))));
+            this.labelResetTitle.Location = new System.Drawing.Point(300, 30);
+            this.labelResetTitle.Name = "labelResetTitle";
+            this.labelResetTitle.Size = new System.Drawing.Size(250, 29);
+            this.labelResetTitle.TabIndex = 0;
+            this.labelResetTitle.Text = "Reset Password";
+            // 
+            // cmBoxResetStaff
+            // 
+            this.cmBoxResetStaff.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(218)))), ((int)(((byte)(218)))), ((int)(((byte)(218)))));
+            this.cmBoxResetStaff.BorderColor = System.Drawing.Color.DarkGray;
+            this.cmBoxResetStaff.BorderRadius = 10;
+            this.cmBoxResetStaff.BorderThickness = 3;
+            this.cmBoxResetStaff.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.cmBoxResetStaff.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmBoxResetStaff.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(218)))), ((int)(((byte)(218)))), ((int)(((byte)(218)))));
+            this.cmBoxResetStaff.FocusedColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(62)))), ((int)(((byte)(80)))));
+            this.cmBoxResetStaff.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(62)))), ((int)(((byte)(80)))));
+            this.cmBoxResetStaff.FocusedState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(218)))), ((int)(((byte)(218)))), ((int)(((byte)(218)))));
+            this.cmBoxResetStaff.FocusedState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(62)))), ((int)(((byte)(80)))));
+            this.cmBoxResetStaff.HoverState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(62)))), ((int)(((byte)(80)))));
+            this.cmBoxResetStaff.HoverState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(218)))), ((int)(((byte)(218)))), ((int)(((byte)(218)))));
+            this.cmBoxResetStaff.HoverState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(62)))), ((int)(((byte)(80)))));
+            this.cmBoxResetStaff.ItemHeight = 30;
+            this.cmBoxResetStaff.Location = new System.Drawing.Point(27, 115);
+            this.cmBoxResetStaff.Name = "cmBoxResetStaff";
+            this.cmBoxResetStaff.Size = new System.Drawing.Size(316, 36);
+            this.cmBoxResetStaff.TabIndex = 1;
+            // 
+            // labelResetStaff
+            // 
+            this.labelResetStaff.AutoSize = true;
+            this.labelResetStaff.Font = new System.Drawing.Font("Century Gothic", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelResetStaff.Location = new System.Drawing.Point(27, 90);
+            this.labelResetStaff.Name = "labelResetStaff";
+            this.labelResetStaff.Size = new System.Drawing.Size(150, 21);
+            this.labelResetStaff.TabIndex = 2;
+            this.labelResetStaff.Text = "Staff Member";
+            // 
+            // labelNewPassword
+            // 
+            this.labelNewPassword.AutoSize = true;
+            this.labelNewPassword.Font = new System.Drawing.Font("Century Gothic", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelNewPassword.Location = new System.Drawing.Point(27, 170);
+            this.labelNewPassword.Name = "labelNewPassword";
+            this.labelNewPassword.Size = new System.Drawing.Size(150, 21);
+            this.labelNewPassword.TabIndex = 4;
+            this.labelNewPassword.Text = "New Password";
+            // 
+            // txtNewPassword
+            // 
+            this.txtNewPassword.Animated = true;
+            this.txtNewPassword.BorderColor = System.Drawing.Color.DarkGray;
+            this.txtNewPassword.BorderRadius = 10;
+            this.txtNewPassword.BorderThickness = 3;
+            this.txtNewPassword.Cursor = System.Windows.Forms.Cursors.IBeam;
+            this.txtNewPassword.DefaultText = "";
+            this.txtNewPassword.DisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(208)))), ((int)(((byte)(208)))), ((int)(((byte)(208)))));
+            this.txtNewPassword.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(226)))), ((int)(((byte)(226)))));
+            this.txtNewPassword.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(138)))), ((int)(((byte)(138)))));
+            this.txtNewPassword.DisabledState.PlaceholderForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(138)))), ((int)(((byte)(138)))));
+            this.txtNewPassword.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(218)))), ((int)(((byte)(218)))), ((int)(((byte)(218)))));
+            this.txtNewPassword.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(62)))), ((int)(((byte)(80)))));
+            this.txtNewPassword.Font = new System.Drawing.Font("Century Gothic", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtNewPassword.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.txtNewPassword.HoverState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(62)))), ((int)(((byte)(80)))));
+            this.txtNewPassword.HoverState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(218)))), ((int)(((byte)(218)))), ((int)(((byte)(218)))));
+            this.txtNewPassword.HoverState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(62)))), ((int)(((byte)(80)))));
+            this.txtNewPassword.Location = new System.Drawing.Point(27, 195);
+            this.txtNewPassword.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtNewPassword.Name = "txtNewPassword";
+            this.txtNewPassword.PasswordChar = '*';
+            this.txtNewPassword.PlaceholderText = "";
+            this.txtNewPassword.SelectedText = "";
+            this.txtNewPassword.Size = new System.Drawing.Size(316, 44);
+            this.txtNewPassword.TabIndex = 3;
+            // 
+            // labelConfirmPassword
+            // 
+            this.labelConfirmPassword.AutoSize = true;
+            this.labelConfirmPassword.Font = new System.Drawing.Font("Century Gothic", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelConfirmPassword.Location = new System.Drawing.Point(27, 255);
+            this.labelConfirmPassword.Name = "labelConfirmPassword";
+            this.labelConfirmPassword.Size = new System.Drawing.Size(150, 21);
+            this.labelConfirmPassword.TabIndex = 6;
+            this.labelConfirmPassword.Text = "Confirm Password";
+            // 
+            // txtConfirmPassword
+            // 
+            this.txtConfirmPassword.Animated = true;
+            this.txtConfirmPassword.BorderColor = System.Drawing.Color.DarkGray;
+            this.txtConfirmPassword.BorderRadius = 10;
+            this.txtConfirmPassword.BorderThickness = 3;
+            this.txtConfirmPassword.Cursor = System.Windows.Forms.Cursors.IBeam;
+            this.txtConfirmPassword.DefaultText = "";
+            this.txtConfirmPassword.DisabledState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(208)))), ((int)(((byte)(208)))), ((int)(((byte)(208)))));
+            this.txtConfirmPassword.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(226)))), ((int)(((byte)(226)))), ((int)(((byte)(226)))));
+            this.txtConfirmPassword.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(138)))), ((int)(((byte)(138)))));
+            this.txtConfirmPassword.DisabledState.PlaceholderForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(138)))), ((int)(((byte)(138)))), ((int)(((byte)(138)))));
+            this.txtConfirmPassword.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(218)))), ((int)(((byte)(218)))), ((int)(((byte)(218)))));
+            this.txtConfirmPassword.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(62)))), ((int)(((byte)(80)))));
+            this.txtConfirmPassword.Font = new System.Drawing.Font("Century Gothic", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.txtConfirmPassword.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.txtConfirmPassword.HoverState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(62)))), ((int)(((byte)(80)))));
+            this.txtConfirmPassword.HoverState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(218)))), ((int)(((byte)(218)))), ((int)(((byte)(218)))));
+            this.txtConfirmPassword.HoverState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(62)))), ((int)(((byte)(80)))));
+            this.txtConfirmPassword.Location = new System.Drawing.Point(27, 280);
+            this.txtConfirmPassword.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.txtConfirmPassword.Name = "txtConfirmPassword";
+            this.txtConfirmPassword.PasswordChar = '*';
+            this.txtConfirmPassword.PlaceholderText = "";
+            this.txtConfirmPassword.SelectedText = "";
+            this.txtConfirmPassword.Size = new System.Drawing.Size(316, 44);
+            this.txtConfirmPassword.TabIndex = 5;
+            // 
+            // btnResetPassword
+            // 
+            this.btnResetPassword.BorderRadius = 23;
+            this.btnResetPassword.BorderThickness = 1;
+            this.btnResetPassword.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
+            this.btnResetPassword.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
+            this.btnResetPassword.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
+            this.btnResetPassword.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
+            this.btnResetPassword.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(62)))), ((int)(((byte)(80)))));
+            this.btnResetPassword.Font = new System.Drawing.Font("Century Gothic", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.btnResetPassword.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(218)))), ((int)(((byte)(218)))), ((int)(((byte)(218)))));
+            this.btnResetPassword.Location = new System.Drawing.Point(27, 330);
+            this.btnResetPassword.Name = "btnResetPassword";
+            this.btnResetPassword.Size = new System.Drawing.Size(156, 54);
+            this.btnResetPassword.TabIndex = 7;
+            this.btnResetPassword.Text = "Reset Password";
+            this.btnResetPassword.Click += new System.EventHandler(this.btnResetPassword_Click);
+            // 
+            // lblResetHint
+            // 
+            this.lblResetHint.AutoSize = true;
+            this.lblResetHint.Font = new System.Drawing.Font("Century Gothic", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.lblResetHint.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(127)))), ((int)(((byte)(140)))), ((int)(((byte)(141)))));
+            this.lblResetHint.Location = new System.Drawing.Point(27, 400);
+            this.lblResetHint.Name = "lblResetHint";
+            this.lblResetHint.Size = new System.Drawing.Size(300, 20);
+            this.lblResetHint.TabIndex = 8;
+            this.lblResetHint.Text = "The password must be at least 8 characters and contain a letter and a digit.";
             // 
             // tabRegisteration
             // 
@@ -600,6 +790,8 @@
             this.tabDelete.ResumeLayout(false);
             this.tabDelete.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.DGV_StaffDelete)).EndInit();
+            this.tabResetPassword.ResumeLayout(false);
+            this.tabResetPassword.PerformLayout();
             this.ResumeLayout(false);
 
         }
@@ -631,5 +823,15 @@
         private Guna.UI2.WinForms.Guna2TextBox txtStaffDeleteID;
         private System.Windows.Forms.Label label6;
         private Guna.UI2.WinForms.Guna2DataGridView DGV_StaffDelete;
+        private System.Windows.Forms.TabPage tabResetPassword;
+        private System.Windows.Forms.Label labelResetTitle;
+        private Guna.UI2.WinForms.Guna2ComboBox cmBoxResetStaff;
+        private System.Windows.Forms.Label labelResetStaff;
+        private Guna.UI2.WinForms.Guna2TextBox txtNewPassword;
+        private System.Windows.Forms.Label labelNewPassword;
+        private Guna.UI2.WinForms.Guna2TextBox txtConfirmPassword;
+        private System.Windows.Forms.Label labelConfirmPassword;
+        private Guna.UI2.WinForms.Guna2Button btnResetPassword;
+        private System.Windows.Forms.Label lblResetHint;
     }
 }

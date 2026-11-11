@@ -687,6 +687,64 @@ namespace Hotel_Managment_System
         }
 
         /// <summary>
+        /// Replaces a staff member's password with a fresh PBKDF2 hash.
+        /// The policy is enforced here as well as in the UI so the data layer
+        /// cannot be called with a weak password.
+        /// </summary>
+        public bool ResetStaffPassword(int staffId, string newPassword, out string error)
+        {
+            error = null;
+
+            if (staffId <= 0)
+            {
+                error = "Select a staff member.";
+                return false;
+            }
+
+            if (!Validation.IsValidPassword(newPassword))
+            {
+                error = "Password must be at least 8 characters and contain a letter and a digit.";
+                return false;
+            }
+
+            if (newPassword.Length > 128)
+            {
+                error = "Password cannot exceed 128 characters.";
+                return false;
+            }
+
+            const string query = @"
+                UPDATE Staff
+                SET Staff_Password = @password
+                WHERE Staff_ID = @staffId";
+
+            try
+            {
+                using (SqlConnection con = getConnection())
+                using (SqlCommand cmd = new SqlCommand(query, con))
+                {
+                    cmd.Parameters.Add("@password", SqlDbType.VarChar, 150).Value =
+                        PasswordHasher.Hash(newPassword);
+                    cmd.Parameters.Add("@staffId", SqlDbType.Int).Value = staffId;
+
+                    con.Open();
+
+                    if (cmd.ExecuteNonQuery() > 0)
+                        return true;
+
+                    error = "Staff member not found.";
+                    return false;
+                }
+            }
+            catch (SqlException ex)
+            {
+                Logger.Error(ex);
+                error = GetFriendlyMessage(ex);
+                return false;
+            }
+        }
+
+        /// <summary>
         /// Returns the values of the first column of a SELECT statement.
         /// The reader and connection are always disposed before returning.
         /// </summary>
