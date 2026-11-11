@@ -81,8 +81,12 @@ BEGIN
         Staff_Email    VARCHAR(120) NOT NULL,
         Staff_UserName VARCHAR(150) NOT NULL,
         Staff_Password VARCHAR(150) NOT NULL,
+        Staff_Role     VARCHAR(20)  NOT NULL
+                       CONSTRAINT DF_Staff_Role DEFAULT ('Staff'),
 
-        CONSTRAINT PK_Staff PRIMARY KEY CLUSTERED (Staff_ID)
+        CONSTRAINT PK_Staff PRIMARY KEY CLUSTERED (Staff_ID),
+        CONSTRAINT UQ_Staff_UserName UNIQUE (Staff_UserName),
+        CONSTRAINT CK_Staff_Role CHECK (Staff_Role IN ('Admin', 'Staff'))
     );
 END
 GO
@@ -104,7 +108,8 @@ GO
    NOTE (intentional): this schema matches the legacy application
    exactly, including known limitations that will be addressed later:
      - text columns use VARCHAR (no Unicode / Arabic support)
-     - no CHECK constraints on Status / Gender
+     - no CHECK constraints on Rooms.Status / Customer.Gender
      - Rooms.Status default is 'No' instead of 'Free'
-     - Staff_Password stores plain text (to be replaced by a hash)
+     - Staff_Password stores PBKDF2 hashes; legacy plain-text rows are
+       upgraded automatically after the first successful login
    ===================================================================== */
