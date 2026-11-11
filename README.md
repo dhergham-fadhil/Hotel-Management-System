@@ -13,8 +13,8 @@ A desktop hotel management application built with **C# / WinForms** and **SQL Se
 | Room management (add + list) | ✅ |
 | Room allocation to a customer (register + set status to Busy) | ✅ |
 | Staff registration, listing, and deletion | ✅ |
+| Dashboard (hotel overview + recent check-ins) | ✅ |
 | Login screen | ⚠️ UI only (not wired yet) |
-| Bookings | ❌ In progress |
 
 ---
 
@@ -35,12 +35,14 @@ Hotel_Managment_System/
 ├── MainHotelMenu.cs            Main window + navigation
 ├── Login.cs                    Login screen (not wired yet)
 ├── function.cs                 Data access layer (temporary)
+├── Logger.cs                   File logger
+├── Validation.cs               Shared input validation rules
 ├── Resources/
 │   └── HotelManagment/         User controls
 │       ├── UC_Rooms.cs
 │       ├── UC_Customers.cs
 │       ├── UC_Staff.cs
-│       └── UC_Booking.cs
+│       └── UC_Booking.cs       Dashboard
 ├── database/
 │   └── schema.sql              Creates the database from scratch
 └── App.config                  Application settings (connection string)
@@ -110,7 +112,8 @@ The following issues are known and will be addressed in order (see the roadmap):
 
 - The login screen is not connected to the application — there is currently no authentication.
 - Staff passwords are stored in plain text.
-- Input validation still covers required fields only (scheduled for Phase 2).
+- Validation rules (lengths, formats, dates, duplicates) live in the UI; the database still has no `CHECK` constraints.
+- Phone numbers are validated as digits, spaces, hyphens and an optional leading `+`; there is no country-aware format.
 - The **Edit / Delete** buttons on the Rooms screen are not implemented.
 - There is no customer check-out flow.
 - Text columns use `VARCHAR` and do not support Unicode (e.g. Arabic).
@@ -124,11 +127,11 @@ The following issues are known and will be addressed in order (see the roadmap):
 - [x] Secure queries (`SqlParameter`) + `using` + error handling
 - [x] Transactional room allocation with a concurrency guard
 - [x] File logging and a global exception handler
-- [ ] Input validation (`TryParse` + per-field messages)
+- [x] Per-field input validation (lengths, formats, dates, duplicate checks)
+- [x] Dashboard replacing the Bookings placeholder
 - [ ] Real login + password hashing (PBKDF2/BCrypt) + roles
 - [ ] Complete the Rooms screen (Edit / Delete)
 - [ ] Customer list + check-out + billing
-- [ ] Implement the Bookings module
 - [ ] Separate layers (Repositories / Services)
 - [ ] Convert read operations to `async/await`
 - [ ] Tests + continuous integration (CI)
