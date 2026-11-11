@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Data;
 using System.Data.SqlClient;
 using System.Windows.Forms;
+using System.Threading.Tasks;
 
 namespace Hotel_Managment_System
 {
@@ -15,7 +17,7 @@ namespace Hotel_Managment_System
         /// The whole operation runs in one transaction; the customer row is
         /// locked so two operators cannot check out the same guest twice.
         /// </summary>
-        internal static bool CheckoutCustomer(
+        internal static async Task<bool> CheckoutCustomerAsync(
             int customerId,
             DateTime checkoutDate,
             out CheckoutResult result,
@@ -60,7 +62,7 @@ namespace Hotel_Managment_System
 
             try
             {
-                using (SqlConnection con = SqlRepository.GetConnection())
+                using (SqlConnection con = await SqlRepository.GetConnectionAsync().ConfigureAwait(false))
                 {
                     con.Open();
 
@@ -98,6 +100,7 @@ namespace Hotel_Managment_System
 
                                     customerName = Convert.ToString(reader["Customer_Name"]);
                                     checkIn = Convert.ToDateTime(reader["Customer_CheckIn"]).Date;
+
                                     roomId = Convert.ToInt32(reader["Customer_Room_ID"]);
                                     roomNo = Convert.ToString(reader["Room_NO"]);
                                     rate = reader["Customer_Rate"] == DBNull.Value
@@ -189,7 +192,7 @@ namespace Hotel_Managment_System
         /// <summary>
         /// Returns KPI values shown on the dashboard as Metric / Value rows.
         /// </summary>
-        internal static DataTable GetDashboardStatistics()
+        internal static async Task<DataTable> GetDashboardStatisticsAsync()
         {
             const string query = @"
                 SELECT 'TotalRooms' AS Metric, COUNT(*) AS Value FROM Rooms
@@ -199,14 +202,14 @@ namespace Hotel_Managment_System
                 UNION ALL SELECT 'ActiveCustomers', COUNT(*) FROM Customers WHERE Customer_IsCheckOut = 'No'
                 UNION ALL SELECT 'TotalStaff', COUNT(*) FROM Staff";
 
-            return SqlRepository.GetData(query);
+            return await SqlRepository.GetDataAsync(query).ConfigureAwait(false);
         }
 
         /// <summary>
         /// Returns the most recent stays, newest first. Active guests show an
         /// estimate; checked-out guests show their stored final bill.
         /// </summary>
-        internal static DataTable GetRecentCustomers(int count)
+        internal static async Task<DataTable> GetRecentCustomersAsync(int count)
         {
             const string query = @"
                 SELECT TOP (@count)
@@ -239,15 +242,15 @@ namespace Hotel_Managment_System
                 INNER JOIN Rooms r ON r.Room_ID = c.Customer_Room_ID
                 ORDER BY c.Customer_ID DESC";
 
-            return SqlRepository.GetData(query,
-                new SqlParameter("@count", SqlDbType.Int) { Value = count });
+            return await SqlRepository.GetDataAsync(query,
+                new SqlParameter("@count", SqlDbType.Int) { Value = count }).ConfigureAwait(false);
         }
 
         /// <summary>
         /// Returns the guests who are still checked in, with the current
         /// estimate based on the rate captured at check-in.
         /// </summary>
-        internal static DataTable GetActiveCustomers()
+        internal static async Task<DataTable> GetActiveCustomersAsync()
         {
             const string query = @"
                 SELECT
@@ -270,13 +273,13 @@ namespace Hotel_Managment_System
                 WHERE c.Customer_IsCheckOut = 'No'
                 ORDER BY c.Customer_CheckIn, c.Customer_ID";
 
-            return SqlRepository.GetData(query);
+            return await SqlRepository.GetDataAsync(query).ConfigureAwait(false);
         }
 
         /// <summary>
         /// Returns the completed-stay revenue totals used by the dashboard.
         /// </summary>
-        internal static DataTable GetBillingSummary()
+        internal static async Task<DataTable> GetBillingSummaryAsync()
         {
             const string query = @"
                 SELECT
@@ -286,7 +289,7 @@ namespace Hotel_Managment_System
                     ISNULL(SUM(CASE WHEN Customer_IsCheckOut = 'Yes' THEN 1 ELSE 0 END), 0) AS CompletedStays
                 FROM Customers";
 
-            return SqlRepository.GetData(query);
+            return await SqlRepository.GetDataAsync(query).ConfigureAwait(false);
         }
     }
 }

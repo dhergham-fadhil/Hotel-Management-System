@@ -3,18 +3,18 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Configuration;
 using System.Windows.Forms;
+using System.Threading.Tasks;
 
 namespace Hotel_Managment_System
 {
     /// <summary>
-    /// قاعدة منخفضة المستوى للتعامل مع اتصالات SQL Server،
-    .Execution of the parameters and friendly error reporting.
+    /// Low-level SQL Server operations with async support.
     /// </summary>
     internal static class SqlRepository
     {
         /// <summary>
         /// Creates a new SqlConnection using the HotelDb connection string from App.config.
-        ///Throws a ConfigurationErrorsException if the string is missing.
+        /// Throws a ConfigurationErrorsException if the string is missing.
         /// </summary>
         internal static SqlConnection GetConnection()
         {
@@ -28,6 +28,25 @@ namespace Hotel_Managment_System
             }
 
             return new SqlConnection(settings.ConnectionString);
+        }
+
+        /// <summary>
+        /// Asynchronously creates a new SqlConnection using the HotelDb connection string from App.config.
+        /// </summary>
+        internal static async Task<SqlConnection> GetConnectionAsync(CancellationToken cancellationToken = default)
+        {
+            ConnectionStringSettings settings =
+                ConfigurationManager.ConnectionStrings["HotelDb"];
+
+            if (settings == null)
+            {
+                throw new ConfigurationErrorsException(
+                    "Connection string 'HotelDb' was not found in App.config.");
+            }
+
+            var con = new SqlConnection(settings.ConnectionString);
+            await con.OpenAsync(cancellationToken).ConfigureAwait(false);
+            return con;
         }
 
         /// <summary>
@@ -83,7 +102,7 @@ namespace Hotel_Managment_System
         /// Executes a non‑query inside a transaction and returns the affected rows count.
         /// If an exception occurs the transaction is rolled back and the method returns -1.
         /// </summary>
-        internal static int ExecuteNonQueryWithTransaction(
+        internal static async Task<int> ExecuteNonQueryWithTransactionAsync(
             SqlConnection con,
             SqlTransaction tx,
             string sql,
@@ -94,7 +113,7 @@ namespace Hotel_Managment_System
                 using (SqlCommand cmd = new SqlCommand(sql, con, tx))
                 {
                     AddParameters(cmd, parameters);
-                    return cmd.ExecuteNonQuery();
+                    return await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
                 }
             }
             catch (SqlException)
@@ -108,7 +127,7 @@ namespace Hotel_Managment_System
         /// Executes a scalar query inside a transaction and returns the parsed value.
         /// Returns default(T) on failure.
         /// </summary>
-        internal static T ExecuteScalarWithTransaction<T>(
+        internal static async Task<T> ExecuteScalarWithTransactionAsync<T>(
             SqlConnection con,
             SqlTransaction tx,
             string sql,
@@ -119,7 +138,7 @@ namespace Hotel_Managment_System
                 using (SqlCommand cmd = new SqlCommand(sql, con, tx))
                 {
                     AddParameters(cmd, parameters);
-                    var result = cmd.ExecuteScalar();
+                    var result = await cmd.ExecuteScalarAsync().ConfigureAwait(false);
                     return result != null ? (T)Convert.ChangeType(result, typeof(T)) : default;
                 }
             }

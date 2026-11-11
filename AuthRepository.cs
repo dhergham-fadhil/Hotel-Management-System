@@ -3,6 +3,7 @@ using System.Data;
 using System.Data.SqlClient;
 using System.Configuration;
 using System.Windows.Forms;
+using System.Threading.Tasks;
 using Hotel_Managment_System.Resources.HotelManagment;
 
 namespace Hotel_Managment_System
@@ -20,7 +21,7 @@ namespace Hotel_Managment_System
         /// (databaseError is set in the latter case).
         /// Legacy plain-text passwords are replaced with a PBKDF2 hash after a successful login.
         /// </summary>
-        internal static StaffUser AuthenticateUser(string userName, string password, out bool databaseError)
+        internal static async Task<StaffUser> AuthenticateUserAsync(string userName, string password, out bool databaseError)
         {
             databaseError = false;
 
@@ -31,7 +32,7 @@ namespace Hotel_Managment_System
 
             try
             {
-                using (SqlConnection con = SqlRepository.GetConnection())
+                using (SqlConnection con = await SqlRepository.GetConnectionAsync().ConfigureAwait(false))
                 using (SqlCommand cmd = new SqlCommand(query, con))
                 using (SqlDataAdapter adapter = new SqlDataAdapter(cmd))
                 {
@@ -68,7 +69,7 @@ namespace Hotel_Managment_System
 
             if (result == PasswordVerificationResult.SuccessRehashNeeded)
             {
-                UpgradePasswordHash(staffId, password);
+                await UpgradePasswordHashAsync(staffId, password).ConfigureAwait(false);
             }
 
             return new StaffUser(
@@ -82,13 +83,13 @@ namespace Hotel_Managment_System
         /// Upgrades a staff member's password hash from plain text to PBKDF2
         /// after a successful login. Logs errors but does not throw.
         /// </summary>
-        internal static void UpgradePasswordHash(int staffId, string password)
+        internal static async Task UpgradePasswordHashAsync(int staffId, string password)
         {
             const string query = "UPDATE Staff SET Staff_Password = @password WHERE Staff_ID = @staffId";
 
             try
             {
-                using (SqlConnection con = SqlRepository.GetConnection())
+                using (SqlConnection con = await SqlRepository.GetConnectionAsync().ConfigureAwait(false))
                 using (SqlCommand cmd = new SqlCommand(query, con))
                 {
                     cmd.Parameters.Add(new SqlParameter("@password", SqlDbType.VarChar, 150)
@@ -98,7 +99,9 @@ namespace Hotel_Managment_System
                     cmd.Parameters.Add(new SqlParameter("@staffId", SqlDbType.Int) { Value = staffId });
 
                     con.Open();
-                    cmd.ExecuteNonQuery();
+
+                    if (cmd.ExecuteNonQuery() > 0)
+                        return;
                 }
             }
             catch (SqlException ex)
@@ -113,7 +116,7 @@ namespace Hotel_Managment_System
         /// The policy is enforced here as well as in the UI so the data layer
         /// cannot be called with a weak password.
         /// </summary>
-        internal static bool ResetStaffPassword(int staffId, string newPassword, out string error)
+        internal static async Task<bool> ResetStaffPasswordAsync(int staffId, string newPassword, out string error)
         {
             error = null;
 
@@ -139,7 +142,7 @@ namespace Hotel_Managment_System
 
             try
             {
-                using (SqlConnection con = SqlRepository.GetConnection())
+                using (SqlConnection con = await SqlRepository.GetConnectionAsync().ConfigureAwait(false))
                 using (SqlCommand cmd = new SqlCommand(query, con))
                 {
                     cmd.Parameters.Add(new SqlParameter("@password", SqlDbType.VarChar, 150)

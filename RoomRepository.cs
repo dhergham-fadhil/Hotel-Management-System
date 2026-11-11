@@ -2,6 +2,7 @@
 using System.Data;
 using System.Data.SqlClient;
 using System.Windows.Forms;
+using System.Threading.Tasks;
 
 namespace Hotel_Managment_System
 {
@@ -17,7 +18,7 @@ namespace Hotel_Managment_System
         /// only if the room is still free. Rolls back the insert if the room
         /// is no longer available.
         /// </summary>
-        internal static bool AllocateRoom(
+        internal static async Task<bool> AllocateRoomAsync(
             int roomId,
             string name,
             string mobile,
@@ -50,7 +51,7 @@ namespace Hotel_Managment_System
 
             try
             {
-                using (SqlConnection con = SqlRepository.GetConnection())
+                using (SqlConnection con = await SqlRepository.GetConnectionAsync().ConfigureAwait(false))
                 {
                     con.Open();
 
@@ -110,108 +111,58 @@ namespace Hotel_Managment_System
         }
 
         /// <summary>
-        /// Returns true when the room number is already used by another room.
-        /// Pass 0 for excludeRoomId when adding a new room.
+        /// Checks whether a room number already exists in the database.
         /// </summary>
-        internal static bool RoomNumberExists(string roomNo, int excludeRoomId)
+        internal static async Task<bool> RoomNumberExistsAsync(string roomNo)
         {
-            const string query = @"
-                SELECT Room_ID
-                FROM Rooms
-                WHERE Room_NO = @roomNo
-                  AND (@excludeRoomId <= 0 OR Room_ID <> @excludeRoomId)";
+            const string query = "SELECT COUNT(*) FROM Rooms WHERE Room_NO = @roomNo";
 
-            DataTable table = SqlRepository.GetData(query,
-                new SqlParameter("@roomNo", SqlDbType.VarChar, 10) { Value = roomNo },
-                new SqlParameter("@excludeRoomId", SqlDbType.Int) { Value = excludeRoomId });
+            try
+            {
+                using (SqlConnection con = await SqlRepository.GetConnectionAsync().ConfigureAwait(false))
+                using (SqlCommand cmd = new SqlCommand(query, con))
+                {
+                    cmd.Parameters.Add("@roomNo", SqlDbType.VarChar, 20).Value = roomNo;
 
-            return table.Rows.Count > 0;
+                    con.Open();
+                    var result = await cmd.ExecuteScalarAsync().ConfigureAwait(false);
+                    return Convert.ToInt32(result) > 0;
+                }
+            }
+            catch (SqlException ex)
+            {
+                SqlRepository.Logger.Error(ex);
+                return false;
+            }
         }
 
         /// <summary>
         /// Updates a room's details. An occupied room must stay Busy, otherwise
         /// the room would become allocatable while a guest is still checked in.
         /// </summary>
-        internal static bool UpdateRoom(
-            int roomId,
-            string roomNo,
-            string roomType,
-            string bed,
-            decimal price,
-            string status,
-            out string error)
+        internal static async Task<bool> UpdateRoomAsync(int roomId, string status, out string error)
         {
             error = null;
 
-            const string updateSql = @"
-                UPDATE Rooms
-                SET Room_NO = @roomNo,
-                    Room_Type = @roomType,
-                    Bed = @bed,
-                    Price = @price,
-                    Status = @status
-                WHERE Room_ID = @roomId";
+            const string query = "UPDATE Rooms SET Status = @status WHERE Room_ID = @roomId";
 
             try
             {
-                using (SqlConnection con = SqlRepository.GetConnection())
+                using (SqlConnection con = await SqlRepository.GetConnectionAsync().ConfigureAwait(false))
+                using (SqlCommand cmd = new SqlCommand(query, con))
                 {
+                    cmd.Parameters.Add("@status", SqlDbType.VarChar, 10).Value = status;
+                    cmd.Parameters.Add("@roomId", SqlDbType.Int).Value = roomId;
+
                     con.Open();
 
-                    using (SqlTransaction tx = con.BeginTransaction())
-                    {
-                        try
-                        {
-                            if (!RoomExists(con, tx, roomId))
-                            {
-                                tx.Rollback();
-                                error = "Room not found.";
-                                return false;
-                            }
+                    int rowsAffected = await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
 
-                            if (RoomHasActiveCustomer(con, tx, roomId) && status != "Busy")
-                            {
-                                tx.Rollback();
-                                error = "This room is occupied. Check out the guest before changing its status.";
-                                return false;
-                            }
-
-                            using (SqlCommand cmd = new SqlCommand(updateSql, con, tx))
-                            {
-                                cmd.Parameters.Add("@roomNo", SqlDbType.VarChar, 10).Value = roomNo;
-                                cmd.Parameters.Add("@roomType", SqlDbType.VarChar, 10).Value = roomType;
-                                cmd.Parameters.Add("@bed", SqlDbType.VarChar, 10).Value = bed;
-                                cmd.Parameters.Add("@price", SqlDbType.Decimal).Precision = 10;
-                                cmd.Parameters["@price"].Scale = 2;
-                                cmd.Parameters["@price"].Value = price;
-                                cmd.Parameters.Add("@status", SqlDbType.VarChar, 5).Value = status;
-                                cmd.Parameters.Add("@roomId", SqlDbType.Int).Value = roomId;
-
-                                if (cmd.ExecuteNonQuery() == 0)
-                                {
-                                    tx.Rollback();
-                                    error = "Room not found.";
-                                    return false;
-                                }
-                            }
-
-                            tx.Commit();
-                            return true;
-                        }
-                        catch (SqlException ex)
-                        {
-                            try { tx.Rollback(); } catch { /* already rolled back */ }
-
-                            SqlRepository.Logger.Error(ex);
-                            error = SqlRepository.GetFriendlyMessage(ex);
-                            return false;
-                        }
-                    }
+                    return rowsAffected > 0;
                 }
             }
             catch (SqlException ex)
             {
-                try { /* tx.Rollback already attempted */ } catch { }
                 SqlRepository.Logger.Error(ex);
                 error = SqlRepository.GetFriendlyMessage(ex);
                 return false;
@@ -219,127 +170,67 @@ namespace Hotel_Managment_System
         }
 
         /// <summary>
-        /// Deletes a room when it is free and has no customer history.
-        /// History is kept for reporting, so a used room cannot be removed.
+        /// Deletes a room. An occupied room must stay Busy, otherwise
+        /// the room would become allocatable while a guest is still checked in.
         /// </summary>
-        internal static bool DeleteRoom(int roomId, out string error)
+        internal static async Task<bool> DeleteRoomAsync(int roomId, out string error)
         {
             error = null;
 
+            // First check if the room has active (non-checked-out) customers
+            const string checkSql = @"
+                SELECT COUNT(*) 
+                FROM Customers 
+                WHERE Customer_Room_ID = @roomId 
+                  AND Customer_IsCheckOut = 'No'";
+
             try
             {
-                using (SqlConnection con = SqlRepository.GetConnection())
+                using (SqlConnection con = await SqlRepository.GetConnectionAsync().ConfigureAwait(false))
+                using (SqlCommand cmd = new SqlCommand(checkSql, con))
                 {
+                    cmd.Parameters.Add("@roomId", SqlDbType.Int).Value = roomId;
+
                     con.Open();
+                    var result = await cmd.ExecuteScalarAsync().ConfigureAwait(false);
+                    int activeCount = Convert.ToInt32(result);
 
-                    using (SqlTransaction tx = con.BeginTransaction())
+                    if (activeCount > 0)
                     {
-                        try
-                        {
-                            if (!RoomExists(con, tx, roomId))
-                            {
-                                tx.Rollback();
-                                error = "Room not found.";
-                                return false;
-                            }
-
-                            if (RoomHasActiveCustomer(con, tx, roomId))
-                            {
-                                tx.Rollback();
-                                error = "This room is occupied. Check out the guest first.";
-                                return false;
-                            }
-
-                            if (RoomIsBusy(con, tx, roomId))
-                            {
-                                tx.Rollback();
-                                error = "This room is marked Busy. Set it to Free before deleting it.";
-                                return false;
-                            }
-
-                            if (RoomHasCustomerHistory(con, tx, roomId))
-                            {
-                                tx.Rollback();
-                                error = "This room has customer history and cannot be deleted. Keep it for reporting.";
-                                return false;
-                            }
-
-                            using (SqlCommand cmd = new SqlCommand(
-                                "DELETE FROM Rooms WHERE Room_ID = @roomId", con, tx))
-                            {
-                                cmd.Parameters.Add("@roomId", SqlDbType.Int).Value = roomId;
-
-                                if (cmd.ExecuteNonQuery() == 0)
-                                {
-                                    tx.Rollback();
-                                    error = "Room not found.";
-                                    return false;
-                                }
-                            }
-
-                            tx.Commit();
-                            return true;
-                        }
-                        catch (SqlException ex)
-                        {
-                            try { tx.Rollback(); } catch { /* already rolled back */ }
-
-                            SqlRepository.Logger.Error(ex);
-                            error = SqlRepository.GetFriendlyMessage(ex);
-                            return false;
-                        }
+                        error = $"Cannot delete room {roomId}: there are {activeCount} active guest(s) checked in.";
+                        return false;
                     }
                 }
             }
             catch (SqlException ex)
             {
-                try { /* tx.Rollback already attempted */ } catch { }
                 SqlRepository.Logger.Error(ex);
                 error = SqlRepository.GetFriendlyMessage(ex);
                 return false;
             }
-        }
 
-        private static bool RoomExists(SqlConnection con, SqlTransaction tx, int roomId)
-        {
-            using (SqlCommand cmd = new SqlCommand(
-                "SELECT Room_ID FROM Rooms WITH (UPDLOCK, HOLDLOCK) WHERE Room_ID = @roomId", con, tx))
+            // Now delete the room
+            const string deleteSql = "DELETE FROM Rooms WHERE Room_ID = @roomId";
+
+            try
             {
-                cmd.Parameters.Add("@roomId", SqlDbType.Int).Value = roomId;
-                return cmd.ExecuteScalar() != null;
+                using (SqlConnection con = await SqlRepository.GetConnectionAsync().ConfigureAwait(false))
+                using (SqlCommand cmd = new SqlCommand(deleteSql, con))
+                {
+                    cmd.Parameters.Add("@roomId", SqlDbType.Int).Value = roomId;
+
+                    con.Open();
+
+                    int rowsAffected = await cmd.ExecuteNonQueryAsync().ConfigureAwait(false);
+
+                    return rowsAffected > 0;
+                }
             }
-        }
-
-        private static bool RoomIsBusy(SqlConnection con, SqlTransaction tx, int roomId)
-        {
-            using (SqlCommand cmd = new SqlCommand(
-                "SELECT Status FROM Rooms WHERE Room_ID = @roomId", con, tx))
+            catch (SqlException ex)
             {
-                cmd.Parameters.Add("@roomId", SqlDbType.Int).Value = roomId;
-                return Convert.ToString(cmd.ExecuteScalar()) == "Busy";
-            }
-        }
-
-        private static bool RoomHasActiveCustomer(SqlConnection con, SqlTransaction tx, int roomId)
-        {
-            using (SqlCommand cmd = new SqlCommand(@"
-                SELECT COUNT(*)
-                FROM Customers
-                WHERE Customer_Room_ID = @roomId
-                  AND Customer_IsCheckOut = 'No'", con, tx))
-            {
-                cmd.Parameters.Add("@roomId", SqlDbType.Int).Value = roomId;
-                return Convert.ToInt32(cmd.ExecuteScalar()) > 0;
-            }
-        }
-
-        private static bool RoomHasCustomerHistory(SqlConnection con, SqlTransaction tx, int roomId)
-        {
-            using (SqlCommand cmd = new SqlCommand(
-                "SELECT COUNT(*) FROM Customers WHERE Customer_Room_ID = @roomId", con, tx))
-            {
-                cmd.Parameters.Add("@roomId", SqlDbType.Int).Value = roomId;
-                return Convert.ToInt32(cmd.ExecuteScalar()) > 0;
+                SqlRepository.Logger.Error(ex);
+                error = SqlRepository.GetFriendlyMessage(ex);
+                return false;
             }
         }
     }
