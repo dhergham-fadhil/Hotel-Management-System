@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Drawing;
 using System.Windows.Forms;
 using Hotel_Managment_System.Resources.HotelManagment;
 
@@ -60,15 +61,15 @@ namespace Hotel_Managment_System
         {
             UserControl control = null;
 
-            if (sender == roomsbtn)
+            if (sender == btnRooms)
             {
                 control = new UC_Rooms();
             }
-            else if (sender == customersbtn)
+            else if (sender == btnCustomers)
             {
                 control = new UC_Customers();
             }
-            else if (sender == staffbtn)
+            else if (sender == btnStaff)
             {
                 if (!currentUser.IsAdmin)
                 {
@@ -79,11 +80,11 @@ namespace Hotel_Managment_System
 
                 control = new UC_Staff();
             }
-            else if (sender == bookingsbtn)
+            else if (sender == btnBookings)
             {
                 control = new UC_Booking();
             }
-            else if (sender == guestsbtn)
+            else if (sender == btnGuests)
             {
                 control = new UC_Guests();
             }
@@ -92,27 +93,27 @@ namespace Hotel_Managment_System
                 AddUserControl(control);
         }
 
-        private void roomsbtn_Click(object sender, EventArgs e)
+        private void btnRooms_Click(object sender, EventArgs e)
         {
             NavigationButton_Click(sender, e);
         }
 
-        private void customersbtn_Click(object sender, EventArgs e)
+        private void btnCustomers_Click(object sender, EventArgs e)
         {
             NavigationButton_Click(sender, e);
         }
 
-        private void staffbtn_Click(object sender, EventArgs e)
+        private void btnStaff_Click(object sender, EventArgs e)
         {
             NavigationButton_Click(sender, e);
         }
 
-        private void bookingsbtn_Click(object sender, EventArgs e)
+        private void btnBookings_Click(object sender, EventArgs e)
         {
             NavigationButton_Click(sender, e);
         }
 
-        private void guestsbtn_Click(object sender, EventArgs e)
+        private void btnGuests_Click(object sender, EventArgs e)
         {
             NavigationButton_Click(sender, e);
         }
@@ -127,18 +128,45 @@ namespace Hotel_Managment_System
                 return;
             }
 
+            ApplyTheme();
+
             labelUser.Text = currentUser.Name + "  (" + currentUser.Role + ")";
 
             if (!currentUser.IsAdmin)
             {
-                staffbtn.Visible = false;
-                guestsbtn.Location = new System.Drawing.Point(630, 0);
+                btnStaff.Visible = false;
             }
 
             // Open on the dashboard so the user sees the hotel overview first.
-            roomsbtn.Checked = false;
-            bookingsbtn.Checked = true;
-            bookingsbtn.PerformClick();
+            btnBookings.Checked = true;
+            btnBookings.PerformClick();
+        }
+
+        private void ApplyTheme()
+        {
+            // Header
+            panelHeader.BackColor = Color.FromArgb(30, 41, 59);
+            labelHotel.ForeColor = Theme.AccentGold;
+            labelHotel.Font = new Font("Segoe UI", 16F, FontStyle.Bold);
+            labelUser.ForeColor = Color.FromArgb(243, 246, 249);
+            labelUser.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+
+            // Close button
+            Theme.StyleDangerButton(btnClose);
+
+            // Sidebar
+            panelSidebar.BackColor = Theme.Sidebar;
+
+            // Navigation buttons
+            Theme.StyleNavButton(btnBookings, true);
+            Theme.StyleNavButton(btnRooms, false);
+            Theme.StyleNavButton(btnCustomers, false);
+            Theme.StyleNavButton(btnGuests, false);
+            Theme.StyleNavButton(btnStaff, false);
+            Theme.StyleNavButton(btnLogout, false);
+
+            // Content area
+            UC_Panel.BackColor = Theme.Background;
         }
     }
 }
