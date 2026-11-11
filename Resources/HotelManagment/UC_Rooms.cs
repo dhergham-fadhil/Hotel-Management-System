@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using System.Data.SqlClient;
+using System.Drawing;
 using System.Text.RegularExpressions;
 using System.Windows.Forms;
 using Guna.UI2.WinForms;
@@ -19,6 +20,7 @@ namespace Hotel_Managment_System.Resources.HotelManagment
 
         private void UC_Rooms_Load(object sender, EventArgs e)
         {
+            ApplyTheme();
             LoadRooms();
         }
 
@@ -259,6 +261,39 @@ namespace Hotel_Managment_System.Resources.HotelManagment
 
             focus.Focus();
             return false;
+        }
+
+        private void ApplyTheme()
+        {
+            labelTitle.ForeColor = Theme.TextPrimary;
+            labelTitle.Font = new Font("Segoe UI", 20F, FontStyle.Bold);
+
+            labelSubtitle.ForeColor = Theme.TextSecondary;
+            labelSubtitle.Font = new Font("Segoe UI", 10F);
+
+            labelHint.ForeColor = Theme.TextMuted;
+            labelHint.Font = new Font("Segoe UI", 8.5F);
+
+            Theme.StyleInput(txtRoomNumber);
+            Theme.StyleInput(txtPrice);
+            Theme.StyleCombo(cmBoxRoomType);
+            Theme.StyleCombo(cmboxBed);
+            Theme.StyleCombo(cmBoxStatus);
+
+            Theme.StyleActionButton(addbtn, true);
+            Theme.StyleActionButton(editbtn, true);
+            Theme.StyleDangerButton(deletebtn);
+            Theme.StyleActionButton(clearbtn, false);
+
+            label1.ForeColor = Theme.TextSecondary;
+            label5.ForeColor = Theme.TextSecondary;
+            label6.ForeColor = Theme.TextSecondary;
+            label2.ForeColor = Theme.TextSecondary;
+
+            label1.Font = new Font("Segoe UI", 9.5F);
+            label5.Font = new Font("Segoe UI", 9.5F);
+            label6.Font = new Font("Segoe UI", 9.5F);
+            label2.Font = new Font("Segoe UI", 9.5F);
         }
     }
 }
