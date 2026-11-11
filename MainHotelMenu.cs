@@ -80,8 +80,10 @@ namespace Hotel_Managment_System
 
         private void MainHotelMenu_Load(object sender, EventArgs e)
         {
-            roomsbtn.PerformClick();
-            
+            // Open on the dashboard so the user sees the hotel overview first.
+            roomsbtn.Checked = false;
+            bookingsbtn.Checked = true;
+            bookingsbtn.PerformClick();
         }
 
      

@@ -201,6 +201,41 @@ namespace Hotel_Managment_System
             return items;
         }
 
+        /// <summary>
+        /// Returns the KPI values shown on the dashboard as Metric / Value rows.
+        /// </summary>
+        public DataTable GetDashboardStatistics()
+        {
+            const string query = @"
+                SELECT 'TotalRooms' AS Metric, COUNT(*) AS Value FROM Rooms
+                UNION ALL SELECT 'FreeRooms', COUNT(*) FROM Rooms WHERE Status = 'Free'
+                UNION ALL SELECT 'BusyRooms', COUNT(*) FROM Rooms WHERE Status = 'Busy'
+                UNION ALL SELECT 'TotalCustomers', COUNT(*) FROM Customers
+                UNION ALL SELECT 'ActiveCustomers', COUNT(*) FROM Customers WHERE Customer_IsCheckOut = 'No'
+                UNION ALL SELECT 'TotalStaff', COUNT(*) FROM Staff";
+
+            return getData(query);
+        }
+
+        /// <summary>
+        /// Returns the most recent check-ins, newest first.
+        /// </summary>
+        public DataTable GetRecentCustomers(int count)
+        {
+            const string query = @"
+                SELECT TOP (@count)
+                    c.Customer_Name AS [Customer],
+                    r.Room_NO AS [Room],
+                    c.Customer_CheckIn AS [Check In],
+                    CASE WHEN c.Customer_IsCheckOut = 'No' THEN 'Active' ELSE 'Checked Out' END AS [Status]
+                FROM Customers c
+                INNER JOIN Rooms r ON r.Room_ID = c.Customer_Room_ID
+                ORDER BY c.Customer_ID DESC";
+
+            return getData(query,
+                new SqlParameter("@count", SqlDbType.Int) { Value = count });
+        }
+
         private static void AddParameters(SqlCommand cmd, SqlParameter[] parameters)
         {
             if (parameters != null && parameters.Length > 0)

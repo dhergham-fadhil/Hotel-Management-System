@@ -124,7 +124,7 @@
             this.bookingsbtn.Name = "bookingsbtn";
             this.bookingsbtn.Size = new System.Drawing.Size(210, 88);
             this.bookingsbtn.TabIndex = 3;
-            this.bookingsbtn.Text = "Bookings";
+            this.bookingsbtn.Text = "Dashboard";
             this.bookingsbtn.Click += new System.EventHandler(this.bookingsbtn_Click);
             // 
             // staffbtn
