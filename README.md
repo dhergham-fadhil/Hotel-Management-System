@@ -1,76 +1,76 @@
 # Hotel Management System
 
-نظام إدارة فندق لسطح المكتب، مبني بـ **C# / WinForms** مع قاعدة بيانات **SQL Server** عبر **ADO.NET**.
+A desktop hotel management application built with **C# / WinForms** and **SQL Server** using **ADO.NET**.
 
-> **الحالة:** المشروع تحت التطوير. هذه نسخة أولية (Prototype) يتم تحسينها تدريجياً — راجع قسم [خارطة التطوير](#خارطة-التطوير).
+> **Status:** Under active development. This is an early prototype that is being improved step by step — see the [Roadmap](#roadmap).
 
 ---
 
-## الميزات الحالية
+## Features
 
-| الوحدة | الحالة |
+| Module | Status |
 |---|---|
-| إدارة الغرف (إضافة + عرض) | ✅ |
-| تخصيص غرفة لعميل (تسجيل + تحويل الحالة إلى Busy) | ✅ |
-| تسجيل الموظفين + عرضهم + حذفهم | ✅ |
-| تسجيل الدخول | ⚠️ واجهة فقط (غير موصولة) |
-| الحجوزات | ❌ قيد التطوير |
+| Room management (add + list) | ✅ |
+| Room allocation to a customer (register + set status to Busy) | ✅ |
+| Staff registration, listing, and deletion | ✅ |
+| Login screen | ⚠️ UI only (not wired yet) |
+| Bookings | ❌ In progress |
 
 ---
 
-## التقنيات
+## Tech Stack
 
 - **C# 7** — .NET Framework **4.7.2**
-- **Windows Forms** مع مكتبة [Guna.UI2](https://www.nuget.org/packages/Guna.UI2.WinForms)
-- **SQL Server** (محرك البيانات)
+- **Windows Forms** with [Guna.UI2](https://www.nuget.org/packages/Guna.UI2.WinForms)
+- **SQL Server** (database engine)
 - **ADO.NET** (`SqlConnection`, `SqlCommand`, `SqlDataAdapter`)
 
 ---
 
-## هيكل المشروع
+## Project Structure
 
 ```
 Hotel_Managment_System/
-├── Program.cs                  نقطة الدخول
-├── MainHotelMenu.cs            النافذة الرئيسية + التنقل
-├── Login.cs                    شاشة تسجيل الدخول (غير موصولة بعد)
-├── function.cs                 طبقة الوصول إلى البيانات (مؤقتة)
+├── Program.cs                  Application entry point
+├── MainHotelMenu.cs            Main window + navigation
+├── Login.cs                    Login screen (not wired yet)
+├── function.cs                 Data access layer (temporary)
 ├── Resources/
-│   └── HotelManagment/         شاشات المستخدم (User Controls)
+│   └── HotelManagment/         User controls
 │       ├── UC_Rooms.cs
 │       ├── UC_Customers.cs
 │       ├── UC_Staff.cs
 │       └── UC_Booking.cs
 ├── database/
-│   └── schema.sql              إنشاء قاعدة البيانات من الصفر
-└── App.config                  إعدادات التطبيق (سلسلة الاتصال)
+│   └── schema.sql              Creates the database from scratch
+└── App.config                  Application settings (connection string)
 ```
 
 ---
 
-## المتطلبات
+## Prerequisites
 
 1. **Windows 10/11**
-2. **Visual Studio 2022** مع حزمة عمل «تطوير سطح المكتب باستخدام .NET»
+2. **Visual Studio 2022** with the ".NET desktop development" workload
 3. **.NET Framework 4.7.2 Developer Pack**
-4. **SQL Server** (Express أو أعلى) + **SSMS**
+4. **SQL Server** (Express or higher) + **SSMS**
 
 ---
 
-## إعداد قاعدة البيانات
+## Database Setup
 
-1. افتح **SQL Server Management Studio** واتصل بالسيرفر المحلي.
-2. افتح الملف `database/schema.sql` ونفّذه (F5).
-3. سيُنشئ قاعدة `HotelDB` والجداول `Rooms` و`Customers` و`Staff` إن لم تكن موجودة.
-4. لإضافة بيانات تجريبية، أزل التعليق عن قسم `INSERT` في نهاية الملف.
+1. Open **SQL Server Management Studio** and connect to your local server.
+2. Open `database/schema.sql` and execute it (F5).
+3. The script creates the `HotelDB` database and the `Rooms`, `Customers`, and `Staff` tables if they do not already exist.
+4. For sample data, uncomment the `INSERT` section at the end of the script.
 
-> قاعدة البيانات **لا تُرفع** على Git. الملف `schema.sql` هو المصدر الرسمي للبنية.
+> The database is **not** committed to Git. `schema.sql` is the single source of truth for the schema.
 
 ---
 
-## الإعداد
+## Configuration
 
-عدّل سلسلة الاتصال في `App.config` لتطابق سيرفرك:
+Edit the connection string in `App.config` to match your server:
 
 ```xml
 <connectionStrings>
@@ -80,62 +80,62 @@ Hotel_Managment_System/
 </connectionStrings>
 ```
 
-| القيمة | المعنى |
+| Value | Meaning |
 |---|---|
-| `Data Source=.` | السيرفر المحلي الافتراضي |
-| `Data Source=.\SQLEXPRESS` | نسخة SQL Server Express |
-| `Initial Catalog=HotelDB` | اسم قاعدة البيانات |
-| `Integrated Security=True` | مصادقة Windows |
+| `Data Source=.` | Default local server instance |
+| `Data Source=.\SQLEXPRESS` | SQL Server Express instance |
+| `Initial Catalog=HotelDB` | Database name |
+| `Integrated Security=True` | Windows authentication |
 
 ---
 
-## التشغيل
+## Build and Run
 
 ```bash
 git clone <repository-url>
 cd Hotel_Managment_System
 ```
 
-1. افتح `Hotel_Managment_System.sln` في Visual Studio.
-2. من القائمة: **Build → Restore NuGet Packages** (لاستعادة Guna.UI2).
-3. اضغط **F5**.
+1. Open `Hotel_Managment_System.sln` in Visual Studio.
+2. From the menu: **Build → Restore NuGet Packages** (to restore Guna.UI2).
+3. Press **F5**.
 
-> حزمة `packages/` غير مرفوعة؛ Visual Studio يعيد تنزيلها تلقائياً عند البناء.
-
----
-
-## ملاحظات معروفة (Known Limitations)
-
-هذه المشاكل معروفة وستُعالج بالترتيب في خارطة التطوير:
-
-- استعلامات SQL تُبنى بدمج النصوص → **قابلة للحقن (SQL Injection)**.
-- شاشة تسجيل الدخول غير موصولة بالتطبيق → لا توجد مصادقة حالياً.
-- كلمات مرور الموظفين تُخزَّن كنص صريح.
-- معالجة الأخطاء والتحقق من المدخلات محدودان.
-- عملية «تخصيص الغرفة» غير محمية بـ Transaction.
-- زرّا **Edit / Delete** في شاشة الغرف غير مفعّلين.
-- لا يوجد تسجيل خروج (Check-out) للعميل.
-- الأعمدة النصية `VARCHAR` لا تدعم العربية.
+> The `packages/` folder is not committed; Visual Studio restores it automatically during the build.
 
 ---
 
-## خارطة التطوير
+## Known Limitations
 
-- [x] إعداد المستودع وسكربت قاعدة البيانات
-- [x] نقل سلسلة الاتصال إلى `App.config`
-- [ ] تأمين الاستعلامات (`SqlParameter`) + `using` + معالجة أخطاء
-- [ ] التحقق من المدخلات (`TryParse` + رسائل لكل حقل)
-- [ ] معاملات (Transactions) لعمليات الحجز
-- [ ] تسجيل دخول فعلي + تشفير كلمات المرور (PBKDF2/BCrypt) + صلاحيات
-- [ ] إكمال شاشة الغرف (Edit / Delete)
-- [ ] قائمة العملاء + Check-out + الفوترة
-- [ ] تنفيذ وحدة الحجوزات
-- [ ] فصل الطبقات (Repositories / Services)
-- [ ] تحويل عمليات القراءة إلى `async/await`
-- [ ] اختبارات + نشر تلقائي (CI)
+The following issues are known and will be addressed in order (see the roadmap):
+
+- SQL queries are built with string concatenation and are **vulnerable to SQL injection**.
+- The login screen is not connected to the application — there is currently no authentication.
+- Staff passwords are stored in plain text.
+- Error handling and input validation are limited.
+- The room allocation operation is not protected by a transaction.
+- The **Edit / Delete** buttons on the Rooms screen are not implemented.
+- There is no customer check-out flow.
+- Text columns use `VARCHAR` and do not support Unicode (e.g. Arabic).
 
 ---
 
-## الترخيص
+## Roadmap
 
-هذا المشروع تعليمي حالياً. الترخيص النهائي سيُحدَّد لاحقاً.
+- [x] Repository setup and database schema script
+- [x] Move the connection string to `App.config`
+- [ ] Secure queries (`SqlParameter`) + `using` + error handling
+- [ ] Input validation (`TryParse` + per-field messages)
+- [ ] Transactions for booking operations
+- [ ] Real login + password hashing (PBKDF2/BCrypt) + roles
+- [ ] Complete the Rooms screen (Edit / Delete)
+- [ ] Customer list + check-out + billing
+- [ ] Implement the Bookings module
+- [ ] Separate layers (Repositories / Services)
+- [ ] Convert read operations to `async/await`
+- [ ] Tests + continuous integration (CI)
+
+---
+
+## License
+
+This project is currently for educational purposes. The final license will be determined later.

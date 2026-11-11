@@ -78,9 +78,9 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             if (!string.IsNullOrEmpty(txtStaffDeleteID.Text))
             {
                 string checkQuery = "SELECT * FROM Staff WHERE Staff_ID = " + txtStaffDeleteID.Text;
-                DataSet ds = fn.getData(checkQuery); // نفس fn اللي عندك بس ترجع DataSet
+                DataSet ds = fn.getData(checkQuery); // existing helper returns a DataSet
 
-                if (ds.Tables[0].Rows.Count > 0) // يعني ID موجود
+                if (ds.Tables[0].Rows.Count > 0) // the ID exists
                 {
                     if (MessageBox.Show("Are You Sure?", "Confirmation...!", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) == DialogResult.Yes)
                     {
