@@ -38,6 +38,8 @@
             this.tabRegisteration = new System.Windows.Forms.TabPage();
             this.label2 = new System.Windows.Forms.Label();
             this.txtUserName = new Guna.UI2.WinForms.Guna2TextBox();
+            this.cmBoxRole = new Guna.UI2.WinForms.Guna2ComboBox();
+            this.label11 = new System.Windows.Forms.Label();
             this.cmBoxGender = new Guna.UI2.WinForms.Guna2ComboBox();
             this.registerbtn = new Guna.UI2.WinForms.Guna2Button();
             this.label10 = new System.Windows.Forms.Label();
@@ -113,6 +115,8 @@
             this.tabRegisteration.Controls.Add(this.label4);
             this.tabRegisteration.Controls.Add(this.label1);
             this.tabRegisteration.Controls.Add(this.txtName);
+            this.tabRegisteration.Controls.Add(this.cmBoxRole);
+            this.tabRegisteration.Controls.Add(this.label11);
             this.tabRegisteration.Location = new System.Drawing.Point(184, 4);
             this.tabRegisteration.Name = "tabRegisteration";
             this.tabRegisteration.Padding = new System.Windows.Forms.Padding(3);
@@ -234,6 +238,39 @@
             this.txtPassword.SelectedText = "";
             this.txtPassword.Size = new System.Drawing.Size(316, 44);
             this.txtPassword.TabIndex = 65;
+            // 
+            // label11
+            // 
+            this.label11.AutoSize = true;
+            this.label11.Font = new System.Drawing.Font("Century Gothic", 10.2F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label11.Location = new System.Drawing.Point(563, 322);
+            this.label11.Name = "label11";
+            this.label11.Size = new System.Drawing.Size(45, 21);
+            this.label11.TabIndex = 74;
+            this.label11.Text = "Role";
+            // 
+            // cmBoxRole
+            // 
+            this.cmBoxRole.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(218)))), ((int)(((byte)(218)))), ((int)(((byte)(218)))));
+            this.cmBoxRole.BorderColor = System.Drawing.Color.DarkGray;
+            this.cmBoxRole.BorderRadius = 10;
+            this.cmBoxRole.BorderThickness = 3;
+            this.cmBoxRole.DrawMode = System.Windows.Forms.DrawMode.OwnerDrawFixed;
+            this.cmBoxRole.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cmBoxRole.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(218)))), ((int)(((byte)(218)))), ((int)(((byte)(218)))));
+            this.cmBoxRole.FocusedColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(62)))), ((int)(((byte)(80)))));
+            this.cmBoxRole.FocusedState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(62)))), ((int)(((byte)(80)))));
+            this.cmBoxRole.Font = new System.Drawing.Font("Century Gothic", 10.2F);
+            this.cmBoxRole.ForeColor = System.Drawing.SystemColors.ControlText;
+            this.cmBoxRole.HoverState.BorderColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(62)))), ((int)(((byte)(80)))));
+            this.cmBoxRole.ItemHeight = 30;
+            this.cmBoxRole.Items.AddRange(new object[] {
+            "Staff",
+            "Admin"});
+            this.cmBoxRole.Location = new System.Drawing.Point(567, 350);            this.cmBoxRole.Name = "cmBoxRole";
+            this.cmBoxRole.SelectedIndex = 0;
+            this.cmBoxRole.Size = new System.Drawing.Size(316, 36);
+            this.cmBoxRole.TabIndex = 73;
             // 
             // label9
             // 
@@ -586,6 +623,8 @@
         private Guna.UI2.WinForms.Guna2TextBox txtName;
         private System.Windows.Forms.Label label2;
         private Guna.UI2.WinForms.Guna2TextBox txtUserName;
+        private Guna.UI2.WinForms.Guna2ComboBox cmBoxRole;
+        private System.Windows.Forms.Label label11;
         private Guna.UI2.WinForms.Guna2DataGridView DGV_StaffDetails;
         private System.Windows.Forms.Label label3;
         private Guna.UI2.WinForms.Guna2Button staffDeletebtn;

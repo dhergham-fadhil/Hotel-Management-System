@@ -23,11 +23,12 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             txtEmail.Clear();
             txtUserName.Clear();
             txtPassword.Clear();
+            cmBoxRole.SelectedIndex = 0;
         }
 
         private void registerbtn_Click(object sender, EventArgs e)
         {
-            if (!ValidateStaffInput(out string userName))
+            if (!ValidateStaffInput(out string userName, out string role))
                 return;
 
             if (UserNameExists(userName))
@@ -38,11 +39,10 @@ namespace Hotel_Managment_System.Resources.HotelManagment
 
             const string query = @"
                 INSERT INTO Staff
-                    (Staff_Name, Staff_Mobile, Staff_Gender, Staff_Email, Staff_UserName, Staff_Password)
+                    (Staff_Name, Staff_Mobile, Staff_Gender, Staff_Email, Staff_UserName, Staff_Password, Staff_Role)
                 VALUES
-                    (@name, @mobile, @gender, @email, @userName, @password)";
+                    (@name, @mobile, @gender, @email, @userName, @password, @role)";
 
-            // TODO: hash the password before storing it (Phase 3).
             SqlParameter[] parameters =
             {
                 new SqlParameter("@name", SqlDbType.VarChar, 75) { Value = txtName.Text.Trim() },
@@ -50,7 +50,8 @@ namespace Hotel_Managment_System.Resources.HotelManagment
                 new SqlParameter("@gender", SqlDbType.VarChar, 50) { Value = cmBoxGender.Text },
                 new SqlParameter("@email", SqlDbType.VarChar, 120) { Value = txtEmail.Text.Trim() },
                 new SqlParameter("@userName", SqlDbType.VarChar, 150) { Value = userName },
-                new SqlParameter("@password", SqlDbType.VarChar, 150) { Value = txtPassword.Text }
+                new SqlParameter("@password", SqlDbType.VarChar, 150) { Value = PasswordHasher.Hash(txtPassword.Text) },
+                new SqlParameter("@role", SqlDbType.VarChar, 20) { Value = role }
             };
 
             int affected = fn.setData(query, parameters);
@@ -69,9 +70,10 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             }
         }
 
-        private bool ValidateStaffInput(out string userName)
+        private bool ValidateStaffInput(out string userName, out string role)
         {
             userName = (txtUserName.Text ?? string.Empty).Trim();
+            role = (cmBoxRole.Text ?? string.Empty).Trim();
 
             string name = (txtName.Text ?? string.Empty).Trim();
             if (name.Length == 0)
@@ -101,6 +103,12 @@ namespace Hotel_Managment_System.Resources.HotelManagment
                 return Fail("Password must be at least 8 characters and contain a letter and a digit.",
                     txtPassword);
 
+            if (txtPassword.Text.Length > 128)
+                return Fail("Password cannot exceed 128 characters.", txtPassword);
+
+            if (role != "Admin" && role != "Staff")
+                return Fail("Select a role.", cmBoxRole);
+
             return true;
         }
 
@@ -117,7 +125,7 @@ namespace Hotel_Managment_System.Resources.HotelManagment
         {
             // Never select Staff_Password: it must not be shown on screen.
             const string query = @"
-                SELECT Staff_ID, Staff_Name, Staff_Mobile, Staff_Gender, Staff_Email, Staff_UserName
+                SELECT Staff_ID, Staff_Name, Staff_Mobile, Staff_Gender, Staff_Email, Staff_UserName, Staff_Role
                 FROM Staff
                 ORDER BY Staff_ID";
 
@@ -146,6 +154,37 @@ namespace Hotel_Managment_System.Resources.HotelManagment
                 return;
             }
 
+            DataTable target = fn.getData(
+                "SELECT Staff_Role FROM Staff WHERE Staff_ID = @staffId",
+                new SqlParameter("@staffId", SqlDbType.Int) { Value = staffId });
+
+            if (target.Rows.Count == 0)
+            {
+                MessageBox.Show("Staff ID not found.", "Notice",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            string targetRole = Convert.ToString(target.Rows[0]["Staff_Role"]);
+
+            if (targetRole == "Admin")
+            {
+                DataTable otherAdmins = fn.getData(
+                    "SELECT COUNT(*) AS AdminCount FROM Staff WHERE Staff_Role = 'Admin' AND Staff_ID <> @staffId",
+                    new SqlParameter("@staffId", SqlDbType.Int) { Value = staffId });
+
+                int adminCount = otherAdmins.Rows.Count == 0
+                    ? 0
+                    : Convert.ToInt32(otherAdmins.Rows[0]["AdminCount"]);
+
+                if (adminCount == 0)
+                {
+                    MessageBox.Show("You cannot delete the last administrator account.",
+                        "Not Allowed", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    return;
+                }
+            }
+
             if (MessageBox.Show("Are you sure?", "Confirmation",
                     MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
             {
@@ -154,12 +193,8 @@ namespace Hotel_Managment_System.Resources.HotelManagment
 
             const string query = "DELETE FROM Staff WHERE Staff_ID = @staffId";
 
-            SqlParameter[] parameters =
-            {
-                new SqlParameter("@staffId", SqlDbType.Int) { Value = staffId }
-            };
-
-            int affected = fn.setData(query, parameters);
+            int affected = fn.setData(query,
+                new SqlParameter("@staffId", SqlDbType.Int) { Value = staffId });
 
             if (affected > 0)
             {
