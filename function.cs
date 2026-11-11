@@ -24,6 +24,101 @@ namespace Hotel_Managment_System
         }
 
         /// <summary>
+        /// Validates a user name / password pair.
+        /// Returns null when the credentials are invalid or the database fails
+        /// (databaseError is set in the latter case).
+        /// Legacy plain-text passwords are replaced with a PBKDF2 hash after a successful login.
+        /// </summary>
+        public StaffUser AuthenticateUser(string userName, string password, out bool databaseError)
+        {
+            databaseError = false;
+
+            const string query = @"
+                SELECT Staff_ID, Staff_Name, Staff_UserName, Staff_Password, Staff_Role
+                FROM Staff
+                WHERE Staff_UserName = @userName";
+
+            DataTable table = new DataTable();
+
+            try
+            {
+                using (SqlConnection con = getConnection())
+                using (SqlCommand cmd = new SqlCommand(query, con))
+                using (SqlDataAdapter adapter = new SqlDataAdapter(cmd))
+                {
+                    cmd.Parameters.Add(new SqlParameter("@userName", SqlDbType.VarChar, 150)
+                    {
+                        Value = userName
+                    });
+
+                    adapter.Fill(table);
+                }
+            }
+            catch (SqlException ex)
+            {
+                ShowDatabaseError(ex);
+                databaseError = true;
+                return null;
+            }
+
+            if (table.Rows.Count == 0)
+            {
+                // Keep the response time similar to a real verification.
+                PasswordHasher.VerifyDummy(password);
+                return null;
+            }
+
+            DataRow row = table.Rows[0];
+            string storedPassword = Convert.ToString(row["Staff_Password"]);
+            PasswordVerificationResult result = PasswordHasher.Verify(storedPassword, password);
+
+            if (result == PasswordVerificationResult.Failed)
+                return null;
+
+            int staffId = Convert.ToInt32(row["Staff_ID"]);
+
+            if (result == PasswordVerificationResult.SuccessRehashNeeded)
+            {
+                UpgradePasswordHash(staffId, password);
+            }
+
+            return new StaffUser(
+                staffId,
+                Convert.ToString(row["Staff_Name"]),
+                Convert.ToString(row["Staff_UserName"]),
+                Convert.ToString(row["Staff_Role"]));
+        }
+
+        private void UpgradePasswordHash(int staffId, string password)
+        {
+            const string query = "UPDATE Staff SET Staff_Password = @password WHERE Staff_ID = @staffId";
+
+            try
+            {
+                using (SqlConnection con = getConnection())
+                using (SqlCommand cmd = new SqlCommand(query, con))
+                {
+                    cmd.Parameters.Add(new SqlParameter("@password", SqlDbType.VarChar, 150)
+                    {
+                        Value = PasswordHasher.Hash(password)
+                    });
+                    cmd.Parameters.Add(new SqlParameter("@staffId", SqlDbType.Int)
+                    {
+                        Value = staffId
+                    });
+
+                    con.Open();
+                    cmd.ExecuteNonQuery();
+                }
+            }
+            catch (SqlException ex)
+            {
+                // The login itself succeeded; the upgrade will be retried next time.
+                Logger.Error(ex);
+            }
+        }
+
+        /// <summary>
         /// Executes a SELECT statement and returns the result as a DataTable.
         /// Always returns a table (empty when a database error occurs).
         /// </summary>
@@ -265,6 +360,8 @@ namespace Hotel_Managment_System
                 case 2628:
                 case 8152:
                     return "One of the values is too long. Please shorten it and try again.";
+                case 207:
+                    return "The database schema is out of date. Run the scripts in database/migrations.";
                 default:
                     return "A database error occurred. Please try again.";
             }
