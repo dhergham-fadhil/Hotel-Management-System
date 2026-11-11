@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Data;
 using System.Data.SqlClient;
+using System.Text.RegularExpressions;
 using System.Windows.Forms;
 
 namespace Hotel_Managment_System.Resources.HotelManagment
@@ -40,22 +41,13 @@ namespace Hotel_Managment_System.Resources.HotelManagment
 
         private void addbtn_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(txtRoomNumber.Text)
-                || string.IsNullOrWhiteSpace(cmBoxRoomType.Text)
-                || string.IsNullOrWhiteSpace(cmboxBed.Text)
-                || string.IsNullOrWhiteSpace(txtPrice.Text)
-                || string.IsNullOrWhiteSpace(cmBoxStatus.Text))
-            {
-                MessageBox.Show("Fill all fields.", "Warning",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
+            if (!ValidateRoomInput(out decimal price, out string roomNo))
                 return;
-            }
 
-            if (!decimal.TryParse(txtPrice.Text, out decimal price) || price <= 0)
+            // Friendly early check; the UNIQUE constraint remains the final guard.
+            if (RoomNumberExists(roomNo))
             {
-                MessageBox.Show("Price must be a number greater than zero.", "Warning",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                txtPrice.Focus();
+                Fail("Room number already exists.", txtRoomNumber);
                 return;
             }
 
@@ -65,7 +57,7 @@ namespace Hotel_Managment_System.Resources.HotelManagment
 
             SqlParameter[] parameters =
             {
-                new SqlParameter("@roomNo", SqlDbType.VarChar, 10) { Value = txtRoomNumber.Text.Trim() },
+                new SqlParameter("@roomNo", SqlDbType.VarChar, 10) { Value = roomNo },
                 new SqlParameter("@roomType", SqlDbType.VarChar, 10) { Value = cmBoxRoomType.Text },
                 new SqlParameter("@bed", SqlDbType.VarChar, 10) { Value = cmboxBed.Text },
                 new SqlParameter("@price", SqlDbType.Decimal) { Precision = 10, Scale = 2, Value = price },
@@ -87,6 +79,53 @@ namespace Hotel_Managment_System.Resources.HotelManagment
                 MessageBox.Show("No room was added.", "Notice",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
+        }
+
+        private bool ValidateRoomInput(out decimal price, out string roomNo)
+        {
+            price = 0;
+            roomNo = (txtRoomNumber.Text ?? string.Empty).Trim();
+
+            if (roomNo.Length == 0)
+                return Fail("Room number is required.", txtRoomNumber);
+
+            if (roomNo.Length > 10)
+                return Fail("Room number cannot exceed 10 characters.", txtRoomNumber);
+
+            if (!Regex.IsMatch(roomNo, @"^[A-Za-z0-9\-]+$"))
+                return Fail("Room number may contain letters, digits and hyphens only.", txtRoomNumber);
+
+            if (cmBoxRoomType.SelectedIndex < 0)
+                return Fail("Select a room type.", cmBoxRoomType);
+
+            if (cmboxBed.SelectedIndex < 0)
+                return Fail("Select a bed type.", cmboxBed);
+
+            if (cmBoxStatus.SelectedIndex < 0)
+                return Fail("Select a room status.", cmBoxStatus);
+
+            if (!decimal.TryParse(txtPrice.Text, out price) || price <= 0 || price > 1000000m)
+                return Fail("Price must be a number between 0 and 1,000,000.", txtPrice);
+
+            return true;
+        }
+
+        private bool RoomNumberExists(string roomNo)
+        {
+            DataTable table = fn.getData(
+                "SELECT Room_ID FROM Rooms WHERE Room_NO = @roomNo",
+                new SqlParameter("@roomNo", SqlDbType.VarChar, 10) { Value = roomNo });
+
+            return table.Rows.Count > 0;
+        }
+
+        private bool Fail(string message, Control focus)
+        {
+            MessageBox.Show(message, "Validation",
+                MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
+            focus.Focus();
+            return false;
         }
     }
 }
