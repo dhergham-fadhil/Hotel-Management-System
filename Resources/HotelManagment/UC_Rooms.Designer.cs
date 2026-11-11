@@ -45,6 +45,8 @@
             this.deletebtn = new Guna.UI2.WinForms.Guna2Button();
             this.cmBoxStatus = new Guna.UI2.WinForms.Guna2ComboBox();
             this.label2 = new System.Windows.Forms.Label();
+            this.clearbtn = new Guna.UI2.WinForms.Guna2Button();
+            this.labelHint = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.DGV_Rooms)).BeginInit();
             this.SuspendLayout();
             // 
@@ -105,6 +107,7 @@
             this.DGV_Rooms.RowTemplate.Height = 24;
             this.DGV_Rooms.Size = new System.Drawing.Size(614, 406);
             this.DGV_Rooms.TabIndex = 4;
+            this.DGV_Rooms.CellClick += new System.Windows.Forms.DataGridViewCellEventHandler(this.DGV_Rooms_CellClick);
             this.DGV_Rooms.ThemeStyle.AlternatingRowsStyle.BackColor = System.Drawing.Color.White;
             this.DGV_Rooms.ThemeStyle.AlternatingRowsStyle.Font = null;
             this.DGV_Rooms.ThemeStyle.AlternatingRowsStyle.ForeColor = System.Drawing.Color.Empty;
@@ -279,6 +282,7 @@
             this.editbtn.Size = new System.Drawing.Size(108, 45);
             this.editbtn.TabIndex = 18;
             this.editbtn.Text = "Edit";
+            this.editbtn.Click += new System.EventHandler(this.editbtn_Click);
             // 
             // deletebtn
             // 
@@ -296,6 +300,7 @@
             this.deletebtn.Size = new System.Drawing.Size(108, 45);
             this.deletebtn.TabIndex = 19;
             this.deletebtn.Text = "Delete";
+            this.deletebtn.Click += new System.EventHandler(this.deletebtn_Click);
             // 
             // cmBoxStatus
             // 
@@ -330,11 +335,42 @@
             this.label2.TabIndex = 20;
             this.label2.Text = "Status";
             // 
+            // clearbtn
+            // 
+            this.clearbtn.BorderRadius = 23;
+            this.clearbtn.BorderThickness = 1;
+            this.clearbtn.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
+            this.clearbtn.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
+            this.clearbtn.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
+            this.clearbtn.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
+            this.clearbtn.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(44)))), ((int)(((byte)(62)))), ((int)(((byte)(80)))));
+            this.clearbtn.Font = new System.Drawing.Font("Century Gothic", 10.2F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.clearbtn.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(218)))), ((int)(((byte)(218)))), ((int)(((byte)(218)))));
+            this.clearbtn.Location = new System.Drawing.Point(387, 415);
+            this.clearbtn.Name = "clearbtn";
+            this.clearbtn.Size = new System.Drawing.Size(108, 45);
+            this.clearbtn.TabIndex = 20;
+            this.clearbtn.Text = "Clear";
+            this.clearbtn.Click += new System.EventHandler(this.clearbtn_Click);
+            // 
+            // labelHint
+            // 
+            this.labelHint.AutoSize = false;
+            this.labelHint.Font = new System.Drawing.Font("Century Gothic", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.labelHint.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(127)))), ((int)(((byte)(140)))), ((int)(((byte)(141)))));
+            this.labelHint.Location = new System.Drawing.Point(45, 470);
+            this.labelHint.Name = "labelHint";
+            this.labelHint.Size = new System.Drawing.Size(470, 30);
+            this.labelHint.TabIndex = 21;
+            this.labelHint.Text = "Select a room in the grid to edit or delete it.";
+            // 
             // UC_Rooms
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(218)))), ((int)(((byte)(218)))), ((int)(((byte)(218)))));
+            this.Controls.Add(this.labelHint);
+            this.Controls.Add(this.clearbtn);
             this.Controls.Add(this.cmBoxStatus);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.deletebtn);
@@ -374,5 +410,7 @@
         private Guna.UI2.WinForms.Guna2Button deletebtn;
         private Guna.UI2.WinForms.Guna2ComboBox cmBoxStatus;
         private System.Windows.Forms.Label label2;
+        private Guna.UI2.WinForms.Guna2Button clearbtn;
+        private System.Windows.Forms.Label labelHint;
     }
 }
