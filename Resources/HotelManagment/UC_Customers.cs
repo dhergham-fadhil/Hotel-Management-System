@@ -99,25 +99,8 @@ namespace Hotel_Managment_System.Resources.HotelManagment
 
         private void allotebtn_Click(object sender, EventArgs e)
         {
-            if (string.IsNullOrWhiteSpace(txtName.Text)
-                || string.IsNullOrWhiteSpace(txtNationality.Text)
-                || string.IsNullOrWhiteSpace(txtMobileNo.Text)
-                || string.IsNullOrWhiteSpace(txtIDProof.Text)
-                || string.IsNullOrWhiteSpace(cmBoxGender.Text)
-                || string.IsNullOrWhiteSpace(txtAddress.Text)
-                || string.IsNullOrWhiteSpace(txtPrice.Text))
-            {
-                MessageBox.Show("All fields are mandatory.", "Information",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+            if (!ValidateCustomerInput())
                 return;
-            }
-
-            if (roomId <= 0)
-            {
-                MessageBox.Show("Select a room first.", "Information",
-                    MessageBoxButtons.OK, MessageBoxIcon.Information);
-                return;
-            }
 
             string selectedRoom = cmBoxRoomNo.Text;
 
@@ -146,6 +129,62 @@ namespace Hotel_Managment_System.Resources.HotelManagment
                 MessageBox.Show(error ?? "The room could not be allocated.",
                     "Allocation Failed", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
+        }
+
+        private bool ValidateCustomerInput()
+        {
+            string name = (txtName.Text ?? string.Empty).Trim();
+            if (name.Length == 0)
+                return Fail("Customer name is required.", txtName);
+            if (name.Length < 2)
+                return Fail("Customer name must be at least 2 characters.", txtName);
+            if (name.Length > 75)
+                return Fail("Customer name cannot exceed 75 characters.", txtName);
+
+            string nationality = (txtNationality.Text ?? string.Empty).Trim();
+            if (nationality.Length == 0)
+                return Fail("Nationality is required.", txtNationality);
+            if (nationality.Length > 25)
+                return Fail("Nationality cannot exceed 25 characters.", txtNationality);
+
+            string mobile = (txtMobileNo.Text ?? string.Empty).Trim();
+            if (!Validation.IsValidMobile(mobile))
+                return Fail("Enter a valid mobile number (7-15 digits).", txtMobileNo);
+
+            if (cmBoxGender.SelectedIndex < 0)
+                return Fail("Select a gender.", cmBoxGender);
+
+            string idProof = (txtIDProof.Text ?? string.Empty).Trim();
+            if (idProof.Length == 0)
+                return Fail("ID proof is required.", txtIDProof);
+            if (idProof.Length > 30)
+                return Fail("ID proof cannot exceed 30 characters.", txtIDProof);
+
+            string address = (txtAddress.Text ?? string.Empty).Trim();
+            if (address.Length < 5)
+                return Fail("Enter a valid address (at least 5 characters).", txtAddress);
+            if (address.Length > 350)
+                return Fail("Address cannot exceed 350 characters.", txtAddress);
+
+            if (roomId <= 0)
+                return Fail("Select a free room first.", cmBoxRoomNo);
+
+            if (DTP_DateOfBirth.Value.Date >= DateTime.Today)
+                return Fail("Date of birth must be before today.", DTP_DateOfBirth);
+
+            if (DTP_CheckIn.Value.Date < DateTime.Today)
+                return Fail("Check-in date cannot be in the past.", DTP_CheckIn);
+
+            return true;
+        }
+
+        private bool Fail(string message, Control focus)
+        {
+            MessageBox.Show(message, "Validation",
+                MessageBoxButtons.OK, MessageBoxIcon.Warning);
+
+            focus.Focus();
+            return false;
         }
     }
 }
