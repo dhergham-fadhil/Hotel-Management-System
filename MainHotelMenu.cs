@@ -26,13 +26,20 @@ namespace Hotel_Managment_System
             Application.Exit();
         }
 
-        private void AddUserControl(UserControl UC)
+        private void AddUserControl(UserControl uc)
         {
-            UC.Dock = DockStyle.Fill;
-            UC_Panel.Controls.Clear();
-            UC_Panel.Controls.Add(UC);
-            UC.BringToFront();
-                
+            uc.Dock = DockStyle.Fill;
+
+            // Dispose the previous screen so its GDI handles are released.
+            while (UC_Panel.Controls.Count > 0)
+            {
+                Control previous = UC_Panel.Controls[0];
+                UC_Panel.Controls.Remove(previous);
+                previous.Dispose();
+            }
+
+            UC_Panel.Controls.Add(uc);
+            uc.BringToFront();
         }
         private void NavigationButton_Click(object sender, EventArgs e)
         {
