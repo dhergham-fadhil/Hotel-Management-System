@@ -55,6 +55,7 @@
   <ItemGroup>
     <Compile Include="function.cs" />
     <Compile Include="Logger.cs" />
+    <Compile Include="Validation.cs" />
     <Compile Include="Login.cs">
       <SubType>Form</SubType>
     </Compile>
