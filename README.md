@@ -17,6 +17,7 @@ A desktop hotel management application built with **C# / WinForms** and **SQL Se
 | Staff registration, listing, and deletion (Admin only) | ✅ |
 | Dashboard (hotel overview, revenue, recent activity) | ✅ |
 | Logout (returns to the login screen) | ✅ |
+| Refactoring - Phase 5: Separation of concerns | ✅ |
 
 ---
 
@@ -38,7 +39,12 @@ Hotel_Managment_System/
 ├── Login.cs                    Login screen (authentication)
 ├── PasswordHasher.cs           PBKDF2-HMAC-SHA256 hashing + legacy migration
 ├── StaffUser.cs                Signed-in user model (id, name, role)
-├── function.cs                 Data access layer (temporary)
+├── function.cs                 Simplified data access layer (delegates to repositories)
+├── SqlRepository.cs             Low-level database utilities (connection, parameters, error handling)
+├── AuthRepository.cs           Authentication: login, password verify, legacy upgrade, password reset
+├── RoomRepository.cs           Room management: allocate, update, delete, room number existence
+├── CustomerRepository.cs       Customer operations: check-out, dashboard queries, billing
+├── StaffService.cs             Staff service: password reset service
 ├── Logger.cs                   File logger
 ├── Validation.cs               Shared input validation rules
 ├── Resources/
@@ -198,7 +204,7 @@ The following issues are known and will be addressed in order (see the roadmap):
 - [x] Per-field input validation (lengths, formats, dates, duplicate checks)
 - [x] Dashboard replacing the Bookings placeholder
 - [x] Real login + PBKDF2 password hashing + roles
-- [ ] Password reset, account lockout, and idle-session timeout
+- [x] Password reset, account lockout, and idle-session timeout
 - [x] Complete the Rooms screen (Edit / Delete)
 - [x] Customer list + check-out + billing
 - [ ] Separate layers (Repositories / Services)
