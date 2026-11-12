@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
@@ -35,7 +35,7 @@ namespace Hotel_Managment_System.Resources.HotelManagment
 
             if (UserNameExists(userName))
             {
-                Fail("This user name is already taken.", txtUserName);
+                Fail("اسم المستخدم مستخدم بالفعل.", txtUserName);
                 return;
             }
 
@@ -49,7 +49,7 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             {
                 new SqlParameter("@name", SqlDbType.VarChar, 75) { Value = txtName.Text.Trim() },
                 new SqlParameter("@mobile", SqlDbType.VarChar, 25) { Value = txtMobileNo.Text.Trim() },
-                new SqlParameter("@gender", SqlDbType.VarChar, 50) { Value = cmBoxGender.Text },
+                new SqlParameter("@gender", SqlDbType.VarChar, 50) { Value = ToDatabaseGender(cmBoxGender.Text) },
                 new SqlParameter("@email", SqlDbType.VarChar, 120) { Value = txtEmail.Text.Trim() },
                 new SqlParameter("@userName", SqlDbType.VarChar, 150) { Value = userName },
                 new SqlParameter("@password", SqlDbType.VarChar, 150) { Value = PasswordHasher.Hash(txtPassword.Text) },
@@ -60,56 +60,86 @@ namespace Hotel_Managment_System.Resources.HotelManagment
 
             if (affected > 0)
             {
-                MessageBox.Show("Staff registered.", "Success",
+                MessageBox.Show("تم تسجيل الموظف.", "نجاح",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                 ClearALL();
             }
             else if (affected == 0)
             {
-                MessageBox.Show("No staff record was added.", "Notice",
+                MessageBox.Show("لم تتم إضافة أي سجل.", "تنبيه",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+
+        private static string ToDatabaseRole(string value)
+        {
+            switch (value)
+            {
+                case "مدير":
+                    return "Admin";
+                case "موظف":
+                    return "Staff";
+                default:
+                    return value;
+            }
+        }
+
+        private static string ToDatabaseGender(string value)
+        {
+            switch (value)
+            {
+                case "ذكر":
+                    return "Male";
+                case "أنثى":
+                    return "Female";
+                case "آخر":
+                    return "Other";
+                case "أفضل عدم الإجابة":
+                    return "I Rather Do Not Answer";
+                default:
+                    return value;
             }
         }
 
         private bool ValidateStaffInput(out string userName, out string role)
         {
             userName = (txtUserName.Text ?? string.Empty).Trim();
-            role = (cmBoxRole.Text ?? string.Empty).Trim();
+            role = ToDatabaseRole((cmBoxRole.Text ?? string.Empty).Trim());
 
             string name = (txtName.Text ?? string.Empty).Trim();
             if (name.Length == 0)
-                return Fail("Staff name is required.", txtName);
+                return Fail("اسم الموظف مطلوب.", txtName);
             if (name.Length < 2)
-                return Fail("Staff name must be at least 2 characters.", txtName);
+                return Fail("يجب أن يكون اسم الموظف حرفين على الأقل.", txtName);
             if (name.Length > 75)
-                return Fail("Staff name cannot exceed 75 characters.", txtName);
+                return Fail("لا يمكن أن يتجاوز اسم الموظف 75 حرفاً.", txtName);
 
             if (!Validation.IsValidMobile(txtMobileNo.Text))
-                return Fail("Enter a valid mobile number (7-15 digits).", txtMobileNo);
+                return Fail("أدخل رقم جوال صحيحاً (7-15 رقماً).", txtMobileNo);
 
             if (cmBoxGender.SelectedIndex < 0)
-                return Fail("Select a gender.", cmBoxGender);
+                return Fail("اختر الجنس.", cmBoxGender);
 
             string email = (txtEmail.Text ?? string.Empty).Trim();
             if (!Validation.IsValidEmail(email))
-                return Fail("Enter a valid e-mail address.", txtEmail);
+                return Fail("أدخل بريداً إلكترونياً صحيحاً.", txtEmail);
             if (email.Length > 120)
-                return Fail("E-mail cannot exceed 120 characters.", txtEmail);
+                return Fail("لا يمكن أن يتجاوز البريد الإلكتروني 120 حرفاً.", txtEmail);
 
             if (!Validation.IsValidUserName(userName))
-                return Fail("User name must be 3-150 characters (letters, digits, dot, underscore, hyphen).",
+                return Fail("اسم المستخدم من 3 إلى 150 حرفاً (حروف، أرقام، نقطة، شرطة سفلية، شرطة).",
                     txtUserName);
 
             if (!Validation.IsValidPassword(txtPassword.Text))
-                return Fail("Password must be at least 8 characters and contain a letter and a digit.",
+                return Fail("كلمة المرور 8 أحرف على الأقل وتحتوي على حرف ورقم.",
                     txtPassword);
 
             if (txtPassword.Text.Length > 128)
-                return Fail("Password cannot exceed 128 characters.", txtPassword);
+                return Fail("لا يمكن أن تتجاوز كلمة المرور 128 حرفاً.", txtPassword);
 
             if (role != "Admin" && role != "Staff")
-                return Fail("Select a role.", cmBoxRole);
+                return Fail("اختر الصلاحية.", cmBoxRole);
 
             return true;
         }
@@ -132,6 +162,41 @@ namespace Hotel_Managment_System.Resources.HotelManagment
                 ORDER BY Staff_ID";
 
             grid.DataSource = fn.getData(query);
+            ApplyStaffGridHeaders(grid);
+        }
+
+        /// <summary>
+        /// Replaces the raw column names with Arabic headers after a data bind.
+        /// </summary>
+        private static void ApplyStaffGridHeaders(Guna2DataGridView grid)
+        {
+            if (grid.Columns.Count == 0)
+            {
+                return;
+            }
+
+            grid.Columns["Staff_ID"].HeaderText = "الرقم";
+            grid.Columns["Staff_Name"].HeaderText = "الاسم";
+            grid.Columns["Staff_Mobile"].HeaderText = "رقم الجوال";
+            grid.Columns["Staff_Gender"].HeaderText = "الجنس";
+            grid.Columns["Staff_Email"].HeaderText = "البريد الإلكتروني";
+            grid.Columns["Staff_UserName"].HeaderText = "اسم المستخدم";
+            grid.Columns["Staff_Role"].HeaderText = "الصلاحية";
+        }
+
+        private void DGV_StaffDelete_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex < 0)
+            {
+                return;
+            }
+
+            object value = DGV_StaffDelete.Rows[e.RowIndex].Cells["Staff_ID"].Value;
+
+            if (value != null && value != DBNull.Value)
+            {
+                txtStaffDeleteID.Text = value.ToString();
+            }
         }
 
         private void tabStaff_SelectedIndexChanged(object sender, EventArgs e)
@@ -168,7 +233,7 @@ namespace Hotel_Managment_System.Resources.HotelManagment
         {
             if (cmBoxResetStaff.SelectedIndex < 0)
             {
-                MessageBox.Show("Select a staff member.", "Warning",
+                MessageBox.Show("اختر موظفاً.", "تحذير",
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
@@ -177,7 +242,7 @@ namespace Hotel_Managment_System.Resources.HotelManagment
 
             if (!int.TryParse(selection.Split('-')[0], out int staffId))
             {
-                MessageBox.Show("Select a staff member.", "Warning",
+                MessageBox.Show("اختر موظفاً.", "تحذير",
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
@@ -187,33 +252,33 @@ namespace Hotel_Managment_System.Resources.HotelManagment
 
             if (!Validation.IsValidPassword(newPassword))
             {
-                MessageBox.Show("Password must be at least 8 characters and contain a letter and a digit.",
-                    "Validation", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show("كلمة المرور 8 أحرف على الأقل وتحتوي على حرف ورقم.",
+                    "تحقق", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
             if (newPassword.Length > 128)
             {
-                MessageBox.Show("Password cannot exceed 128 characters.", "Validation",
+                MessageBox.Show("لا يمكن أن تتجاوز كلمة المرور 128 حرفاً.", "تحقق",
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
             if (newPassword != confirmPassword)
             {
-                MessageBox.Show("The two passwords do not match.", "Validation",
+                MessageBox.Show("كلمتا المرور غير متطابقتين.", "تحقق",
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
             if (!fn.ResetStaffPassword(staffId, newPassword, out string error))
             {
-                MessageBox.Show(error ?? "The password could not be reset.", "Reset Failed",
+                MessageBox.Show(error ?? "تعذّر إعادة تعيين كلمة المرور.", "فشل إعادة التعيين",
                     MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
 
-            MessageBox.Show("Password reset successfully.", "Success",
+            MessageBox.Show("تمت إعادة تعيين كلمة المرور بنجاح.", "نجاح",
                 MessageBoxButtons.OK, MessageBoxIcon.Information);
 
             ClearResetForm();
@@ -230,7 +295,7 @@ namespace Hotel_Managment_System.Resources.HotelManagment
         {
             if (!int.TryParse(txtStaffDeleteID.Text.Trim(), out int staffId))
             {
-                MessageBox.Show("Enter a valid staff ID.", "Warning",
+                MessageBox.Show("أدخل رقم موظف صحيحاً.", "تحذير",
                     MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 txtStaffDeleteID.Focus();
                 return;
@@ -242,7 +307,7 @@ namespace Hotel_Managment_System.Resources.HotelManagment
 
             if (target.Rows.Count == 0)
             {
-                MessageBox.Show("Staff ID not found.", "Notice",
+                MessageBox.Show("رقم الموظف غير موجود.", "تنبيه",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
@@ -261,13 +326,13 @@ namespace Hotel_Managment_System.Resources.HotelManagment
 
                 if (adminCount == 0)
                 {
-                    MessageBox.Show("You cannot delete the last administrator account.",
-                        "Not Allowed", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("لا يمكن حذف آخر حساب مدير.",
+                        "غير مسموح", MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
             }
 
-            if (MessageBox.Show("Are you sure?", "Confirmation",
+            if (MessageBox.Show("هل أنت متأكد من حذف هذا الموظف؟", "تأكيد",
                     MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
             {
                 return;
@@ -280,7 +345,7 @@ namespace Hotel_Managment_System.Resources.HotelManagment
 
             if (affected > 0)
             {
-                MessageBox.Show("Record deleted.", "Success",
+                MessageBox.Show("تم حذف السجل.", "نجاح",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                 txtStaffDeleteID.Clear();
@@ -289,14 +354,14 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             }
             else if (affected == 0)
             {
-                MessageBox.Show("Staff ID not found.", "Notice",
+                MessageBox.Show("رقم الموظف غير موجود.", "تنبيه",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
         private bool Fail(string message, Control focus)
         {
-            MessageBox.Show(message, "Validation",
+            MessageBox.Show(message, "تحقق",
                 MessageBoxButtons.OK, MessageBoxIcon.Warning);
 
             focus.Focus();
@@ -323,6 +388,9 @@ namespace Hotel_Managment_System.Resources.HotelManagment
 
             // Inputs for delete/reset
             Theme.StyleInput(txtStaffDeleteID);
+            Theme.StyleInput(txtNewPassword);
+            Theme.StyleInput(txtConfirmPassword);
+            Theme.StyleCombo(cmBoxResetStaff);
 
             // Labels
             label1.ForeColor = Theme.TextSecondary;
@@ -349,6 +417,25 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             label11.Font = new Font("Segoe UI", 9.5F);
             label3.Font = new Font("Segoe UI", 9.5F);
             label6.Font = new Font("Segoe UI", 9.5F);
+
+            // Headings and tab pages follow the shared theme.
+            label3.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
+            label3.ForeColor = Theme.TextPrimary;
+            labelResetTitle.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
+            labelResetTitle.ForeColor = Theme.TextPrimary;
+
+            tabRegisteration.BackColor = Theme.Background;
+            tabDetails.BackColor = Theme.Background;
+            tabDelete.BackColor = Theme.Background;
+            tabResetPassword.BackColor = Theme.Background;
+
+            // Grids: readable font and a visible header row.
+            DGV_StaffDetails.ThemeStyle.RowsStyle.Font = new Font("Segoe UI", 9F);
+            DGV_StaffDetails.ThemeStyle.HeaderStyle.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            DGV_StaffDelete.ThemeStyle.RowsStyle.Font = new Font("Segoe UI", 9F);
+            DGV_StaffDelete.ThemeStyle.HeaderStyle.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            DGV_StaffDetails.Font = new Font("Segoe UI", 9F);
+            DGV_StaffDelete.Font = new Font("Segoe UI", 9F);
         }
     }
 }

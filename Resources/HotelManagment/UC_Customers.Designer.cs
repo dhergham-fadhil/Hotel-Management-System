@@ -47,7 +47,7 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             this.labelTitle.AutoSize = true;
             this.labelTitle.Font = new Font("Segoe UI", 20F, FontStyle.Bold);
             this.labelTitle.ForeColor = Color.FromArgb(15, 23, 42);
-            this.labelTitle.Location = new Point(24, 20);
+            this.labelTitle.Location = new Point(40, 20);
             this.labelTitle.Name = "labelTitle";
             this.labelTitle.Size = new Size(135, 37);
             this.labelTitle.TabIndex = 0;
@@ -56,7 +56,7 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             this.labelSubtitle.AutoSize = true;
             this.labelSubtitle.Font = new Font("Segoe UI", 10F);
             this.labelSubtitle.ForeColor = Color.FromArgb(71, 85, 105);
-            this.labelSubtitle.Location = new Point(26, 58);
+            this.labelSubtitle.Location = new Point(42, 62);
             this.labelSubtitle.Name = "labelSubtitle";
             this.labelSubtitle.Size = new Size(194, 19);
             this.labelSubtitle.TabIndex = 1;
@@ -67,12 +67,12 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             this.txtName.Font = new Font("Segoe UI", 10F); this.txtName.ForeColor = Color.FromArgb(15, 23, 42);
             this.txtName.HoverState.BorderColor = Color.FromArgb(37, 99, 235);
             this.txtName.FocusedState.BorderColor = Color.FromArgb(37, 99, 235);
-            this.txtName.Location = new Point(28, 100); this.txtName.Name = "txtName";
-            this.txtName.PlaceholderText = "الاسم الكامل"; this.txtName.Size = new Size(240, 40);
+            this.txtName.Location = new Point(40, 120); this.txtName.Name = "txtName";
+            this.txtName.PlaceholderText = "الاسم الكامل"; this.txtName.Size = new Size(260, 40);
             this.txtName.TabIndex = 2;
             // label1
             this.label1.AutoSize = true; this.label1.Font = new Font("Segoe UI", 9.5F);
-            this.label1.ForeColor = Color.FromArgb(71, 85, 105); this.label1.Location = new Point(28, 80);
+            this.label1.ForeColor = Color.FromArgb(71, 85, 105); this.label1.Location = new Point(40, 96);
             this.label1.Name = "label1"; this.label1.Size = new Size(64, 19);
             this.label1.TabIndex = 3; this.label1.Text = "الاسم الكامل";
             // txtMobileNo
@@ -81,12 +81,12 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             this.txtMobileNo.Font = new Font("Segoe UI", 10F); this.txtMobileNo.ForeColor = Color.FromArgb(15, 23, 42);
             this.txtMobileNo.HoverState.BorderColor = Color.FromArgb(37, 99, 235);
             this.txtMobileNo.FocusedState.BorderColor = Color.FromArgb(37, 99, 235);
-            this.txtMobileNo.Location = new Point(28, 162); this.txtMobileNo.Name = "txtMobileNo";
-            this.txtMobileNo.PlaceholderText = "رقم الجوال"; this.txtMobileNo.Size = new Size(240, 40);
+            this.txtMobileNo.Location = new Point(40, 200); this.txtMobileNo.Name = "txtMobileNo";
+            this.txtMobileNo.PlaceholderText = "رقم الجوال"; this.txtMobileNo.Size = new Size(260, 40);
             this.txtMobileNo.TabIndex = 4;
             // label9
             this.label9.AutoSize = true; this.label9.Font = new Font("Segoe UI", 9.5F);
-            this.label9.ForeColor = Color.FromArgb(71, 85, 105); this.label9.Location = new Point(28, 142);
+            this.label9.ForeColor = Color.FromArgb(71, 85, 105); this.label9.Location = new Point(40, 176);
             this.label9.Name = "label9"; this.label9.Size = new Size(74, 19);
             this.label9.TabIndex = 5; this.label9.Text = "رقم الجوال";
             // txtNationality
@@ -95,12 +95,12 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             this.txtNationality.Font = new Font("Segoe UI", 10F); this.txtNationality.ForeColor = Color.FromArgb(15, 23, 42);
             this.txtNationality.HoverState.BorderColor = Color.FromArgb(37, 99, 235);
             this.txtNationality.FocusedState.BorderColor = Color.FromArgb(37, 99, 235);
-            this.txtNationality.Location = new Point(28, 224); this.txtNationality.Name = "txtNationality";
-            this.txtNationality.PlaceholderText = "الجنسية"; this.txtNationality.Size = new Size(240, 40);
+            this.txtNationality.Location = new Point(40, 280); this.txtNationality.Name = "txtNationality";
+            this.txtNationality.PlaceholderText = "الجنسية"; this.txtNationality.Size = new Size(260, 40);
             this.txtNationality.TabIndex = 6;
             // label8
             this.label8.AutoSize = true; this.label8.Font = new Font("Segoe UI", 9.5F);
-            this.label8.ForeColor = Color.FromArgb(71, 85, 105); this.label8.Location = new Point(28, 204);
+            this.label8.ForeColor = Color.FromArgb(71, 85, 105); this.label8.Location = new Point(40, 256);
             this.label8.Name = "label8"; this.label8.Size = new Size(64, 19);
             this.label8.TabIndex = 7; this.label8.Text = "الجنسية";
             // cmBoxGender
@@ -113,11 +113,11 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             this.cmBoxGender.FocusedState.BorderColor = Color.FromArgb(37, 99, 235);
             this.cmBoxGender.ItemHeight = 30;
             this.cmBoxGender.Items.AddRange(new object[] { "Male", "Female", "Other", "I Rather Do Not Answer" });
-            this.cmBoxGender.Location = new Point(28, 286); this.cmBoxGender.Name = "cmBoxGender"; this.cmBoxGender.Size = new Size(240, 36);
+            this.cmBoxGender.Location = new Point(40, 360); this.cmBoxGender.Name = "cmBoxGender"; this.cmBoxGender.Size = new Size(260, 36);
             this.cmBoxGender.TabIndex = 8;
             // label4
             this.label4.AutoSize = true; this.label4.Font = new Font("Segoe UI", 9.5F);
-            this.label4.ForeColor = Color.FromArgb(71, 85, 105); this.label4.Location = new Point(28, 266);
+            this.label4.ForeColor = Color.FromArgb(71, 85, 105); this.label4.Location = new Point(40, 336);
             this.label4.Name = "label4"; this.label4.Size = new Size(56, 19);
             this.label4.TabIndex = 9; this.label4.Text = "النوع";
             // txtIDProof
@@ -126,12 +126,12 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             this.txtIDProof.Font = new Font("Segoe UI", 10F); this.txtIDProof.ForeColor = Color.FromArgb(15, 23, 42);
             this.txtIDProof.HoverState.BorderColor = Color.FromArgb(37, 99, 235);
             this.txtIDProof.FocusedState.BorderColor = Color.FromArgb(37, 99, 235);
-            this.txtIDProof.Location = new Point(280, 100); this.txtIDProof.Name = "txtIDProof";
-            this.txtIDProof.PlaceholderText = "إثبات الهوية"; this.txtIDProof.Size = new Size(240, 40);
+            this.txtIDProof.Location = new Point(340, 120); this.txtIDProof.Name = "txtIDProof";
+            this.txtIDProof.PlaceholderText = "إثبات الهوية"; this.txtIDProof.Size = new Size(260, 40);
             this.txtIDProof.TabIndex = 10;
             // label7
             this.label7.AutoSize = true; this.label7.Font = new Font("Segoe UI", 9.5F);
-            this.label7.ForeColor = Color.FromArgb(71, 85, 105); this.label7.Location = new Point(280, 80);
+            this.label7.ForeColor = Color.FromArgb(71, 85, 105); this.label7.Location = new Point(340, 96);
             this.label7.Name = "label7"; this.label7.Size = new Size(90, 19);
             this.label7.TabIndex = 11; this.label7.Text = "إثبات الهوية";
             // txtAddress
@@ -140,12 +140,12 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             this.txtAddress.Font = new Font("Segoe UI", 10F); this.txtAddress.ForeColor = Color.FromArgb(15, 23, 42);
             this.txtAddress.HoverState.BorderColor = Color.FromArgb(37, 99, 235);
             this.txtAddress.FocusedState.BorderColor = Color.FromArgb(37, 99, 235);
-            this.txtAddress.Location = new Point(280, 162); this.txtAddress.Name = "txtAddress";
-            this.txtAddress.PlaceholderText = "العنوان"; this.txtAddress.Size = new Size(240, 40);
+            this.txtAddress.Location = new Point(340, 200); this.txtAddress.Name = "txtAddress";
+            this.txtAddress.PlaceholderText = "العنوان"; this.txtAddress.Size = new Size(260, 40);
             this.txtAddress.TabIndex = 12;
             // label5
             this.label5.AutoSize = true; this.label5.Font = new Font("Segoe UI", 9.5F);
-            this.label5.ForeColor = Color.FromArgb(71, 85, 105); this.label5.Location = new Point(280, 142);
+            this.label5.ForeColor = Color.FromArgb(71, 85, 105); this.label5.Location = new Point(340, 176);
             this.label5.Name = "label5"; this.label5.Size = new Size(64, 19);
             this.label5.TabIndex = 13; this.label5.Text = "العنوان";
             // DTP_DateOfBirth
@@ -154,13 +154,13 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             this.DTP_DateOfBirth.Font = new Font("Segoe UI", 9F);
             this.DTP_DateOfBirth.ForeColor = Color.White;
             this.DTP_DateOfBirth.Format = DateTimePickerFormat.Long;
-            this.DTP_DateOfBirth.Location = new Point(280, 224); this.DTP_DateOfBirth.Name = "DTP_DateOfBirth";
-            this.DTP_DateOfBirth.Size = new Size(240, 40);
+            this.DTP_DateOfBirth.Location = new Point(340, 280); this.DTP_DateOfBirth.Name = "DTP_DateOfBirth";
+            this.DTP_DateOfBirth.Size = new Size(260, 40);
             this.DTP_DateOfBirth.TabIndex = 14;
             this.DTP_DateOfBirth.Value = new DateTime(2025, 9, 7, 20, 43, 15, 455);
             // label11
             this.label11.AutoSize = true; this.label11.Font = new Font("Segoe UI", 9.5F);
-            this.label11.ForeColor = Color.FromArgb(71, 85, 105); this.label11.Location = new Point(280, 204);
+            this.label11.ForeColor = Color.FromArgb(71, 85, 105); this.label11.Location = new Point(340, 256);
             this.label11.Name = "label11"; this.label11.Size = new Size(80, 19);
             this.label11.TabIndex = 15; this.label11.Text = "تاريخ الميلاد";
             // DTP_CheckIn
@@ -169,13 +169,13 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             this.DTP_CheckIn.Font = new Font("Segoe UI", 9F);
             this.DTP_CheckIn.ForeColor = Color.White;
             this.DTP_CheckIn.Format = DateTimePickerFormat.Long;
-            this.DTP_CheckIn.Location = new Point(280, 286); this.DTP_CheckIn.Name = "DTP_CheckIn";
-            this.DTP_CheckIn.Size = new Size(240, 40);
+            this.DTP_CheckIn.Location = new Point(340, 360); this.DTP_CheckIn.Name = "DTP_CheckIn";
+            this.DTP_CheckIn.Size = new Size(260, 40);
             this.DTP_CheckIn.TabIndex = 16;
             this.DTP_CheckIn.Value = new DateTime(2025, 9, 7, 20, 43, 15, 455);
             // label12
             this.label12.AutoSize = true; this.label12.Font = new Font("Segoe UI", 9.5F);
-            this.label12.ForeColor = Color.FromArgb(71, 85, 105); this.label12.Location = new Point(280, 266);
+            this.label12.ForeColor = Color.FromArgb(71, 85, 105); this.label12.Location = new Point(340, 336);
             this.label12.Name = "label12"; this.label12.Size = new Size(80, 19);
             this.label12.TabIndex = 17; this.label12.Text = "تاريخ الوصول";
             // cmboxBed
@@ -188,11 +188,11 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             this.cmboxBed.FocusedState.BorderColor = Color.FromArgb(37, 99, 235);
             this.cmboxBed.ItemHeight = 30;
             this.cmboxBed.Items.AddRange(new object[] { "Single", "Double", "Queen", "King", "Twin", "Bunk" });
-            this.cmboxBed.Location = new Point(532, 100); this.cmboxBed.Name = "cmboxBed"; this.cmboxBed.Size = new Size(240, 36);
+            this.cmboxBed.Location = new Point(640, 120); this.cmboxBed.Name = "cmboxBed"; this.cmboxBed.Size = new Size(260, 36);
             this.cmboxBed.TabIndex = 18;
             // label3
             this.label3.AutoSize = true; this.label3.Font = new Font("Segoe UI", 9.5F);
-            this.label3.ForeColor = Color.FromArgb(71, 85, 105); this.label3.Location = new Point(532, 80);
+            this.label3.ForeColor = Color.FromArgb(71, 85, 105); this.label3.Location = new Point(640, 96);
             this.label3.Name = "label3"; this.label3.Size = new Size(80, 19);
             this.label3.TabIndex = 19; this.label3.Text = "نوع السرير";
             // cmBoxRoomType
@@ -205,11 +205,11 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             this.cmBoxRoomType.FocusedState.BorderColor = Color.FromArgb(37, 99, 235);
             this.cmBoxRoomType.ItemHeight = 30;
             this.cmBoxRoomType.Items.AddRange(new object[] { "Single", "Double", "Twin", "Triple", "Suite" });
-            this.cmBoxRoomType.Location = new Point(532, 162); this.cmBoxRoomType.Name = "cmBoxRoomType"; this.cmBoxRoomType.Size = new Size(240, 36);
+            this.cmBoxRoomType.Location = new Point(640, 200); this.cmBoxRoomType.Name = "cmBoxRoomType"; this.cmBoxRoomType.Size = new Size(260, 36);
             this.cmBoxRoomType.TabIndex = 20;
             // label2
             this.label2.AutoSize = true; this.label2.Font = new Font("Segoe UI", 9.5F);
-            this.label2.ForeColor = Color.FromArgb(71, 85, 105); this.label2.Location = new Point(532, 142);
+            this.label2.ForeColor = Color.FromArgb(71, 85, 105); this.label2.Location = new Point(640, 176);
             this.label2.Name = "label2"; this.label2.Size = new Size(70, 19);
             this.label2.TabIndex = 21; this.label2.Text = "نوع الغرفة";
             // cmBoxRoomNo
@@ -221,11 +221,11 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             this.cmBoxRoomNo.HoverState.BorderColor = Color.FromArgb(37, 99, 235);
             this.cmBoxRoomNo.FocusedState.BorderColor = Color.FromArgb(37, 99, 235);
             this.cmBoxRoomNo.ItemHeight = 30;
-            this.cmBoxRoomNo.Location = new Point(532, 224); this.cmBoxRoomNo.Name = "cmBoxRoomNo"; this.cmBoxRoomNo.Size = new Size(240, 36);
+            this.cmBoxRoomNo.Location = new Point(640, 280); this.cmBoxRoomNo.Name = "cmBoxRoomNo"; this.cmBoxRoomNo.Size = new Size(260, 36);
             this.cmBoxRoomNo.TabIndex = 22;
             // label6
             this.label6.AutoSize = true; this.label6.Font = new Font("Segoe UI", 9.5F);
-            this.label6.ForeColor = Color.FromArgb(71, 85, 105); this.label6.Location = new Point(532, 204);
+            this.label6.ForeColor = Color.FromArgb(71, 85, 105); this.label6.Location = new Point(640, 256);
             this.label6.Name = "label6"; this.label6.Size = new Size(80, 19);
             this.label6.TabIndex = 23; this.label6.Text = "رقم الغرفة";
             // txtPrice
@@ -234,12 +234,12 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             this.txtPrice.Font = new Font("Segoe UI", 10F); this.txtPrice.ForeColor = Color.FromArgb(15, 23, 42);
             this.txtPrice.HoverState.BorderColor = Color.FromArgb(37, 99, 235);
             this.txtPrice.FocusedState.BorderColor = Color.FromArgb(37, 99, 235);
-            this.txtPrice.Location = new Point(532, 286); this.txtPrice.Name = "txtPrice";
+            this.txtPrice.Location = new Point(640, 360); this.txtPrice.Name = "txtPrice";
             this.txtPrice.PlaceholderText = "السعر"; this.txtPrice.ReadOnly = true;
-            this.txtPrice.Size = new Size(240, 40); this.txtPrice.TabIndex = 24;
+            this.txtPrice.Size = new Size(260, 40); this.txtPrice.TabIndex = 24;
             // label10
             this.label10.AutoSize = true; this.label10.Font = new Font("Segoe UI", 9.5F);
-            this.label10.ForeColor = Color.FromArgb(71, 85, 105); this.label10.Location = new Point(532, 266);
+            this.label10.ForeColor = Color.FromArgb(71, 85, 105); this.label10.Location = new Point(640, 336);
             this.label10.Name = "label10"; this.label10.Size = new Size(42, 19);
             this.label10.TabIndex = 25; this.label10.Text = "السعر";
             // allotebtn
@@ -249,8 +249,8 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             this.allotebtn.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             this.allotebtn.ForeColor = Color.White;
             this.allotebtn.HoverState.FillColor = Color.FromArgb(5, 150, 105);
-            this.allotebtn.Location = new Point(532, 344);
-            this.allotebtn.Name = "allotebtn"; this.allotebtn.Size = new Size(140, 44);
+            this.allotebtn.Location = new Point(640, 424);
+            this.allotebtn.Name = "allotebtn"; this.allotebtn.Size = new Size(156, 48);
             this.allotebtn.TabIndex = 26;
             this.allotebtn.Text = "تخصيص الغرفة";
             this.allotebtn.TextAlign = HorizontalAlignment.Left;

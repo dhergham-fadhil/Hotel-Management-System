@@ -135,5 +135,15 @@ namespace Hotel_Managment_System
             cbo.FocusedState.BorderColor = SidebarActive;
             cbo.HoverState.BorderColor = SidebarActive;
         }
+
+        public static void StyleDatePicker(Guna2DateTimePicker dtp)
+        {
+            dtp.BorderRadius = 8;
+            dtp.BorderColor = Border;
+            dtp.BorderThickness = 1;
+            dtp.FillColor = Surface;
+            dtp.ForeColor = TextPrimary;
+            dtp.Font = BodyFont;
+        }
     }
 }

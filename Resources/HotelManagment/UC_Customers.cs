@@ -209,6 +209,9 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             Theme.StyleCombo(cmBoxRoomType);
             Theme.StyleCombo(cmBoxRoomNo);
 
+            Theme.StyleDatePicker(DTP_DateOfBirth);
+            Theme.StyleDatePicker(DTP_CheckIn);
+
             Theme.StyleActionButton(allotebtn, true);
 
             label1.ForeColor = Theme.TextSecondary;

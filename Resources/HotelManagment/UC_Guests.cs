@@ -282,6 +282,7 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             Theme.StyleActionButton(refreshbtn, true);
 
             Theme.StyleDangerButton(btnCheckout);
+            Theme.StyleDatePicker(DTP_CheckOut);
 
             labelSelected.ForeColor = Theme.TextPrimary;
             labelSelected.Font = new Font("Segoe UI", 9.5F);
