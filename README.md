@@ -16,6 +16,7 @@ A desktop hotel management application built with **C# / WinForms** and **SQL Se
 | Active-guest list, check-out, and billing | ✅ |
 | Staff registration, listing, and deletion (Admin only) | ✅ |
 | Dashboard (hotel overview, revenue, recent activity) | ✅ |
+| Arabic user interface across all screens; database values stay in English (`Male`/`Female`, `Staff`/`Admin`, `Free`/`Busy`) | ✅ |
 | Logout (returns to the login screen) | ✅ |
 
 ---
@@ -53,6 +54,21 @@ Hotel_Managment_System/
 │   └── migrations/             Incremental scripts for existing databases
 └── App.config                  Application settings (connection string)
 ```
+
+---
+
+## User Interface (redesign/ui-theme branch)
+
+The UI redesign lives on branch `redesign/ui-theme` (not yet merged to `main`) and is built on top of `Theme.cs`, a central palette (deep slate + gold) with helpers for inputs, combos, date pickers, buttons, cards, page headings, RTL-aligned labels, and header search/filter boxes.
+
+Highlights:
+
+- **Unified look:** every screen has a 20pt bold title, a muted subtitle, and rounded white "card" panels with a hairline border.
+- **Arabic first:** all labels, grid headers, hints, buttons, and `MessageBox` text are Arabic. Stored database values remain English (`Male`/`Female`, `Staff`/`Admin`, `Free`/`Busy`, room types), converted through `Localization.cs` when reading or writing.
+- **RTL labels:** labels above fields are right-aligned and widened to match their field (`Theme.AlignFieldLabels`).
+- **Search / filter:** Rooms (by number + status), Guests (by name, mobile, room), and Staff (by name, user, mobile, role) grids can be searched and filtered without reloading the page.
+- **Staff screen:** the four tabs were merged into one page — a searchable Arabic grid on the left and an add/edit form card on the right. The password field doubles as the administrator-driven password reset (leave blank to keep the current password).
+- **Dashboard:** kept as a dashboard interface — KPI cards (total/free/busy rooms, customers, staff, revenue), a wider recent-stays table, and RTL-aligned card titles.
 
 ---
 
@@ -198,7 +214,8 @@ The following issues are known and will be addressed in order (see the roadmap):
 - [x] Per-field input validation (lengths, formats, dates, duplicate checks)
 - [x] Dashboard replacing the Bookings placeholder
 - [x] Real login + PBKDF2 password hashing + roles
-- [ ] Password reset, account lockout, and idle-session timeout
+- [x] Staff password reset by administrator (Phase 4.3, Staff screen)
+- [ ] Account lockout and idle-session timeout
 - [x] Complete the Rooms screen (Edit / Delete)
 - [x] Customer list + check-out + billing
 - [ ] Separate layers (Repositories / Services)
