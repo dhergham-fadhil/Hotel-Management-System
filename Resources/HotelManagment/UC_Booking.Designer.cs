@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace Hotel_Managment_System.Resources.HotelManagment
@@ -149,7 +149,7 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             this.lblTotalRoomsTitle.ForeColor = Color.FromArgb(71, 85, 105);
             this.lblTotalRoomsTitle.Location = new System.Drawing.Point(20, 14);
             this.lblTotalRoomsTitle.Name = "lblTotalRoomsTitle";
-            this.lblTotalRoomsTitle.Size = new System.Drawing.Size(74, 17);
+            this.lblTotalRoomsTitle.Size = new System.Drawing.Size(74, 19);
             this.lblTotalRoomsTitle.TabIndex = 1;
             this.lblTotalRoomsTitle.Text = "إجمالي الغرف";
             //
@@ -191,7 +191,7 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             this.lblFreeRoomsTitle.ForeColor = Color.FromArgb(71, 85, 105);
             this.lblFreeRoomsTitle.Location = new System.Drawing.Point(20, 14);
             this.lblFreeRoomsTitle.Name = "lblFreeRoomsTitle";
-            this.lblFreeRoomsTitle.Size = new System.Drawing.Size(74, 17);
+            this.lblFreeRoomsTitle.Size = new System.Drawing.Size(74, 19);
             this.lblFreeRoomsTitle.TabIndex = 1;
             this.lblFreeRoomsTitle.Text = "الغرف الفارغة";
             //
@@ -233,7 +233,7 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             this.lblBusyRoomsTitle.ForeColor = Color.FromArgb(71, 85, 105);
             this.lblBusyRoomsTitle.Location = new System.Drawing.Point(20, 14);
             this.lblBusyRoomsTitle.Name = "lblBusyRoomsTitle";
-            this.lblBusyRoomsTitle.Size = new System.Drawing.Size(85, 17);
+            this.lblBusyRoomsTitle.Size = new System.Drawing.Size(85, 19);
             this.lblBusyRoomsTitle.TabIndex = 1;
             this.lblBusyRoomsTitle.Text = "الغرف المشغولة";
             //
@@ -275,7 +275,7 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             this.lblCustomersTitle.ForeColor = Color.FromArgb(71, 85, 105);
             this.lblCustomersTitle.Location = new System.Drawing.Point(20, 14);
             this.lblCustomersTitle.Name = "lblCustomersTitle";
-            this.lblCustomersTitle.Size = new System.Drawing.Size(58, 17);
+            this.lblCustomersTitle.Size = new System.Drawing.Size(58, 19);
             this.lblCustomersTitle.TabIndex = 1;
             this.lblCustomersTitle.Text = "العملاء";
             //
@@ -317,7 +317,7 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             this.lblStaffTitle.ForeColor = Color.FromArgb(71, 85, 105);
             this.lblStaffTitle.Location = new System.Drawing.Point(20, 14);
             this.lblStaffTitle.Name = "lblStaffTitle";
-            this.lblStaffTitle.Size = new System.Drawing.Size(44, 17);
+            this.lblStaffTitle.Size = new System.Drawing.Size(44, 19);
             this.lblStaffTitle.TabIndex = 1;
             this.lblStaffTitle.Text = "الموظفون";
             //
@@ -359,7 +359,7 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             this.lblTotalRevenueTitle.ForeColor = Color.FromArgb(71, 85, 105);
             this.lblTotalRevenueTitle.Location = new System.Drawing.Point(20, 14);
             this.lblTotalRevenueTitle.Name = "lblTotalRevenueTitle";
-            this.lblTotalRevenueTitle.Size = new System.Drawing.Size(88, 17);
+            this.lblTotalRevenueTitle.Size = new System.Drawing.Size(88, 19);
             this.lblTotalRevenueTitle.TabIndex = 1;
             this.lblTotalRevenueTitle.Text = "إجمالي الإيرادات";
             //
@@ -401,7 +401,7 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             this.lblTodayRevenueTitle.ForeColor = Color.FromArgb(71, 85, 105);
             this.lblTodayRevenueTitle.Location = new System.Drawing.Point(20, 14);
             this.lblTodayRevenueTitle.Name = "lblTodayRevenueTitle";
-            this.lblTodayRevenueTitle.Size = new System.Drawing.Size(93, 17);
+            this.lblTodayRevenueTitle.Size = new System.Drawing.Size(93, 19);
             this.lblTodayRevenueTitle.TabIndex = 1;
             this.lblTodayRevenueTitle.Text = "إيرادات اليوم";
             //
@@ -499,7 +499,7 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             this.Controls.Add(this.labelSubtitle);
             this.Controls.Add(this.labelTitle);
             this.Name = "UC_Booking";
-            this.Size = new System.Drawing.Size(1160, 518);
+            this.Size = new System.Drawing.Size(1200, 518);
             this.Load += new System.EventHandler(this.UC_Booking_Load);
             this.pnlTotalRooms.ResumeLayout(false);
             this.pnlTotalRooms.PerformLayout();

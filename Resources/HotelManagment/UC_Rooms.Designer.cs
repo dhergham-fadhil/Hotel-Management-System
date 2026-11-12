@@ -1,4 +1,4 @@
-﻿using System.Drawing;
+using System.Drawing;
 using System.Windows.Forms;
 
 namespace Hotel_Managment_System.Resources.HotelManagment
@@ -156,7 +156,7 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             this.label1.ForeColor = Color.FromArgb(71, 85, 105);
             this.label1.Location = new System.Drawing.Point(28, 146);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(70, 17);
+            this.label1.Size = new System.Drawing.Size(70, 19);
             this.label1.TabIndex = 5;
             this.label1.Text = "نوع الغرفة";
             //
@@ -188,7 +188,7 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             this.label5.ForeColor = Color.FromArgb(71, 85, 105);
             this.label5.Location = new System.Drawing.Point(28, 260);
             this.label5.Name = "label5";
-            this.label5.Size = new System.Drawing.Size(42, 17);
+            this.label5.Size = new System.Drawing.Size(42, 19);
             this.label5.TabIndex = 11;
             this.label5.Text = "السعر";
             //
@@ -199,7 +199,7 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             this.label6.ForeColor = Color.FromArgb(71, 85, 105);
             this.label6.Location = new System.Drawing.Point(28, 204);
             this.label6.Name = "label6";
-            this.label6.Size = new System.Drawing.Size(52, 17);
+            this.label6.Size = new System.Drawing.Size(52, 19);
             this.label6.TabIndex = 12;
             this.label6.Text = "السرير";
             //
@@ -266,7 +266,7 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             this.addbtn.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.addbtn.ForeColor = Color.White;
             this.addbtn.HoverState.FillColor = Color.FromArgb(29, 78, 216);
-            this.addbtn.Location = new System.Drawing.Point(28, 344);
+            this.addbtn.Location = new System.Drawing.Point(28, 402);
             this.addbtn.Name = "addbtn";
             this.addbtn.Size = new System.Drawing.Size(110, 40);
             this.addbtn.TabIndex = 16;
@@ -288,7 +288,7 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             this.editbtn.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.editbtn.ForeColor = Color.White;
             this.editbtn.HoverState.FillColor = Color.FromArgb(37, 99, 235);
-            this.editbtn.Location = new System.Drawing.Point(150, 344);
+            this.editbtn.Location = new System.Drawing.Point(150, 402);
             this.editbtn.Name = "editbtn";
             this.editbtn.Size = new System.Drawing.Size(110, 40);
             this.editbtn.TabIndex = 17;
@@ -310,7 +310,7 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             this.deletebtn.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.deletebtn.ForeColor = Color.White;
             this.deletebtn.HoverState.FillColor = Color.FromArgb(199, 45, 45);
-            this.deletebtn.Location = new System.Drawing.Point(28, 394);
+            this.deletebtn.Location = new System.Drawing.Point(28, 452);
             this.deletebtn.Name = "deletebtn";
             this.deletebtn.Size = new System.Drawing.Size(110, 40);
             this.deletebtn.TabIndex = 18;
@@ -334,7 +334,7 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             this.cmBoxStatus.Items.AddRange(new object[] {
             "Free",
             "Busy"});
-            this.cmBoxStatus.Location = new System.Drawing.Point(28, 330);
+            this.cmBoxStatus.Location = new System.Drawing.Point(28, 358);
             this.cmBoxStatus.Name = "cmBoxStatus";
             this.cmBoxStatus.Size = new System.Drawing.Size(240, 36);
             this.cmBoxStatus.TabIndex = 20;
@@ -344,9 +344,9 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             this.label2.AutoSize = true;
             this.label2.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             this.label2.ForeColor = Color.FromArgb(71, 85, 105);
-            this.label2.Location = new System.Drawing.Point(28, 310);
+            this.label2.Location = new System.Drawing.Point(28, 336);
             this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(66, 17);
+            this.label2.Size = new System.Drawing.Size(66, 19);
             this.label2.TabIndex = 19;
             this.label2.Text = "الحالة";
             //
@@ -364,7 +364,7 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             this.clearbtn.Font = new System.Drawing.Font("Segoe UI", 10F, System.Drawing.FontStyle.Bold);
             this.clearbtn.ForeColor = Color.FromArgb(71, 85, 105);
             this.clearbtn.HoverState.FillColor = Color.FromArgb(226, 232, 240);
-            this.clearbtn.Location = new System.Drawing.Point(158, 394);
+            this.clearbtn.Location = new System.Drawing.Point(158, 452);
             this.clearbtn.Name = "clearbtn";
             this.clearbtn.Size = new System.Drawing.Size(110, 40);
             this.clearbtn.TabIndex = 19;

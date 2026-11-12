@@ -160,7 +160,7 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             this.labelCheckOut.ForeColor = Color.FromArgb(71, 85, 105);
             this.labelCheckOut.Location = new Point(24, 404);
             this.labelCheckOut.Name = "labelCheckOut";
-            this.labelCheckOut.Size = new Size(96, 17);
+            this.labelCheckOut.Size = new Size(130, 19);
             this.labelCheckOut.TabIndex = 6;
             this.labelCheckOut.Text = "تاريخ المغادرة";
             //
@@ -176,7 +176,7 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             this.DTP_CheckOut.MaxDate = new DateTime(9998, 12, 31, 0, 0, 0, 0);
             this.DTP_CheckOut.MinDate = new DateTime(1753, 1, 1, 0, 0, 0, 0);
             this.DTP_CheckOut.Name = "DTP_CheckOut";
-            this.DTP_CheckOut.Size = new Size(240, 40);
+            this.DTP_CheckOut.Size = new Size(270, 40);
             this.DTP_CheckOut.TabIndex = 7;
             this.DTP_CheckOut.Value = new DateTime(2025, 9, 7, 20, 43, 15, 455);
             this.DTP_CheckOut.ValueChanged += new EventHandler(this.DTP_CheckOut_ValueChanged);

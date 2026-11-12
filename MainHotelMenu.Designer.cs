@@ -63,7 +63,7 @@ namespace Hotel_Managment_System
             this.panelHeader.Dock = System.Windows.Forms.DockStyle.Top;
             this.panelHeader.Location = new System.Drawing.Point(0, 0);
             this.panelHeader.Name = "panelHeader";
-            this.panelHeader.Size = new System.Drawing.Size(1200, 72);
+            this.panelHeader.Size = new System.Drawing.Size(1460, 72);
             this.panelHeader.TabIndex = 0;
             //
             // btnClose
@@ -80,7 +80,7 @@ namespace Hotel_Managment_System
             this.btnClose.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             this.btnClose.ForeColor = Color.White;
             this.btnClose.HoverState.FillColor = Color.FromArgb(199, 45, 45);
-            this.btnClose.Location = new System.Drawing.Point(1138, 16);
+            this.btnClose.Location = new System.Drawing.Point(1398, 16);
             this.btnClose.Name = "btnClose";
             this.btnClose.Size = new System.Drawing.Size(48, 40);
             this.btnClose.TabIndex = 4;
@@ -92,7 +92,7 @@ namespace Hotel_Managment_System
             this.labelUser.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
             this.labelUser.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             this.labelUser.ForeColor = Color.FromArgb(243, 246, 249);
-            this.labelUser.Location = new System.Drawing.Point(800, 18);
+            this.labelUser.Location = new System.Drawing.Point(1060, 18);
             this.labelUser.Name = "labelUser";
             this.labelUser.Size = new System.Drawing.Size(320, 36);
             this.labelUser.TabIndex = 3;
@@ -132,7 +132,7 @@ namespace Hotel_Managment_System
             this.panelSidebar.Dock = System.Windows.Forms.DockStyle.Left;
             this.panelSidebar.Location = new System.Drawing.Point(0, 72);
             this.panelSidebar.Name = "panelSidebar";
-            this.panelSidebar.Size = new System.Drawing.Size(260, 628);
+            this.panelSidebar.Size = new System.Drawing.Size(260, 688);
             this.panelSidebar.TabIndex = 1;
             //
             // btnLogout
@@ -150,7 +150,7 @@ namespace Hotel_Managment_System
             this.btnLogout.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
             this.btnLogout.ForeColor = Color.White;
             this.btnLogout.HoverState.FillColor = Color.FromArgb(192, 57, 43);
-            this.btnLogout.Location = new System.Drawing.Point(20, 554);
+            this.btnLogout.Location = new System.Drawing.Point(20, 614);
             this.btnLogout.Name = "btnLogout";
             this.btnLogout.Size = new System.Drawing.Size(220, 48);
             this.btnLogout.TabIndex = 6;
@@ -289,7 +289,7 @@ namespace Hotel_Managment_System
             this.UC_Panel.Dock = System.Windows.Forms.DockStyle.Fill;
             this.UC_Panel.Location = new System.Drawing.Point(260, 72);
             this.UC_Panel.Name = "UC_Panel";
-            this.UC_Panel.Size = new System.Drawing.Size(940, 628);
+            this.UC_Panel.Size = new System.Drawing.Size(1200, 688);
             this.UC_Panel.TabIndex = 2;
             //
             // guna2DragControl1
@@ -302,7 +302,7 @@ namespace Hotel_Managment_System
             //
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 16F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1200, 700);
+            this.ClientSize = new System.Drawing.Size(1460, 760);
             this.Controls.Add(this.UC_Panel);
             this.Controls.Add(this.panelSidebar);
             this.Controls.Add(this.panelHeader);
@@ -339,3 +339,4 @@ namespace Hotel_Managment_System
         private Guna.UI2.WinForms.Guna2DragControl guna2DragControl1;
     }
 }
+
