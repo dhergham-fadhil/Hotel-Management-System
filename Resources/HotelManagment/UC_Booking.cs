@@ -5,18 +5,21 @@ using System.Windows.Forms;
 
 namespace Hotel_Managment_System.Resources.HotelManagment
 {
-    public partial class UC_Booking : UserControl
+    public partial class UC_Booking : UserControl, ILocalizable
     {
         private readonly function fn = new function();
+        private bool dashboardLoaded;
 
         public UC_Booking()
         {
             InitializeComponent();
+            DGV_RecentCustomers.CellFormatting += DGV_RecentCustomers_CellFormatting;
         }
 
         private void UC_Booking_Load(object sender, EventArgs e)
         {
             ApplyTheme();
+            ApplyLanguage();
             LoadDashboard();
         }
 
@@ -75,46 +78,95 @@ namespace Hotel_Managment_System.Resources.HotelManagment
                 lblTotalRevenueValue.Text = totalRevenue.ToString("N2");
                 lblTodayRevenueValue.Text = todayRevenue.ToString("N2");
 
-                labelSubtitle.Text = "نزلاء نشطون: " + activeCustomers +
-                                     "   |   الإيرادات: " + totalRevenue.ToString("N2") +
-                                     "   |   محدث: " + DateTime.Now.ToString("HH:mm");
+                labelSubtitle.Text = Language.T("نزلاء نشطون: ", "Active guests: ") + activeCustomers +
+                                     Language.T("   |   الإيرادات: ", "   |   Revenue: ") +
+                                     totalRevenue.ToString("N2") +
+                                     Language.T("   |   محدث: ", "   |   Updated: ") +
+                                     DateTime.Now.ToString("HH:mm");
 
                 DGV_RecentCustomers.DataSource = fn.GetRecentCustomers(10);
+                ConfigureRecentGrid();
 
-                if (DGV_RecentCustomers.Columns["Customer"] != null)
-                    DGV_RecentCustomers.Columns["Customer"].HeaderText = "الضيف";
-                if (DGV_RecentCustomers.Columns["Room"] != null)
-                    DGV_RecentCustomers.Columns["Room"].HeaderText = "الغرفة";
-                if (DGV_RecentCustomers.Columns["Check In"] != null)
-                {
-                    DGV_RecentCustomers.Columns["Check In"].HeaderText = "تسجيل الوصول";
-                    DGV_RecentCustomers.Columns["Check In"].DefaultCellStyle.Format = "yyyy-MM-dd";
-                }
-                if (DGV_RecentCustomers.Columns["Check Out"] != null)
-                {
-                    DGV_RecentCustomers.Columns["Check Out"].HeaderText = "تسجيل المغادرة";
-                    DGV_RecentCustomers.Columns["Check Out"].DefaultCellStyle.Format = "yyyy-MM-dd";
-                }
-                if (DGV_RecentCustomers.Columns["Nights"] != null)
-                {
-                    DGV_RecentCustomers.Columns["Nights"].HeaderText = "ليالي";
-                    DGV_RecentCustomers.Columns["Nights"].DefaultCellStyle.Alignment =
-                        DataGridViewContentAlignment.MiddleRight;
-                }
-                if (DGV_RecentCustomers.Columns["Bill"] != null)
-                {
-                    DGV_RecentCustomers.Columns["Bill"].HeaderText = "الفاتورة";
-                    DGV_RecentCustomers.Columns["Bill"].DefaultCellStyle.Format = "N2";
-                    DGV_RecentCustomers.Columns["Bill"].DefaultCellStyle.Alignment =
-                        DataGridViewContentAlignment.MiddleRight;
-                }
-                if (DGV_RecentCustomers.Columns["Status"] != null)
-                    DGV_RecentCustomers.Columns["Status"].HeaderText = "الحالة";
+                dashboardLoaded = true;
             }
             finally
             {
                 Cursor = Cursors.Default;
             }
+        }
+
+        private void DGV_RecentCustomers_CellFormatting(object sender, DataGridViewCellFormattingEventArgs e)
+        {
+            if (e.RowIndex < 0 || e.Value == null)
+                return;
+
+            DataGridViewColumn column = DGV_RecentCustomers.Columns[e.ColumnIndex];
+
+            if (column.Name == "Status")
+            {
+                e.Value = Localization.ActivityDisplay(Convert.ToString(e.Value));
+                e.FormattingApplied = true;
+            }
+        }
+
+        private void ConfigureRecentGrid()
+        {
+            if (DGV_RecentCustomers.Columns["Customer"] != null)
+                DGV_RecentCustomers.Columns["Customer"].HeaderText = Language.T("الضيف", "Guest");
+            if (DGV_RecentCustomers.Columns["Room"] != null)
+                DGV_RecentCustomers.Columns["Room"].HeaderText = Language.T("الغرفة", "Room");
+            if (DGV_RecentCustomers.Columns["Check In"] != null)
+            {
+                DGV_RecentCustomers.Columns["Check In"].HeaderText =
+                    Language.T("تسجيل الوصول", "Check-in");
+                DGV_RecentCustomers.Columns["Check In"].DefaultCellStyle.Format = "yyyy-MM-dd";
+            }
+            if (DGV_RecentCustomers.Columns["Check Out"] != null)
+            {
+                DGV_RecentCustomers.Columns["Check Out"].HeaderText =
+                    Language.T("تسجيل المغادرة", "Check-out");
+                DGV_RecentCustomers.Columns["Check Out"].DefaultCellStyle.Format = "yyyy-MM-dd";
+            }
+            if (DGV_RecentCustomers.Columns["Nights"] != null)
+            {
+                DGV_RecentCustomers.Columns["Nights"].HeaderText = Language.T("ليالي", "Nights");
+                DGV_RecentCustomers.Columns["Nights"].DefaultCellStyle.Alignment =
+                    DataGridViewContentAlignment.MiddleRight;
+            }
+            if (DGV_RecentCustomers.Columns["Bill"] != null)
+            {
+                DGV_RecentCustomers.Columns["Bill"].HeaderText = Language.T("الفاتورة", "Bill");
+                DGV_RecentCustomers.Columns["Bill"].DefaultCellStyle.Format = "N2";
+                DGV_RecentCustomers.Columns["Bill"].DefaultCellStyle.Alignment =
+                    DataGridViewContentAlignment.MiddleRight;
+            }
+            if (DGV_RecentCustomers.Columns["Status"] != null)
+                DGV_RecentCustomers.Columns["Status"].HeaderText =
+                    Language.T("الحالة", "Status");
+        }
+
+        public void ApplyLanguage()
+        {
+            labelTitle.Text = Language.T("لوحة القيادة", "Dashboard");
+            labelSubtitle.Text = Language.T("نظرة عامة على الفندق", "Hotel overview");
+
+            refreshbtn.Text = Language.T("تحديث", "Refresh");
+
+            lblTotalRoomsTitle.Text = Language.T("إجمالي الغرف", "Total rooms");
+            lblFreeRoomsTitle.Text = Language.T("الغرف الفارغة", "Free rooms");
+            lblBusyRoomsTitle.Text = Language.T("الغرف المشغولة", "Occupied rooms");
+            lblCustomersTitle.Text = Language.T("العملاء", "Customers");
+            lblStaffTitle.Text = Language.T("الموظفون", "Staff");
+            lblTotalRevenueTitle.Text = Language.T("إجمالي الإيرادات", "Total revenue");
+            lblTodayRevenueTitle.Text = Language.T("إيرادات اليوم", "Today's revenue");
+
+            labelRecent.Text = Language.T("النشاط الأخير", "Recent activity");
+
+            ConfigureRecentGrid();
+
+            // Reloading redraws the subtitle summary in the new language.
+            if (dashboardLoaded)
+                LoadDashboard();
         }
 
         private void ApplyTheme()

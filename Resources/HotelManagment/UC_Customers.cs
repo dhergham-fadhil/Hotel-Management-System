@@ -7,10 +7,11 @@ using Guna.UI2.WinForms;
 
 namespace Hotel_Managment_System.Resources.HotelManagment
 {
-    public partial class UC_Customers : UserControl
+    public partial class UC_Customers : UserControl, ILocalizable
     {
         private readonly function fn = new function();
         private int roomId;
+        private bool updatingLanguage;
 
         public UC_Customers()
         {
@@ -24,6 +25,7 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             cmBoxRoomNo.SelectedIndexChanged += cmBoxRoomNo_SelectedIndexChanged;
 
             ApplyTheme();
+            ApplyLanguage();
         }
 
         private void UpdateRoomNumbers()
@@ -58,16 +60,25 @@ namespace Hotel_Managment_System.Resources.HotelManagment
 
         private void cmBoxRoomType_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (updatingLanguage)
+                return;
+
             UpdateRoomNumbers();
         }
 
         private void cmboxBed_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (updatingLanguage)
+                return;
+
             UpdateRoomNumbers();
         }
 
         private void cmBoxRoomNo_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (updatingLanguage)
+                return;
+
             txtPrice.Clear();
             roomId = 0;
 
@@ -130,79 +141,103 @@ namespace Hotel_Managment_System.Resources.HotelManagment
 
             if (allocated)
             {
-                MessageBox.Show("تم تخصيص الغرفة " + selectedRoom + " بنجاح.",
-                    "نجاح", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show(Language.T("تم تخصيص الغرفة ", "Room assigned: ") + selectedRoom +
+                        Language.T(" بنجاح.", " successfully."),
+                    Language.T("نجاح", "Success"),
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                 ClearALL();
             }
             else
             {
-                MessageBox.Show(error ?? "تعذّر تخصيص الغرفة.",
-                    "فشل التخصيص", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(LocalizeAllocationError(error) ??
+                        Language.T("تعذّر تخصيص الغرفة.", "Could not assign the room."),
+                    Language.T("فشل التخصيص", "Assignment Failed"),
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
+        }
+
+        private static string LocalizeAllocationError(string error)
+        {
+            if (string.IsNullOrEmpty(error) || !Language.IsArabic)
+                return error;
+
+            if (error == "This room is no longer available.")
+                return "هذه الغرفة لم تعد متاحة.";
+
+            return error;
         }
 
         private bool ValidateCustomerInput()
         {
             string name = (txtName.Text ?? string.Empty).Trim();
             if (name.Length == 0)
-                return Fail("اسم النزيل مطلوب.", txtName);
+                return Fail(Language.T("اسم النزيل مطلوب.", "Guest name is required."), txtName);
             if (name.Length < 2)
-                return Fail("اسم النزيل يجب أن يكون حرفين على الأقل.", txtName);
+                return Fail(Language.T("اسم النزيل يجب أن يكون حرفين على الأقل.",
+                                       "Guest name must be at least two characters."), txtName);
             if (name.Length > 75)
-                return Fail("اسم النزيل لا يتجاوز 75 حرفاً.", txtName);
+                return Fail(Language.T("اسم النزيل لا يتجاوز 75 حرفاً.",
+                                       "Guest name cannot exceed 75 characters."), txtName);
 
             string nationality = (txtNationality.Text ?? string.Empty).Trim();
             if (nationality.Length == 0)
-                return Fail("الجنسية مطلوبة.", txtNationality);
+                return Fail(Language.T("الجنسية مطلوبة.", "Nationality is required."), txtNationality);
             if (nationality.Length > 25)
-                return Fail("الجنسية لا تتجاوز 25 حرفاً.", txtNationality);
+                return Fail(Language.T("الجنسية لا تتجاوز 25 حرفاً.",
+                                       "Nationality cannot exceed 25 characters."), txtNationality);
 
             string mobile = (txtMobileNo.Text ?? string.Empty).Trim();
             if (!Validation.IsValidMobile(mobile))
-                return Fail("أدخل رقم جوال صحيحاً (7-15 رقماً).", txtMobileNo);
+                return Fail(Language.T("أدخل رقم جوال صحيحاً (7-15 رقماً).",
+                                       "Enter a valid mobile number (7-15 digits)."), txtMobileNo);
 
             if (cmBoxGender.SelectedIndex < 0)
-                return Fail("اختر الجنس.", cmBoxGender);
+                return Fail(Language.T("اختر الجنس.", "Select the gender."), cmBoxGender);
 
             string idProof = (txtIDProof.Text ?? string.Empty).Trim();
             if (idProof.Length == 0)
-                return Fail("إثبات الهوية مطلوب.", txtIDProof);
+                return Fail(Language.T("إثبات الهوية مطلوب.", "ID proof is required."), txtIDProof);
             if (idProof.Length > 30)
-                return Fail("إثبات الهوية لا يتجاوز 30 حرفاً.", txtIDProof);
+                return Fail(Language.T("إثبات الهوية لا يتجاوز 30 حرفاً.",
+                                       "ID proof cannot exceed 30 characters."), txtIDProof);
 
             string address = (txtAddress.Text ?? string.Empty).Trim();
             if (address.Length < 5)
-                return Fail("أدخل عنواناً صحيحاً (5 أحرف على الأقل).", txtAddress);
+                return Fail(Language.T("أدخل عنواناً صحيحاً (5 أحرف على الأقل).",
+                                       "Enter a valid address (at least 5 characters)."), txtAddress);
             if (address.Length > 350)
-                return Fail("العنوان لا يتجاوز 350 حرفاً.", txtAddress);
+                return Fail(Language.T("العنوان لا يتجاوز 350 حرفاً.",
+                                       "Address cannot exceed 350 characters."), txtAddress);
 
             if (roomId <= 0)
-                return Fail("اختر غرفة شاغرة أولاً.", cmBoxRoomNo);
+                return Fail(Language.T("اختر غرفة شاغرة أولاً.", "Select a free room first."), cmBoxRoomNo);
 
             if (DTP_DateOfBirth.Value.Date >= DateTime.Today)
-                return Fail("تاريخ الميلاد يجب أن يكون قبل اليوم.", DTP_DateOfBirth);
+                return Fail(Language.T("تاريخ الميلاد يجب أن يكون قبل اليوم.",
+                                       "Date of birth must be before today."), DTP_DateOfBirth);
 
             if (DTP_CheckIn.Value.Date < DateTime.Today)
-                return Fail("تاريخ الوصول لا يكون في الماضي.", DTP_CheckIn);
+                return Fail(Language.T("تاريخ الوصول لا يكون في الماضي.",
+                                       "Check-in date cannot be in the past."), DTP_CheckIn);
 
             return true;
         }
 
         private static void SetComboItems(Guna2ComboBox combo, string[] items)
         {
-            string current = combo.Text;
+            int index = combo.SelectedIndex;
 
             combo.Items.Clear();
             combo.Items.AddRange(items);
 
-            if (!string.IsNullOrEmpty(current) && combo.Items.Contains(current))
-                combo.SelectedItem = current;
+            if (index >= 0 && index < combo.Items.Count)
+                combo.SelectedIndex = index;
         }
 
         private bool Fail(string message, Control focus)
         {
-            MessageBox.Show(message, "تحقق",
+            MessageBox.Show(message, Language.T("تحقق", "Validation"),
                 MessageBoxButtons.OK, MessageBoxIcon.Warning);
 
             focus.Focus();
@@ -260,13 +295,57 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             label6.Font = new Font("Segoe UI", 9.5F);
             label10.Font = new Font("Segoe UI", 9.5F);
 
-            SetComboItems(cmBoxGender, new[] { "ذكر", "أنثى", "آخر", "أفضل عدم الإجابة" });
-            SetComboItems(cmBoxRoomType, new[] { "فردية", "مزدوجة", "توأم", "ثلاثية", "جناح" });
-            SetComboItems(cmboxBed, new[] { "فردي", "مزدوج", "كوين", "كينغ", "توأم", "بطابقين" });
+            SetComboItems(cmBoxGender, Localization.GenderItems());
+            SetComboItems(cmBoxRoomType, Localization.RoomTypeItems());
+            SetComboItems(cmboxBed, Localization.BedItems());
 
             Theme.AddCard(this, new Rectangle(24, 86, 904, 402));
 
             Theme.AlignFieldLabels(this);
+        }
+
+        public void ApplyLanguage()
+        {
+            labelTitle.Text = Language.T("تسجيل النزيل", "Register guest");
+            labelSubtitle.Text = Language.T("إضافة نزيل جديد وتخصيص غرفة",
+                                            "Add a new guest and assign a room");
+
+            label1.Text = Language.T("الاسم الكامل", "Full name");
+            label9.Text = Language.T("رقم الجوال", "Mobile");
+            label8.Text = Language.T("الجنسية", "Nationality");
+            label4.Text = Language.T("الجنس", "Gender");
+            label7.Text = Language.T("إثبات الهوية", "ID proof");
+            label5.Text = Language.T("العنوان", "Address");
+            label11.Text = Language.T("تاريخ الميلاد", "Date of birth");
+            label12.Text = Language.T("تاريخ الوصول", "Check-in date");
+            label3.Text = Language.T("نوع السرير", "Bed type");
+            label2.Text = Language.T("نوع الغرفة", "Room type");
+            label6.Text = Language.T("رقم الغرفة", "Room number");
+            label10.Text = Language.T("السعر", "Price");
+
+            txtName.PlaceholderText = Language.T("الاسم الكامل", "Full name");
+            txtMobileNo.PlaceholderText = Language.T("رقم الجوال", "Mobile number");
+            txtNationality.PlaceholderText = Language.T("الجنسية", "Nationality");
+            txtIDProof.PlaceholderText = Language.T("إثبات الهوية", "ID proof");
+            txtAddress.PlaceholderText = Language.T("العنوان", "Address");
+            txtPrice.PlaceholderText = Language.T("السعر", "Price");
+
+            allotebtn.Text = Language.T("تخصيص الغرفة", "Assign room");
+
+            // Swapping the items fires SelectedIndexChanged, which would clear
+            // the chosen room and its price. Suppress the handlers meanwhile.
+            updatingLanguage = true;
+
+            try
+            {
+                SetComboItems(cmBoxGender, Localization.GenderItems());
+                SetComboItems(cmBoxRoomType, Localization.RoomTypeItems());
+                SetComboItems(cmboxBed, Localization.BedItems());
+            }
+            finally
+            {
+                updatingLanguage = false;
+            }
         }
     }
 }

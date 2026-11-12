@@ -7,13 +7,56 @@ namespace Hotel_Managment_System
     public partial class LoginForm : Form
     {
         private readonly function fn = new function();
+        private Button languageButton;
 
         public LoginForm()
         {
             InitializeComponent();
+            CreateLanguageButton();
+            ApplyLanguage();
         }
 
         internal StaffUser AuthenticatedUser { get; private set; }
+
+        private void CreateLanguageButton()
+        {
+            languageButton = new Button();
+            languageButton.FlatStyle = FlatStyle.Flat;
+            languageButton.FlatAppearance.BorderColor = Color.FromArgb(44, 62, 80);
+            languageButton.FlatAppearance.BorderSize = 1;
+            languageButton.BackColor = Color.FromArgb(218, 218, 218);
+            languageButton.ForeColor = Color.FromArgb(44, 62, 80);
+            languageButton.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
+            languageButton.Cursor = Cursors.Hand;
+            languageButton.Size = new Size(110, 32);
+            languageButton.Click += languageButton_Click;
+
+            panel2.Controls.Add(languageButton);
+
+            // Set bounds after adding: WinForms scales some controls on add.
+            languageButton.Location = new Point(10, 8);
+            languageButton.BringToFront();
+        }
+
+        private void languageButton_Click(object sender, EventArgs e)
+        {
+            Language.Set(Language.IsArabic ? AppLanguage.English : AppLanguage.Arabic);
+            labelError.Visible = false;
+            ApplyLanguage();
+        }
+
+        private void ApplyLanguage()
+        {
+            label1.Text = Language.T("مرحبًا بك في تطبيق الفندق", "Welcome To Our Hotel App");
+            label2.Text = Language.T("تطوير", "Developed By");
+            label3.Text = Language.T("الدخول إلى حسابك", "Login To Your Account");
+            loginbtn.Text = Language.T("تسجيل الدخول", "LOGIN");
+            forgetbtn.Text = Language.T("نسيت كلمة المرور؟", "Forget Password ?");
+            Text = Language.T("تسجيل الدخول", "Login");
+
+            if (languageButton != null)
+                languageButton.Text = Language.IsArabic ? "English" : "العربية";
+        }
 
         protected override void OnShown(EventArgs e)
         {
@@ -30,7 +73,8 @@ namespace Hotel_Managment_System
 
             if (userName.Length == 0 || password.Length == 0)
             {
-                ShowError("Enter your user name and password.");
+                ShowError(Language.T("أدخل اسم المستخدم وكلمة المرور.",
+                    "Enter your user name and password."));
                 return;
             }
 
@@ -50,7 +94,8 @@ namespace Hotel_Managment_System
                         // TextChanged, which hides the error label.
                         textBox2.Clear();
                         textBox2.Focus();
-                        ShowError("Invalid user name or password.");
+                        ShowError(Language.T("اسم المستخدم أو كلمة المرور غير صحيحة.",
+                            "Invalid user name or password."));
                     }
                     return;
                 }
@@ -73,8 +118,11 @@ namespace Hotel_Managment_System
 
         private void forgetbtn_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Please contact an administrator to reset your password.",
-                "Password Reset", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            MessageBox.Show(Language.T(
+                    "يرجى التواصل مع المدير لإعادة تعيين كلمة المرور.",
+                    "Please contact an administrator to reset your password."),
+                Language.T("إعادة تعيين كلمة المرور", "Password Reset"),
+                MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void closebtn_Click(object sender, EventArgs e)

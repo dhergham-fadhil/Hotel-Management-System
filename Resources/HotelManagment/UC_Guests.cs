@@ -6,7 +6,7 @@ using Guna.UI2.WinForms;
 
 namespace Hotel_Managment_System.Resources.HotelManagment
 {
-    public partial class UC_Guests : UserControl
+    public partial class UC_Guests : UserControl, ILocalizable
     {
         private readonly function fn = new function();
 
@@ -27,6 +27,7 @@ namespace Hotel_Managment_System.Resources.HotelManagment
 
         private void UC_Guests_Load(object sender, EventArgs e)
         {
+            ApplyLanguage();
             ResetSelection();
             LoadGuests();
         }
@@ -54,8 +55,8 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             catch (Exception ex)
             {
                 Logger.Error(ex);
-                MessageBox.Show("تعذّر تحميل قائمة النزلاء.",
-                    "خطأ", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(Language.T("تعذّر تحميل قائمة النزلاء.", "Could not load the guest list."),
+                    Language.T("خطأ", "Error"), MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
             finally
             {
@@ -68,13 +69,13 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             if (DGV_Guests.Columns["Customer_ID"] != null)
                 DGV_Guests.Columns["Customer_ID"].Visible = false;
 
-            SetHeader("Customer", "الضيف", 160);
-            SetHeader("Mobile", "الجوال", 100);
-            SetHeader("Room", "الغرفة", 65);
-            SetHeader("Check In", "تاريخ الوصول", 90);
-            SetHeader("Nights", "الليالي", 55);
-            SetHeader("Rate", "سعر الليلة", 80);
-            SetHeader("Est. Total", "الإجمالي التقديري", 90);
+            SetHeader("Customer", Language.T("الضيف", "Guest"), 160);
+            SetHeader("Mobile", Language.T("الجوال", "Mobile"), 100);
+            SetHeader("Room", Language.T("الغرفة", "Room"), 65);
+            SetHeader("Check In", Language.T("تاريخ الوصول", "Check-in"), 90);
+            SetHeader("Nights", Language.T("الليالي", "Nights"), 55);
+            SetHeader("Rate", Language.T("سعر الليلة", "Nightly rate"), 80);
+            SetHeader("Est. Total", Language.T("الإجمالي التقديري", "Est. total"), 90);
 
             if (DGV_Guests.Columns["Check In"] != null)
                 DGV_Guests.Columns["Check In"].DefaultCellStyle.Format = "yyyy-MM-dd";
@@ -119,8 +120,9 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             int count = DGV_Guests.Rows.Count;
 
             labelSubtitle.Text = count == 0
-                ? "لا يوجد نزلاء نشطون مطابقون للبحث."
-                : "النزلاء النشطون: " + count + " — اختر صفاً لتسجيل المغادرة.";
+                ? Language.T("لا يوجد نزلاء نشطون مطابقون للبحث.", "No active guests match the search.")
+                : Language.T("النزلاء النشطون: ", "Active guests: ") + count +
+                  Language.T(" — اختر صفاً لتسجيل المغادرة.", " — select a row to check out.");
         }
 
         private void SearchChanged(object sender, EventArgs e)
@@ -145,8 +147,9 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             DTP_CheckOut.Value = DateTime.Today;
 
             btnCheckout.Enabled = false;
-            labelSelected.Text = "اختر نزيلاً من الجدول.";
-            labelSummary.Text = "اختر نزيلاً لعرض تقدير الفاتورة.";
+            labelSelected.Text = Language.T("اختر نزيلاً من الجدول.", "Select a guest from the grid.");
+            labelSummary.Text = Language.T("اختر نزيلاً لعرض تقدير الفاتورة.",
+                "Select a guest to see the bill estimate.");
         }
 
         private void DGV_Guests_CellClick(object sender, DataGridViewCellEventArgs e)
@@ -168,13 +171,14 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             selectedCheckIn = Convert.ToDateTime(row.Cells["Check In"].Value).Date;
             selectedRate = Convert.ToDecimal(row.Cells["Rate"].Value);
 
-            labelSelected.Text = selectedName + " | الغرفة " + selectedRoom +
-                                 " | الوصول " + selectedCheckIn.ToString("yyyy-MM-dd");
+            labelSelected.Text = selectedName + Language.T(" | الغرفة ", " | Room ") + selectedRoom +
+                                 Language.T(" | الوصول ", " | Check-in ") + selectedCheckIn.ToString("yyyy-MM-dd");
 
             if (selectedCheckIn > DateTime.Today)
             {
-                labelSummary.Text =
-                    "تاريخ وصول هذا النزيل في المستقبل؛ تسجيل المغادرة غير متاح بعد.";
+                labelSummary.Text = Language.T(
+                    "تاريخ وصول هذا النزيل في المستقبل؛ تسجيل المغادرة غير متاح بعد.",
+                    "This guest's check-in date is in the future; check-out is not available yet.");
                 btnCheckout.Enabled = false;
                 DTP_CheckOut.Enabled = false;
                 return;
@@ -205,16 +209,20 @@ namespace Hotel_Managment_System.Resources.HotelManagment
 
             decimal total = nights * selectedRate;
 
-            labelSummary.Text = "الليالي: " + nights +
-                                "   |   سعر الليلة: " + selectedRate.ToString("N2") +
-                                "   |   الإجمالي التقديري: " + total.ToString("N2");
+            labelSummary.Text = Language.T("الليالي: ", "Nights: ") + nights +
+                                Language.T("   |   سعر الليلة: ", "   |   Nightly rate: ") +
+                                selectedRate.ToString("N2") +
+                                Language.T("   |   الإجمالي التقديري: ", "   |   Est. total: ") +
+                                total.ToString("N2");
         }
 
         private void btnCheckout_Click(object sender, EventArgs e)
         {
             if (selectedCustomerId <= 0)
             {
-                MessageBox.Show("اختر نزيلاً من الجدول أولاً.", "تنبيه",
+                MessageBox.Show(Language.T("اختر نزيلاً من الجدول أولاً.",
+                        "Select a guest from the grid first."),
+                    Language.T("تنبيه", "Notice"),
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
@@ -223,15 +231,19 @@ namespace Hotel_Managment_System.Resources.HotelManagment
 
             if (checkOut < selectedCheckIn)
             {
-                MessageBox.Show("تاريخ المغادرة لا يكون قبل تاريخ الوصول.",
-                    "تحقق", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(Language.T("تاريخ المغادرة لا يكون قبل تاريخ الوصول.",
+                        "Check-out cannot be before check-in."),
+                    Language.T("تحقق", "Validation"),
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
             if (checkOut > DateTime.Today)
             {
-                MessageBox.Show("تاريخ المغادرة لا يكون في المستقبل.",
-                    "تحقق", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(Language.T("تاريخ المغادرة لا يكون في المستقبل.",
+                        "Check-out cannot be in the future."),
+                    Language.T("تحقق", "Validation"),
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 return;
             }
 
@@ -242,17 +254,17 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             decimal total = nights * selectedRate;
 
             string confirmation =
-                "هل تريد تسجيل مغادرة هذا النزيل؟\n\n" +
-                "الضيف: " + selectedName + "\n" +
-                "الغرفة: " + selectedRoom + "\n" +
-                "الوصول: " + selectedCheckIn.ToString("yyyy-MM-dd") + "\n" +
-                "المغادرة: " + checkOut.ToString("yyyy-MM-dd") + "\n" +
-                "الليالي: " + nights + "\n" +
-                "سعر الليلة: " + selectedRate.ToString("N2") + "\n" +
-                "الإجمالي: " + total.ToString("N2") + "\n\n" +
-                "ستصبح الغرفة شاغرة.";
+                Language.T("هل تريد تسجيل مغادرة هذا النزيل؟", "Check out this guest?") + "\n\n" +
+                Language.T("الضيف: ", "Guest: ") + selectedName + "\n" +
+                Language.T("الغرفة: ", "Room: ") + selectedRoom + "\n" +
+                Language.T("الوصول: ", "Check-in: ") + selectedCheckIn.ToString("yyyy-MM-dd") + "\n" +
+                Language.T("المغادرة: ", "Check-out: ") + checkOut.ToString("yyyy-MM-dd") + "\n" +
+                Language.T("الليالي: ", "Nights: ") + nights + "\n" +
+                Language.T("سعر الليلة: ", "Nightly rate: ") + selectedRate.ToString("N2") + "\n" +
+                Language.T("الإجمالي: ", "Total: ") + total.ToString("N2") + "\n\n" +
+                Language.T("ستصبح الغرفة شاغرة.", "The room will become free.");
 
-            if (MessageBox.Show(confirmation, "تأكيد المغادرة",
+            if (MessageBox.Show(confirmation, Language.T("تأكيد المغادرة", "Confirm check-out"),
                     MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
             {
                 return;
@@ -269,18 +281,21 @@ namespace Hotel_Managment_System.Resources.HotelManagment
                 if (fn.CheckoutCustomer(selectedCustomerId, checkOut, out result, out error))
                 {
                     MessageBox.Show(
-                        "تم تسجيل المغادرة.\n\n" +
-                        "الضيف: " + result.CustomerName + "\n" +
-                        "الغرفة: " + result.RoomNo + "\n" +
-                        "الليالي: " + result.Nights + "\n" +
-                        "سعر الليلة: " + result.Rate.ToString("N2") + "\n" +
-                        "الإجمالي: " + result.Total.ToString("N2"),
-                        "الفاتورة", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        Language.T("تم تسجيل المغادرة.", "Check-out completed.") + "\n\n" +
+                        Language.T("الضيف: ", "Guest: ") + result.CustomerName + "\n" +
+                        Language.T("الغرفة: ", "Room: ") + result.RoomNo + "\n" +
+                        Language.T("الليالي: ", "Nights: ") + result.Nights + "\n" +
+                        Language.T("سعر الليلة: ", "Nightly rate: ") + result.Rate.ToString("N2") + "\n" +
+                        Language.T("الإجمالي: ", "Total: ") + result.Total.ToString("N2"),
+                        Language.T("الفاتورة", "Bill"),
+                        MessageBoxButtons.OK, MessageBoxIcon.Information);
                 }
                 else
                 {
-                    MessageBox.Show(error ?? "تعذّر تسجيل مغادرة النزيل.",
-                        "فشل تسجيل المغادرة", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show(LocalizeCheckoutError(error) ??
+                            Language.T("تعذّر تسجيل مغادرة النزيل.", "Could not check out the guest."),
+                        Language.T("فشل تسجيل المغادرة", "Check-out Failed"),
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
                 }
 
                 LoadGuests();
@@ -288,8 +303,9 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             catch (Exception ex)
             {
                 Logger.Error(ex);
-                MessageBox.Show("تعذّر تسجيل مغادرة النزيل.",
-                    "فشل تسجيل المغادرة", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(Language.T("تعذّر تسجيل مغادرة النزيل.", "Could not check out the guest."),
+                    Language.T("فشل تسجيل المغادرة", "Check-out Failed"),
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
                 LoadGuests();
             }
             finally
@@ -325,10 +341,65 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             if (searchBox == null)
             {
                 searchBox = Theme.AddSearchBox(this, new Point(700, 22), new Size(320, 40),
-                    "ابحث بالاسم أو الجوال أو الغرفة...", SearchChanged);
+                    Language.T("ابحث بالاسم أو الجوال أو الغرفة...",
+                               "Search by name, mobile or room..."), SearchChanged);
             }
 
             Theme.AlignFieldLabels(this);
+        }
+
+        public void ApplyLanguage()
+        {
+            labelTitle.Text = Language.T("الضيوف والمغادرة", "Guests and check-out");
+            labelSubtitle.Text = Language.T("إدارة النزلاء وتسجيل المغادرة",
+                                            "Manage guests and check them out");
+
+            labelActive.Text = Language.T("الضيوف النشطون", "Active guests");
+            refreshbtn.Text = Language.T("تحديث", "Refresh");
+            labelCheckOut.Text = Language.T("تاريخ المغادرة", "Check-out date");
+            btnCheckout.Text = Language.T("تسجيل المغادرة", "Check out");
+
+            if (searchBox != null)
+                searchBox.PlaceholderText = Language.T(
+                    "ابحث بالاسم أو الجوال أو الغرفة...",
+                    "Search by name, mobile or room...");
+
+            if (selectedCustomerId > 0)
+            {
+                labelSelected.Text = selectedName + Language.T(" | الغرفة ", " | Room ") + selectedRoom +
+                                     Language.T(" | الوصول ", " | Check-in ") +
+                                     selectedCheckIn.ToString("yyyy-MM-dd");
+
+                if (DTP_CheckOut.Enabled)
+                    UpdateEstimate();
+            }
+            else
+            {
+                labelSelected.Text = Language.T("اختر نزيلاً من الجدول.",
+                                                "Select a guest from the grid.");
+                labelSummary.Text = Language.T("اختر نزيلاً لعرض تقدير الفاتورة.",
+                                                "Select a guest to see the bill estimate.");
+            }
+
+            ConfigureGrid();
+            ApplyGuestFilter();
+        }
+
+        private static string LocalizeCheckoutError(string error)
+        {
+            if (string.IsNullOrEmpty(error) || !Language.IsArabic)
+                return error;
+
+            if (error == "Customer not found.")
+                return "النزيل غير موجود.";
+            if (error == "This guest has already been checked out.")
+                return "هذا النزيل سُجّلت مغادرته بالفعل.";
+            if (error == "Check-out date cannot be before the check-in date.")
+                return "تاريخ المغادرة لا يكون قبل تاريخ الوصول.";
+            if (error == "Check-out date cannot be in the future.")
+                return "تاريخ المغادرة لا يكون في المستقبل.";
+
+            return error;
         }
     }
 }

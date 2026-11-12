@@ -147,5 +147,86 @@ namespace Hotel_Managment_System
                 default: return Clean(value);
             }
         }
+
+        // ------------------------------------------------------------------
+        // Language-aware display helpers
+        //
+        // The database always stores English values. These helpers render the
+        // value in the language currently selected and also provide the item
+        // lists used by the combo boxes.
+        // ------------------------------------------------------------------
+        public static string GenderDisplay(string value)
+        {
+            return Language.IsArabic ? GenderToArabic(value) : Clean(value);
+        }
+
+        public static string RoleDisplay(string value)
+        {
+            return Language.IsArabic ? RoleToArabic(value) : Clean(value);
+        }
+
+        public static string RoomTypeDisplay(string value)
+        {
+            return Language.IsArabic ? RoomTypeToArabic(value) : Clean(value);
+        }
+
+        public static string BedDisplay(string value)
+        {
+            return Language.IsArabic ? BedToArabic(value) : Clean(value);
+        }
+
+        public static string StatusDisplay(string value)
+        {
+            return Language.IsArabic ? StatusToArabic(value) : Clean(value);
+        }
+
+        public static string ActivityDisplay(string value)
+        {
+            if (!Language.IsArabic)
+                return Clean(value);
+
+            switch (Clean(value))
+            {
+                case "Active": return "نشط";
+                case "Checked Out": return "غادر";
+                default: return Clean(value);
+            }
+        }
+
+        public static string[] GenderItems()
+        {
+            return Language.IsArabic
+                ? new[] { "ذكر", "أنثى", "آخر", "أفضل عدم الإجابة" }
+                : new[] { "Male", "Female", "Other", "I Rather Do Not Answer" };
+        }
+
+        public static string[] RoleItems()
+        {
+            // Staff first so a new staff account defaults to the Staff role.
+            return Language.IsArabic
+                ? new[] { "موظف", "مدير" }
+                : new[] { "Staff", "Admin" };
+        }
+
+        public static string[] RoomTypeItems()
+        {
+            return Language.IsArabic
+                ? new[] { "فردية", "مزدوجة", "توأم", "ثلاثية", "جناح" }
+                : new[] { "Single", "Double", "Twin", "Triple", "Suite" };
+        }
+
+        public static string[] BedItems()
+        {
+            return Language.IsArabic
+                ? new[] { "فردي", "مزدوج", "كوين", "كينغ", "توأم", "بطابقين" }
+                : new[] { "Single", "Double", "Queen", "King", "Twin", "Bunk" };
+        }
+
+        public static string[] StatusItems()
+        {
+            return Language.IsArabic
+                ? new[] { "شاغرة", "مشغولة" }
+                : new[] { "Free", "Busy" };
+        }
     }
 }

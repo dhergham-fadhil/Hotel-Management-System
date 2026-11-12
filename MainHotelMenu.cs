@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Drawing;
 using System.Windows.Forms;
+using Guna.UI2.WinForms;
 using Hotel_Managment_System.Resources.HotelManagment;
 
 namespace Hotel_Managment_System
@@ -8,10 +9,12 @@ namespace Hotel_Managment_System
     public partial class MainHotelMenu : Form
     {
         private readonly StaffUser currentUser;
+        private Guna2Button btnLanguage;
 
         public MainHotelMenu()
         {
             InitializeComponent();
+            CreateLanguageButton();
         }
 
         internal MainHotelMenu(StaffUser user) : this()
@@ -24,6 +27,76 @@ namespace Hotel_Managment_System
 
         public bool LogoutRequested { get; private set; }
 
+        private void CreateLanguageButton()
+        {
+            btnLanguage = new Guna2Button();
+            btnLanguage.BorderRadius = 12;
+            btnLanguage.Cursor = Cursors.Hand;
+            btnLanguage.FillColor = Color.Transparent;
+            btnLanguage.FocusedColor = Color.Empty;
+            btnLanguage.Font = new Font("Segoe UI", 10F, FontStyle.Bold);
+            btnLanguage.ForeColor = Theme.AccentGold;
+            btnLanguage.HoverState.FillColor = Color.FromArgb(30, 41, 59);
+            btnLanguage.HoverState.ForeColor = Color.White;
+            btnLanguage.TextAlign = HorizontalAlignment.Center;
+            btnLanguage.Click += languagebtn_Click;
+
+            panelSidebar.Controls.Add(btnLanguage);
+
+            // Set bounds after adding: WinForms scales Guna controls on add.
+            btnLanguage.Bounds = new Rectangle(20, 548, 220, 44);
+            btnLanguage.BringToFront();
+        }
+
+        private void languagebtn_Click(object sender, EventArgs e)
+        {
+            Language.Set(Language.IsArabic ? AppLanguage.English : AppLanguage.Arabic);
+            ApplyLanguage();
+        }
+
+        private void Language_Changed(object sender, EventArgs e)
+        {
+            ApplyLanguage();
+        }
+
+        private void ApplyLanguage()
+        {
+            labelHotel.Text = Language.T("إدارة الفندق", "Hotel Management");
+
+            btnBookings.Text = Language.T("لوحة القيادة", "Dashboard");
+            btnRooms.Text = Language.T("الغرف", "Rooms");
+            btnCustomers.Text = Language.T("العملاء", "Customers");
+            btnGuests.Text = Language.T("النزلاء", "Guests");
+            btnStaff.Text = Language.T("الموظفون", "Staff");
+            btnLogout.Text = Language.T("تسجيل الخروج", "Log out");
+
+            if (btnLanguage != null)
+                btnLanguage.Text = Language.IsArabic ? "English" : "العربية";
+
+            if (currentUser != null)
+            {
+                string role = Language.IsArabic
+                    ? Localization.RoleToArabic(currentUser.Role)
+                    : currentUser.Role;
+
+                labelUser.Text = currentUser.Name + "  (" + role + ")";
+            }
+
+            // Refresh the screen that is currently open.
+            for (int i = 0; i < UC_Panel.Controls.Count; i++)
+            {
+                ILocalizable localizable = UC_Panel.Controls[i] as ILocalizable;
+                if (localizable != null)
+                    localizable.ApplyLanguage();
+            }
+        }
+
+        protected override void OnFormClosed(FormClosedEventArgs e)
+        {
+            Language.Changed -= Language_Changed;
+            base.OnFormClosed(e);
+        }
+
         private void closebtn_Click(object sender, EventArgs e)
         {
             Application.Exit();
@@ -31,7 +104,10 @@ namespace Hotel_Managment_System
 
         private void logoutbtn_Click(object sender, EventArgs e)
         {
-            if (MessageBox.Show("Sign out of the current account?", "Logout",
+            if (MessageBox.Show(
+                    Language.T("هل تريد تسجيل الخروج من الحساب الحالي؟",
+                               "Sign out of the current account?"),
+                    Language.T("تسجيل الخروج", "Logout"),
                     MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
             {
                 return;
@@ -73,8 +149,11 @@ namespace Hotel_Managment_System
             {
                 if (!currentUser.IsAdmin)
                 {
-                    MessageBox.Show("You do not have permission to manage staff.",
-                        "Access Denied", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show(
+                        Language.T("ليس لديك صلاحية إدارة الموظفين.",
+                                   "You do not have permission to manage staff."),
+                        Language.T("تم رفض الوصول", "Access Denied"),
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
 
@@ -122,15 +201,19 @@ namespace Hotel_Managment_System
         {
             if (currentUser == null)
             {
-                MessageBox.Show("No active session was found. Please sign in again.",
-                    "Session Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                MessageBox.Show(
+                    Language.T("لا توجد جلسة نشطة. يرجى تسجيل الدخول مرة أخرى.",
+                               "No active session was found. Please sign in again."),
+                    Language.T("خطأ في الجلسة", "Session Error"),
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
                 Close();
                 return;
             }
 
-            ApplyTheme();
+            Language.Changed += Language_Changed;
 
-            labelUser.Text = currentUser.Name + "  (" + currentUser.Role + ")";
+            ApplyTheme();
+            ApplyLanguage();
 
             if (!currentUser.IsAdmin)
             {

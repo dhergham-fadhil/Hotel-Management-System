@@ -8,7 +8,7 @@ using Guna.UI2.WinForms;
 
 namespace Hotel_Managment_System.Resources.HotelManagment
 {
-    public partial class UC_Rooms : UserControl
+    public partial class UC_Rooms : UserControl, ILocalizable
     {
         private readonly function fn = new function();
         private int selectedRoomId;
@@ -30,6 +30,7 @@ namespace Hotel_Managment_System.Resources.HotelManagment
         private void UC_Rooms_Load(object sender, EventArgs e)
         {
             ApplyTheme();
+            ApplyLanguage();
             LoadRooms();
         }
 
@@ -57,11 +58,11 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             if (DGV_Rooms.Columns["Room_ID"] != null)
                 DGV_Rooms.Columns["Room_ID"].Visible = false;
 
-            SetHeader("Room_NO", "رقم الغرفة", 90);
-            SetHeader("Room_Type", "نوع الغرفة", 110);
-            SetHeader("Bed", "السرير", 90);
-            SetHeader("Price", "السعر", 90);
-            SetHeader("Status", "الحالة", 90);
+            SetHeader("Room_NO", Language.T("رقم الغرفة", "Room number"), 90);
+            SetHeader("Room_Type", Language.T("نوع الغرفة", "Room type"), 110);
+            SetHeader("Bed", Language.T("السرير", "Bed"), 90);
+            SetHeader("Price", Language.T("السعر", "Price"), 90);
+            SetHeader("Status", Language.T("الحالة", "Status"), 90);
 
             if (DGV_Rooms.Columns["Price"] != null)
             {
@@ -94,15 +95,15 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             switch (column)
             {
                 case "Room_Type":
-                    e.Value = Localization.RoomTypeToArabic(value);
+                    e.Value = Localization.RoomTypeDisplay(value);
                     e.FormattingApplied = true;
                     break;
                 case "Bed":
-                    e.Value = Localization.BedToArabic(value);
+                    e.Value = Localization.BedDisplay(value);
                     e.FormattingApplied = true;
                     break;
                 case "Status":
-                    e.Value = Localization.StatusToArabic(value);
+                    e.Value = Localization.StatusDisplay(value);
                     e.FormattingApplied = true;
                     break;
             }
@@ -151,7 +152,8 @@ namespace Hotel_Managment_System.Resources.HotelManagment
                 DGV_Rooms.ClearSelection();
 
             UpdateButtonStates();
-            labelHint.Text = "اختر غرفة من الجدول لتعديلها أو حذفها.";
+            labelHint.Text = Language.T("اختر غرفة من الجدول لتعديلها أو حذفها.",
+                "Select a room from the grid to edit or delete it.");
         }
 
         private void UpdateButtonStates()
@@ -174,14 +176,14 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             selectedRoomId = Convert.ToInt32(row.Cells["Room_ID"].Value);
 
             txtRoomNumber.Text = Convert.ToString(row.Cells["Room_NO"].Value);
-            SelectComboValue(cmBoxRoomType, Localization.RoomTypeToArabic(Convert.ToString(row.Cells["Room_Type"].Value)));
-            SelectComboValue(cmboxBed, Localization.BedToArabic(Convert.ToString(row.Cells["Bed"].Value)));
+            SelectComboValue(cmBoxRoomType, Localization.RoomTypeDisplay(Convert.ToString(row.Cells["Room_Type"].Value)));
+            SelectComboValue(cmboxBed, Localization.BedDisplay(Convert.ToString(row.Cells["Bed"].Value)));
             txtPrice.Text = Convert.ToDecimal(row.Cells["Price"].Value).ToString("N2");
-            SelectComboValue(cmBoxStatus, Localization.StatusToArabic(Convert.ToString(row.Cells["Status"].Value)));
+            SelectComboValue(cmBoxStatus, Localization.StatusDisplay(Convert.ToString(row.Cells["Status"].Value)));
 
             UpdateButtonStates();
-            labelHint.Text = "تعديل الغرفة " + txtRoomNumber.Text +
-                             " (الرقم " + selectedRoomId + ").";
+            labelHint.Text = Language.T("تعديل الغرفة ", "Editing room ") + txtRoomNumber.Text +
+                             Language.T(" (الرقم ", " (ID ") + selectedRoomId + ").";
             txtRoomNumber.Focus();
         }
 
@@ -208,7 +210,7 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             // Friendly early check; the UNIQUE constraint remains the final guard.
             if (fn.RoomNumberExists(roomNo, 0))
             {
-                Fail("رقم الغرفة موجود بالفعل.", txtRoomNumber);
+                Fail(Language.T("رقم الغرفة موجود بالفعل.", "This room number already exists."), txtRoomNumber);
                 return;
             }
 
@@ -229,14 +231,16 @@ namespace Hotel_Managment_System.Resources.HotelManagment
 
             if (affected > 0)
             {
-                MessageBox.Show("تمت إضافة الغرفة.", "نجاح",
+                MessageBox.Show(Language.T("تمت إضافة الغرفة.", "Room added."),
+                    Language.T("نجاح", "Success"),
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                 LoadRooms();
             }
             else if (affected == 0)
             {
-                MessageBox.Show("لم تتم إضافة أي غرفة.", "تنبيه",
+                MessageBox.Show(Language.T("لم تتم إضافة أي غرفة.", "No room was added."),
+                    Language.T("تنبيه", "Notice"),
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
@@ -245,7 +249,8 @@ namespace Hotel_Managment_System.Resources.HotelManagment
         {
             if (selectedRoomId <= 0)
             {
-                MessageBox.Show("اختر غرفة من الجدول أولاً.", "تنبيه",
+                MessageBox.Show(Language.T("اختر غرفة من الجدول أولاً.", "Select a room from the grid first."),
+                    Language.T("تنبيه", "Notice"),
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
@@ -255,7 +260,7 @@ namespace Hotel_Managment_System.Resources.HotelManagment
 
             if (fn.RoomNumberExists(roomNo, selectedRoomId))
             {
-                Fail("رقم الغرفة موجود بالفعل.", txtRoomNumber);
+                Fail(Language.T("رقم الغرفة موجود بالفعل.", "This room number already exists."), txtRoomNumber);
                 return;
             }
 
@@ -271,15 +276,18 @@ namespace Hotel_Managment_System.Resources.HotelManagment
 
             if (updated)
             {
-                MessageBox.Show("تم تحديث بيانات الغرفة.", "نجاح",
+                MessageBox.Show(Language.T("تم تحديث بيانات الغرفة.", "Room updated."),
+                    Language.T("نجاح", "Success"),
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                 LoadRooms();
             }
             else
             {
-                MessageBox.Show(LocalizeRoomError(error) ?? "تعذّر تحديث الغرفة.",
-                    "فشل التحديث", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(LocalizeRoomError(error) ??
+                        Language.T("تعذّر تحديث الغرفة.", "Could not update the room."),
+                    Language.T("فشل التحديث", "Update Failed"),
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 
@@ -287,16 +295,20 @@ namespace Hotel_Managment_System.Resources.HotelManagment
         {
             if (selectedRoomId <= 0)
             {
-                MessageBox.Show("اختر غرفة من الجدول أولاً.", "تنبيه",
+                MessageBox.Show(Language.T("اختر غرفة من الجدول أولاً.", "Select a room from the grid first."),
+                    Language.T("تنبيه", "Notice"),
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
             string roomNo = (txtRoomNumber.Text ?? string.Empty).Trim();
 
-            if (MessageBox.Show("هل تريد حذف الغرفة " + roomNo + "؟\n\n" +
-                    "لا يمكن حذف الغرف التي لها سجل نزلاء.",
-                    "تأكيد", MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
+            if (MessageBox.Show(
+                    Language.T("هل تريد حذف الغرفة ", "Delete room ") + roomNo + "؟\n\n" +
+                    Language.T("لا يمكن حذف الغرف التي لها سجل نزلاء.",
+                               "Rooms with guest history cannot be deleted."),
+                    Language.T("تأكيد", "Confirm"),
+                    MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
             {
                 return;
             }
@@ -306,22 +318,25 @@ namespace Hotel_Managment_System.Resources.HotelManagment
 
             if (deleted)
             {
-                MessageBox.Show("تم حذف الغرفة.", "نجاح",
+                MessageBox.Show(Language.T("تم حذف الغرفة.", "Room deleted."),
+                    Language.T("نجاح", "Success"),
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                 LoadRooms();
             }
             else
             {
-                MessageBox.Show(LocalizeRoomError(error) ?? "تعذّر حذف الغرفة.",
-                    "فشل الحذف", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(LocalizeRoomError(error) ??
+                        Language.T("تعذّر حذف الغرفة.", "Could not delete the room."),
+                    Language.T("فشل الحذف", "Delete Failed"),
+                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 
         private static string LocalizeRoomError(string error)
         {
-            if (string.IsNullOrEmpty(error))
-                return null;
+            if (string.IsNullOrEmpty(error) || !Language.IsArabic)
+                return error;
 
             if (error == "Room not found.")
                 return "الغرفة غير موجودة.";
@@ -348,32 +363,34 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             roomNo = (txtRoomNumber.Text ?? string.Empty).Trim();
 
             if (roomNo.Length == 0)
-                return Fail("رقم الغرفة مطلوب.", txtRoomNumber);
+                return Fail(Language.T("رقم الغرفة مطلوب.", "Room number is required."), txtRoomNumber);
 
             if (roomNo.Length > 10)
-                return Fail("رقم الغرفة لا يتجاوز 10 أحرف.", txtRoomNumber);
+                return Fail(Language.T("رقم الغرفة لا يتجاوز 10 أحرف.", "Room number cannot exceed 10 characters."), txtRoomNumber);
 
             if (!Regex.IsMatch(roomNo, @"^[A-Za-z0-9\-]+$"))
-                return Fail("رقم الغرفة يقبل الحروف والأرقام والشرطة فقط.", txtRoomNumber);
+                return Fail(Language.T("رقم الغرفة يقبل الحروف والأرقام والشرطة فقط.",
+                                       "Room number accepts letters, digits and dashes only."), txtRoomNumber);
 
             if (cmBoxRoomType.SelectedIndex < 0)
-                return Fail("اختر نوع الغرفة.", cmBoxRoomType);
+                return Fail(Language.T("اختر نوع الغرفة.", "Select the room type."), cmBoxRoomType);
 
             if (cmboxBed.SelectedIndex < 0)
-                return Fail("اختر نوع السرير.", cmboxBed);
+                return Fail(Language.T("اختر نوع السرير.", "Select the bed type."), cmboxBed);
 
             if (cmBoxStatus.SelectedIndex < 0)
-                return Fail("اختر حالة الغرفة.", cmBoxStatus);
+                return Fail(Language.T("اختر حالة الغرفة.", "Select the room status."), cmBoxStatus);
 
             if (!decimal.TryParse(txtPrice.Text, out price) || price <= 0 || price > 1000000m)
-                return Fail("السعر يجب أن يكون رقماً بين 0 و 1,000,000.", txtPrice);
+                return Fail(Language.T("السعر يجب أن يكون رقماً بين 0 و 1,000,000.",
+                                       "Price must be a number between 0 and 1,000,000."), txtPrice);
 
             return true;
         }
 
         private bool Fail(string message, Control focus)
         {
-            MessageBox.Show(message, "تحقق",
+            MessageBox.Show(message, Language.T("تحقق", "Validation"),
                 MessageBoxButtons.OK, MessageBoxIcon.Warning);
 
             focus.Focus();
@@ -409,19 +426,19 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             label6.Font = new Font("Segoe UI", 9.5F);
             label2.Font = new Font("Segoe UI", 9.5F);
 
-            SetComboItems(cmBoxRoomType, new[] { "فردية", "مزدوجة", "توأم", "ثلاثية", "جناح" });
-            SetComboItems(cmboxBed, new[] { "فردي", "مزدوج", "كوين", "كينغ", "توأم", "بطابقين" });
-            SetComboItems(cmBoxStatus, new[] { "شاغرة", "مشغولة" });
+            SetComboItems(cmBoxRoomType, Localization.RoomTypeItems());
+            SetComboItems(cmboxBed, Localization.BedItems());
+            SetComboItems(cmBoxStatus, Localization.StatusItems());
 
             Theme.AddCard(this, new Rectangle(16, 84, 264, 420));
 
             if (searchBox == null)
             {
                 searchBox = Theme.AddSearchBox(this, new Point(700, 24), new Size(290, 40),
-                    "ابحث برقم الغرفة...", SearchChanged);
+                    Language.T("ابحث برقم الغرفة...", "Search by room number..."), SearchChanged);
 
                 statusFilter = Theme.AddFilterCombo(this, new Point(1006, 24), new Size(162, 40),
-                    new[] { "كل الحالات", "شاغرة", "مشغولة" }, SearchChanged);
+                    BuildStatusFilterItems(), SearchChanged);
 
                 statusFilter.SelectedIndex = 0;
             }
@@ -429,15 +446,68 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             Theme.AlignFieldLabels(this);
         }
 
+        public void ApplyLanguage()
+        {
+            labelTitle.Text = Language.T("إدارة الغرف", "Room management");
+            labelSubtitle.Text = Language.T("إضافة وتعديل وحذف الغرف", "Add, edit and delete rooms");
+            label1.Text = Language.T("نوع الغرفة", "Room type");
+            label5.Text = Language.T("السعر", "Price");
+            label6.Text = Language.T("السرير", "Bed");
+            label2.Text = Language.T("الحالة", "Status");
+
+            txtRoomNumber.PlaceholderText = Language.T("رقم الغرفة", "Room number");
+            txtPrice.PlaceholderText = Language.T("السعر", "Price");
+
+            addbtn.Text = Language.T("إضافة", "Add");
+            editbtn.Text = Language.T("تعديل", "Edit");
+            deletebtn.Text = Language.T("حذف", "Delete");
+            clearbtn.Text = Language.T("مسح", "Clear");
+
+            SetComboItems(cmBoxRoomType, Localization.RoomTypeItems());
+            SetComboItems(cmboxBed, Localization.BedItems());
+            SetComboItems(cmBoxStatus, Localization.StatusItems());
+
+            if (searchBox != null)
+                searchBox.PlaceholderText = Language.T("ابحث برقم الغرفة...", "Search by room number...");
+
+            if (statusFilter != null)
+            {
+                int index = statusFilter.SelectedIndex;
+
+                statusFilter.Items.Clear();
+                statusFilter.Items.Add(Language.T("كل الحالات", "All statuses"));
+                statusFilter.Items.AddRange(Localization.StatusItems());
+
+                statusFilter.SelectedIndex = index >= 0 && index < statusFilter.Items.Count ? index : 0;
+            }
+
+            labelHint.Text = Language.T("اختر غرفة من الجدول لتعديلها أو حذفها.",
+                "Select a room from the grid to edit or delete it.");
+
+            ConfigureGrid();
+            ApplyRoomFilter();
+        }
+
+        private static string[] BuildStatusFilterItems()
+        {
+            string[] statuses = Localization.StatusItems();
+            string[] items = new string[statuses.Length + 1];
+
+            items[0] = Language.T("كل الحالات", "All statuses");
+            statuses.CopyTo(items, 1);
+
+            return items;
+        }
+
         private static void SetComboItems(Guna2ComboBox combo, string[] items)
         {
-            string current = combo.Text;
+            int index = combo.SelectedIndex;
 
             combo.Items.Clear();
             combo.Items.AddRange(items);
 
-            if (!string.IsNullOrEmpty(current) && combo.Items.Contains(current))
-                combo.SelectedItem = current;
+            if (index >= 0 && index < combo.Items.Count)
+                combo.SelectedIndex = index;
         }
     }
 }
