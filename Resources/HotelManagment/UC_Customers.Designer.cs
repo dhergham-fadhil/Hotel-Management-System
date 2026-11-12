@@ -119,7 +119,7 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             this.label4.AutoSize = true; this.label4.Font = new Font("Segoe UI", 9.5F);
             this.label4.ForeColor = Color.FromArgb(71, 85, 105); this.label4.Location = new Point(40, 336);
             this.label4.Name = "label4"; this.label4.Size = new Size(56, 19);
-            this.label4.TabIndex = 9; this.label4.Text = "النوع";
+            this.label4.TabIndex = 9; this.label4.Text = "الجنس";
             // txtIDProof
             this.txtIDProof.BorderRadius = 8; this.txtIDProof.BorderColor = Color.FromArgb(226, 232, 240);
             this.txtIDProof.DefaultText = ""; this.txtIDProof.FillColor = Color.White;
@@ -153,7 +153,7 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             this.DTP_DateOfBirth.FillColor = Color.FromArgb(37, 99, 235);
             this.DTP_DateOfBirth.Font = new Font("Segoe UI", 9F);
             this.DTP_DateOfBirth.ForeColor = Color.White;
-            this.DTP_DateOfBirth.Format = DateTimePickerFormat.Long;
+            this.DTP_DateOfBirth.Format = DateTimePickerFormat.Custom; this.DTP_DateOfBirth.CustomFormat = "yyyy-MM-dd";
             this.DTP_DateOfBirth.Location = new Point(340, 280); this.DTP_DateOfBirth.Name = "DTP_DateOfBirth";
             this.DTP_DateOfBirth.Size = new Size(260, 40);
             this.DTP_DateOfBirth.TabIndex = 14;
@@ -168,7 +168,7 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             this.DTP_CheckIn.FillColor = Color.FromArgb(37, 99, 235);
             this.DTP_CheckIn.Font = new Font("Segoe UI", 9F);
             this.DTP_CheckIn.ForeColor = Color.White;
-            this.DTP_CheckIn.Format = DateTimePickerFormat.Long;
+            this.DTP_CheckIn.Format = DateTimePickerFormat.Custom; this.DTP_CheckIn.CustomFormat = "yyyy-MM-dd";
             this.DTP_CheckIn.Location = new Point(340, 360); this.DTP_CheckIn.Name = "DTP_CheckIn";
             this.DTP_CheckIn.Size = new Size(260, 40);
             this.DTP_CheckIn.TabIndex = 16;

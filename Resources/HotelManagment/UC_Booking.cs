@@ -119,13 +119,8 @@ namespace Hotel_Managment_System.Resources.HotelManagment
 
         private void ApplyTheme()
         {
-            // Title
-            labelTitle.ForeColor = Theme.TextPrimary;
-            labelTitle.Font = new Font("Segoe UI", 20F, FontStyle.Bold);
-
-            // Subtitle
-            labelSubtitle.ForeColor = Theme.TextSecondary;
-            labelSubtitle.Font = new Font("Segoe UI", 10F);
+            Theme.StyleScreenTitle(labelTitle);
+            Theme.StyleScreenSubtitle(labelSubtitle);
 
             // Refresh button
             Theme.StyleActionButton(refreshbtn, true);
@@ -139,6 +134,16 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             Theme.StyleCard(pnlTotalRevenue);
             Theme.StyleCard(pnlTodayRevenue);
 
+            // A hairline border gives every KPI card the same crisp edge as a
+            // rounded card without changing the panel type.
+            pnlTotalRooms.Paint += DrawCardBorder;
+            pnlFreeRooms.Paint += DrawCardBorder;
+            pnlBusyRooms.Paint += DrawCardBorder;
+            pnlCustomers.Paint += DrawCardBorder;
+            pnlStaff.Paint += DrawCardBorder;
+            pnlTotalRevenue.Paint += DrawCardBorder;
+            pnlTodayRevenue.Paint += DrawCardBorder;
+
             // Card titles
             Theme.StyleSmall(lblTotalRoomsTitle);
             Theme.StyleSmall(lblFreeRoomsTitle);
@@ -150,6 +155,17 @@ namespace Hotel_Managment_System.Resources.HotelManagment
 
             // Recent section
             Theme.StyleHeading(labelRecent);
+        }
+
+        private static void DrawCardBorder(object sender, PaintEventArgs e)
+        {
+            Panel panel = sender as Panel;
+
+            if (panel == null)
+                return;
+
+            ControlPaint.DrawBorder(e.Graphics, panel.ClientRectangle,
+                Theme.Border, ButtonBorderStyle.Solid);
         }
     }
 }

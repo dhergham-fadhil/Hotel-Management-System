@@ -126,7 +126,7 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             this.DGV_Rooms.ReadOnly = true;
             this.DGV_Rooms.RowHeadersVisible = false;
             this.DGV_Rooms.RowTemplate.Height = 28;
-            this.DGV_Rooms.Size = new System.Drawing.Size(868, 360);
+            this.DGV_Rooms.Size = new System.Drawing.Size(868, 500);
             this.DGV_Rooms.TabIndex = 4;
             this.DGV_Rooms.ThemeStyle.AlternatingRowsStyle.BackColor = Color.White;
             this.DGV_Rooms.ThemeStyle.AlternatingRowsStyle.Font = null;
@@ -135,18 +135,18 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             this.DGV_Rooms.ThemeStyle.AlternatingRowsStyle.SelectionForeColor = Color.Empty;
             this.DGV_Rooms.ThemeStyle.BackColor = Color.White;
             this.DGV_Rooms.ThemeStyle.GridColor = Color.FromArgb(226, 232, 240);
-            this.DGV_Rooms.ThemeStyle.HeaderStyle.BackColor = Color.FromArgb(15, 23, 42);
+            this.DGV_Rooms.ThemeStyle.HeaderStyle.BackColor = Color.FromArgb(241, 245, 249);
             this.DGV_Rooms.ThemeStyle.HeaderStyle.BorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
             this.DGV_Rooms.ThemeStyle.HeaderStyle.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
-            this.DGV_Rooms.ThemeStyle.HeaderStyle.ForeColor = Color.White;
-            this.DGV_Rooms.ThemeStyle.HeaderStyle.Height = 32;
+            this.DGV_Rooms.ThemeStyle.HeaderStyle.ForeColor = Color.FromArgb(15, 23, 42);
+            this.DGV_Rooms.ThemeStyle.HeaderStyle.Height = 38;
             this.DGV_Rooms.ThemeStyle.ReadOnly = true;
             this.DGV_Rooms.ThemeStyle.RowsStyle.BackColor = Color.White;
             this.DGV_Rooms.ThemeStyle.RowsStyle.BorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.SingleHorizontal;
             this.DGV_Rooms.ThemeStyle.RowsStyle.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             this.DGV_Rooms.ThemeStyle.RowsStyle.ForeColor = Color.FromArgb(71, 85, 105);
-            this.DGV_Rooms.ThemeStyle.RowsStyle.Height = 28;
-            this.DGV_Rooms.ThemeStyle.RowsStyle.SelectionBackColor = Color.FromArgb(243, 246, 249);
+            this.DGV_Rooms.ThemeStyle.RowsStyle.Height = 34;
+            this.DGV_Rooms.ThemeStyle.RowsStyle.SelectionBackColor = Color.FromArgb(219, 234, 254);
             this.DGV_Rooms.ThemeStyle.RowsStyle.SelectionForeColor = Color.FromArgb(15, 23, 42);
             //
             // label1
@@ -377,7 +377,7 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             this.labelHint.AutoSize = false;
             this.labelHint.Font = new System.Drawing.Font("Segoe UI", 8.5F);
             this.labelHint.ForeColor = Color.FromArgb(100, 116, 139);
-            this.labelHint.Location = new System.Drawing.Point(292, 466);
+            this.labelHint.Location = new System.Drawing.Point(292, 604);
             this.labelHint.Name = "labelHint";
             this.labelHint.Size = new System.Drawing.Size(868, 24);
             this.labelHint.TabIndex = 20;

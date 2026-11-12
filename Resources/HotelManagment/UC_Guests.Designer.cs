@@ -128,18 +128,18 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             this.DGV_Guests.ThemeStyle.AlternatingRowsStyle.SelectionForeColor = Color.Empty;
             this.DGV_Guests.ThemeStyle.BackColor = Color.White;
             this.DGV_Guests.ThemeStyle.GridColor = Color.FromArgb(226, 232, 240);
-            this.DGV_Guests.ThemeStyle.HeaderStyle.BackColor = Color.FromArgb(15, 23, 42);
+            this.DGV_Guests.ThemeStyle.HeaderStyle.BackColor = Color.FromArgb(241, 245, 249);
             this.DGV_Guests.ThemeStyle.HeaderStyle.BorderStyle = DataGridViewHeaderBorderStyle.None;
             this.DGV_Guests.ThemeStyle.HeaderStyle.Font = new Font("Segoe UI", 9.5F, FontStyle.Bold);
-            this.DGV_Guests.ThemeStyle.HeaderStyle.ForeColor = Color.White;
-            this.DGV_Guests.ThemeStyle.HeaderStyle.Height = 32;
+            this.DGV_Guests.ThemeStyle.HeaderStyle.ForeColor = Color.FromArgb(15, 23, 42);
+            this.DGV_Guests.ThemeStyle.HeaderStyle.Height = 38;
             this.DGV_Guests.ThemeStyle.ReadOnly = true;
             this.DGV_Guests.ThemeStyle.RowsStyle.BackColor = Color.White;
             this.DGV_Guests.ThemeStyle.RowsStyle.BorderStyle = DataGridViewCellBorderStyle.SingleHorizontal;
             this.DGV_Guests.ThemeStyle.RowsStyle.Font = new Font("Segoe UI", 9.5F);
             this.DGV_Guests.ThemeStyle.RowsStyle.ForeColor = Color.FromArgb(71, 85, 105);
-            this.DGV_Guests.ThemeStyle.RowsStyle.Height = 28;
-            this.DGV_Guests.ThemeStyle.RowsStyle.SelectionBackColor = Color.FromArgb(243, 246, 249);
+            this.DGV_Guests.ThemeStyle.RowsStyle.Height = 34;
+            this.DGV_Guests.ThemeStyle.RowsStyle.SelectionBackColor = Color.FromArgb(219, 234, 254);
             this.DGV_Guests.ThemeStyle.RowsStyle.SelectionForeColor = Color.FromArgb(15, 23, 42);
             //
             // labelSelected
@@ -171,7 +171,7 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             this.DTP_CheckOut.FillColor = Color.FromArgb(37, 99, 235);
             this.DTP_CheckOut.Font = new Font("Segoe UI", 9F);
             this.DTP_CheckOut.ForeColor = Color.White;
-            this.DTP_CheckOut.Format = DateTimePickerFormat.Long;
+            this.DTP_CheckOut.Format = DateTimePickerFormat.Custom; this.DTP_CheckOut.CustomFormat = "yyyy-MM-dd";
             this.DTP_CheckOut.Location = new Point(24, 426);
             this.DTP_CheckOut.MaxDate = new DateTime(9998, 12, 31, 0, 0, 0, 0);
             this.DTP_CheckOut.MinDate = new DateTime(1753, 1, 1, 0, 0, 0, 0);

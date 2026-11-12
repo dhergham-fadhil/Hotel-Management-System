@@ -133,30 +133,32 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             //
             // lblTotalRoomsValue
             //
-            this.lblTotalRoomsValue.AutoSize = true;
+            this.lblTotalRoomsValue.AutoSize = false;
             this.lblTotalRoomsValue.Font = new System.Drawing.Font("Segoe UI", 26F, System.Drawing.FontStyle.Bold);
             this.lblTotalRoomsValue.ForeColor = Color.FromArgb(15, 23, 42);
             this.lblTotalRoomsValue.Location = new System.Drawing.Point(18, 40);
             this.lblTotalRoomsValue.Name = "lblTotalRoomsValue";
-            this.lblTotalRoomsValue.Size = new System.Drawing.Size(41, 47);
+            this.lblTotalRoomsValue.Size = new System.Drawing.Size(174, 47);
+            this.lblTotalRoomsValue.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.lblTotalRoomsValue.TabIndex = 2;
             this.lblTotalRoomsValue.Text = "0";
             //
             // lblTotalRoomsTitle
             //
-            this.lblTotalRoomsTitle.AutoSize = true;
+            this.lblTotalRoomsTitle.AutoSize = false;
             this.lblTotalRoomsTitle.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             this.lblTotalRoomsTitle.ForeColor = Color.FromArgb(71, 85, 105);
-            this.lblTotalRoomsTitle.Location = new System.Drawing.Point(20, 14);
+            this.lblTotalRoomsTitle.Location = new System.Drawing.Point(18, 14);
             this.lblTotalRoomsTitle.Name = "lblTotalRoomsTitle";
-            this.lblTotalRoomsTitle.Size = new System.Drawing.Size(74, 19);
+            this.lblTotalRoomsTitle.Size = new System.Drawing.Size(174, 19);
+            this.lblTotalRoomsTitle.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.lblTotalRoomsTitle.TabIndex = 1;
             this.lblTotalRoomsTitle.Text = "إجمالي الغرف";
             //
             // accentTotal
             //
             this.accentTotal.BackColor = Color.FromArgb(37, 99, 235);
-            this.accentTotal.Dock = System.Windows.Forms.DockStyle.Left;
+            this.accentTotal.Dock = System.Windows.Forms.DockStyle.Right;
             this.accentTotal.Location = new System.Drawing.Point(0, 0);
             this.accentTotal.Name = "accentTotal";
             this.accentTotal.Size = new System.Drawing.Size(6, 120);
@@ -168,37 +170,39 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             this.pnlFreeRooms.Controls.Add(this.lblFreeRoomsValue);
             this.pnlFreeRooms.Controls.Add(this.lblFreeRoomsTitle);
             this.pnlFreeRooms.Controls.Add(this.accentFree);
-            this.pnlFreeRooms.Location = new System.Drawing.Point(248, 110);
+            this.pnlFreeRooms.Location = new System.Drawing.Point(258, 110);
             this.pnlFreeRooms.Name = "pnlFreeRooms";
             this.pnlFreeRooms.Size = new System.Drawing.Size(210, 120);
             this.pnlFreeRooms.TabIndex = 4;
             //
             // lblFreeRoomsValue
             //
-            this.lblFreeRoomsValue.AutoSize = true;
+            this.lblFreeRoomsValue.AutoSize = false;
             this.lblFreeRoomsValue.Font = new System.Drawing.Font("Segoe UI", 26F, System.Drawing.FontStyle.Bold);
             this.lblFreeRoomsValue.ForeColor = Color.FromArgb(15, 23, 42);
             this.lblFreeRoomsValue.Location = new System.Drawing.Point(18, 40);
             this.lblFreeRoomsValue.Name = "lblFreeRoomsValue";
-            this.lblFreeRoomsValue.Size = new System.Drawing.Size(41, 47);
+            this.lblFreeRoomsValue.Size = new System.Drawing.Size(174, 47);
+            this.lblFreeRoomsValue.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.lblFreeRoomsValue.TabIndex = 2;
             this.lblFreeRoomsValue.Text = "0";
             //
             // lblFreeRoomsTitle
             //
-            this.lblFreeRoomsTitle.AutoSize = true;
+            this.lblFreeRoomsTitle.AutoSize = false;
             this.lblFreeRoomsTitle.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             this.lblFreeRoomsTitle.ForeColor = Color.FromArgb(71, 85, 105);
-            this.lblFreeRoomsTitle.Location = new System.Drawing.Point(20, 14);
+            this.lblFreeRoomsTitle.Location = new System.Drawing.Point(18, 14);
             this.lblFreeRoomsTitle.Name = "lblFreeRoomsTitle";
-            this.lblFreeRoomsTitle.Size = new System.Drawing.Size(74, 19);
+            this.lblFreeRoomsTitle.Size = new System.Drawing.Size(174, 19);
+            this.lblFreeRoomsTitle.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.lblFreeRoomsTitle.TabIndex = 1;
             this.lblFreeRoomsTitle.Text = "الغرف الفارغة";
             //
             // accentFree
             //
             this.accentFree.BackColor = Color.FromArgb(16, 185, 129);
-            this.accentFree.Dock = System.Windows.Forms.DockStyle.Left;
+            this.accentFree.Dock = System.Windows.Forms.DockStyle.Right;
             this.accentFree.Location = new System.Drawing.Point(0, 0);
             this.accentFree.Name = "accentFree";
             this.accentFree.Size = new System.Drawing.Size(6, 120);
@@ -210,37 +214,39 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             this.pnlBusyRooms.Controls.Add(this.lblBusyRoomsValue);
             this.pnlBusyRooms.Controls.Add(this.lblBusyRoomsTitle);
             this.pnlBusyRooms.Controls.Add(this.accentBusy);
-            this.pnlBusyRooms.Location = new System.Drawing.Point(472, 110);
+            this.pnlBusyRooms.Location = new System.Drawing.Point(492, 110);
             this.pnlBusyRooms.Name = "pnlBusyRooms";
             this.pnlBusyRooms.Size = new System.Drawing.Size(210, 120);
             this.pnlBusyRooms.TabIndex = 5;
             //
             // lblBusyRoomsValue
             //
-            this.lblBusyRoomsValue.AutoSize = true;
+            this.lblBusyRoomsValue.AutoSize = false;
             this.lblBusyRoomsValue.Font = new System.Drawing.Font("Segoe UI", 26F, System.Drawing.FontStyle.Bold);
             this.lblBusyRoomsValue.ForeColor = Color.FromArgb(15, 23, 42);
             this.lblBusyRoomsValue.Location = new System.Drawing.Point(18, 40);
             this.lblBusyRoomsValue.Name = "lblBusyRoomsValue";
-            this.lblBusyRoomsValue.Size = new System.Drawing.Size(41, 47);
+            this.lblBusyRoomsValue.Size = new System.Drawing.Size(174, 47);
+            this.lblBusyRoomsValue.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.lblBusyRoomsValue.TabIndex = 2;
             this.lblBusyRoomsValue.Text = "0";
             //
             // lblBusyRoomsTitle
             //
-            this.lblBusyRoomsTitle.AutoSize = true;
+            this.lblBusyRoomsTitle.AutoSize = false;
             this.lblBusyRoomsTitle.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             this.lblBusyRoomsTitle.ForeColor = Color.FromArgb(71, 85, 105);
-            this.lblBusyRoomsTitle.Location = new System.Drawing.Point(20, 14);
+            this.lblBusyRoomsTitle.Location = new System.Drawing.Point(18, 14);
             this.lblBusyRoomsTitle.Name = "lblBusyRoomsTitle";
-            this.lblBusyRoomsTitle.Size = new System.Drawing.Size(85, 19);
+            this.lblBusyRoomsTitle.Size = new System.Drawing.Size(174, 19);
+            this.lblBusyRoomsTitle.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.lblBusyRoomsTitle.TabIndex = 1;
             this.lblBusyRoomsTitle.Text = "الغرف المشغولة";
             //
             // accentBusy
             //
             this.accentBusy.BackColor = Color.FromArgb(239, 68, 68);
-            this.accentBusy.Dock = System.Windows.Forms.DockStyle.Left;
+            this.accentBusy.Dock = System.Windows.Forms.DockStyle.Right;
             this.accentBusy.Location = new System.Drawing.Point(0, 0);
             this.accentBusy.Name = "accentBusy";
             this.accentBusy.Size = new System.Drawing.Size(6, 120);
@@ -252,37 +258,39 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             this.pnlCustomers.Controls.Add(this.lblCustomersValue);
             this.pnlCustomers.Controls.Add(this.lblCustomersTitle);
             this.pnlCustomers.Controls.Add(this.accentCustomers);
-            this.pnlCustomers.Location = new System.Drawing.Point(696, 110);
+            this.pnlCustomers.Location = new System.Drawing.Point(726, 110);
             this.pnlCustomers.Name = "pnlCustomers";
             this.pnlCustomers.Size = new System.Drawing.Size(210, 120);
             this.pnlCustomers.TabIndex = 6;
             //
             // lblCustomersValue
             //
-            this.lblCustomersValue.AutoSize = true;
+            this.lblCustomersValue.AutoSize = false;
             this.lblCustomersValue.Font = new System.Drawing.Font("Segoe UI", 26F, System.Drawing.FontStyle.Bold);
             this.lblCustomersValue.ForeColor = Color.FromArgb(15, 23, 42);
             this.lblCustomersValue.Location = new System.Drawing.Point(18, 40);
             this.lblCustomersValue.Name = "lblCustomersValue";
-            this.lblCustomersValue.Size = new System.Drawing.Size(41, 47);
+            this.lblCustomersValue.Size = new System.Drawing.Size(174, 47);
+            this.lblCustomersValue.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.lblCustomersValue.TabIndex = 2;
             this.lblCustomersValue.Text = "0";
             //
             // lblCustomersTitle
             //
-            this.lblCustomersTitle.AutoSize = true;
+            this.lblCustomersTitle.AutoSize = false;
             this.lblCustomersTitle.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             this.lblCustomersTitle.ForeColor = Color.FromArgb(71, 85, 105);
-            this.lblCustomersTitle.Location = new System.Drawing.Point(20, 14);
+            this.lblCustomersTitle.Location = new System.Drawing.Point(18, 14);
             this.lblCustomersTitle.Name = "lblCustomersTitle";
-            this.lblCustomersTitle.Size = new System.Drawing.Size(58, 19);
+            this.lblCustomersTitle.Size = new System.Drawing.Size(174, 19);
+            this.lblCustomersTitle.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.lblCustomersTitle.TabIndex = 1;
             this.lblCustomersTitle.Text = "العملاء";
             //
             // accentCustomers
             //
             this.accentCustomers.BackColor = Color.FromArgb(59, 130, 246);
-            this.accentCustomers.Dock = System.Windows.Forms.DockStyle.Left;
+            this.accentCustomers.Dock = System.Windows.Forms.DockStyle.Right;
             this.accentCustomers.Location = new System.Drawing.Point(0, 0);
             this.accentCustomers.Name = "accentCustomers";
             this.accentCustomers.Size = new System.Drawing.Size(6, 120);
@@ -294,37 +302,39 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             this.pnlStaff.Controls.Add(this.lblStaffValue);
             this.pnlStaff.Controls.Add(this.lblStaffTitle);
             this.pnlStaff.Controls.Add(this.accentStaff);
-            this.pnlStaff.Location = new System.Drawing.Point(920, 110);
+            this.pnlStaff.Location = new System.Drawing.Point(960, 110);
             this.pnlStaff.Name = "pnlStaff";
             this.pnlStaff.Size = new System.Drawing.Size(210, 120);
             this.pnlStaff.TabIndex = 7;
             //
             // lblStaffValue
             //
-            this.lblStaffValue.AutoSize = true;
+            this.lblStaffValue.AutoSize = false;
             this.lblStaffValue.Font = new System.Drawing.Font("Segoe UI", 26F, System.Drawing.FontStyle.Bold);
             this.lblStaffValue.ForeColor = Color.FromArgb(15, 23, 42);
             this.lblStaffValue.Location = new System.Drawing.Point(18, 40);
             this.lblStaffValue.Name = "lblStaffValue";
-            this.lblStaffValue.Size = new System.Drawing.Size(41, 47);
+            this.lblStaffValue.Size = new System.Drawing.Size(174, 47);
+            this.lblStaffValue.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.lblStaffValue.TabIndex = 2;
             this.lblStaffValue.Text = "0";
             //
             // lblStaffTitle
             //
-            this.lblStaffTitle.AutoSize = true;
+            this.lblStaffTitle.AutoSize = false;
             this.lblStaffTitle.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             this.lblStaffTitle.ForeColor = Color.FromArgb(71, 85, 105);
-            this.lblStaffTitle.Location = new System.Drawing.Point(20, 14);
+            this.lblStaffTitle.Location = new System.Drawing.Point(18, 14);
             this.lblStaffTitle.Name = "lblStaffTitle";
-            this.lblStaffTitle.Size = new System.Drawing.Size(44, 19);
+            this.lblStaffTitle.Size = new System.Drawing.Size(174, 19);
+            this.lblStaffTitle.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.lblStaffTitle.TabIndex = 1;
             this.lblStaffTitle.Text = "الموظفون";
             //
             // accentStaff
             //
             this.accentStaff.BackColor = Color.FromArgb(139, 92, 246);
-            this.accentStaff.Dock = System.Windows.Forms.DockStyle.Left;
+            this.accentStaff.Dock = System.Windows.Forms.DockStyle.Right;
             this.accentStaff.Location = new System.Drawing.Point(0, 0);
             this.accentStaff.Name = "accentStaff";
             this.accentStaff.Size = new System.Drawing.Size(6, 120);
@@ -338,35 +348,37 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             this.pnlTotalRevenue.Controls.Add(this.accentTotalRevenue);
             this.pnlTotalRevenue.Location = new System.Drawing.Point(24, 248);
             this.pnlTotalRevenue.Name = "pnlTotalRevenue";
-            this.pnlTotalRevenue.Size = new System.Drawing.Size(210, 120);
+            this.pnlTotalRevenue.Size = new System.Drawing.Size(564, 120);
             this.pnlTotalRevenue.TabIndex = 8;
             //
             // lblTotalRevenueValue
             //
-            this.lblTotalRevenueValue.AutoSize = true;
+            this.lblTotalRevenueValue.AutoSize = false;
             this.lblTotalRevenueValue.Font = new System.Drawing.Font("Segoe UI", 20F, System.Drawing.FontStyle.Bold);
             this.lblTotalRevenueValue.ForeColor = Color.FromArgb(15, 23, 42);
             this.lblTotalRevenueValue.Location = new System.Drawing.Point(18, 40);
             this.lblTotalRevenueValue.Name = "lblTotalRevenueValue";
-            this.lblTotalRevenueValue.Size = new System.Drawing.Size(64, 37);
+            this.lblTotalRevenueValue.Size = new System.Drawing.Size(528, 37);
+            this.lblTotalRevenueValue.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.lblTotalRevenueValue.TabIndex = 2;
             this.lblTotalRevenueValue.Text = "0.00";
             //
             // lblTotalRevenueTitle
             //
-            this.lblTotalRevenueTitle.AutoSize = true;
+            this.lblTotalRevenueTitle.AutoSize = false;
             this.lblTotalRevenueTitle.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             this.lblTotalRevenueTitle.ForeColor = Color.FromArgb(71, 85, 105);
-            this.lblTotalRevenueTitle.Location = new System.Drawing.Point(20, 14);
+            this.lblTotalRevenueTitle.Location = new System.Drawing.Point(18, 14);
             this.lblTotalRevenueTitle.Name = "lblTotalRevenueTitle";
-            this.lblTotalRevenueTitle.Size = new System.Drawing.Size(88, 19);
+            this.lblTotalRevenueTitle.Size = new System.Drawing.Size(528, 19);
+            this.lblTotalRevenueTitle.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.lblTotalRevenueTitle.TabIndex = 1;
             this.lblTotalRevenueTitle.Text = "إجمالي الإيرادات";
             //
             // accentTotalRevenue
             //
             this.accentTotalRevenue.BackColor = Color.FromArgb(212, 175, 55);
-            this.accentTotalRevenue.Dock = System.Windows.Forms.DockStyle.Left;
+            this.accentTotalRevenue.Dock = System.Windows.Forms.DockStyle.Right;
             this.accentTotalRevenue.Location = new System.Drawing.Point(0, 0);
             this.accentTotalRevenue.Name = "accentTotalRevenue";
             this.accentTotalRevenue.Size = new System.Drawing.Size(6, 120);
@@ -378,37 +390,39 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             this.pnlTodayRevenue.Controls.Add(this.lblTodayRevenueValue);
             this.pnlTodayRevenue.Controls.Add(this.lblTodayRevenueTitle);
             this.pnlTodayRevenue.Controls.Add(this.accentTodayRevenue);
-            this.pnlTodayRevenue.Location = new System.Drawing.Point(248, 248);
+            this.pnlTodayRevenue.Location = new System.Drawing.Point(604, 248);
             this.pnlTodayRevenue.Name = "pnlTodayRevenue";
-            this.pnlTodayRevenue.Size = new System.Drawing.Size(210, 120);
+            this.pnlTodayRevenue.Size = new System.Drawing.Size(564, 120);
             this.pnlTodayRevenue.TabIndex = 9;
             //
             // lblTodayRevenueValue
             //
-            this.lblTodayRevenueValue.AutoSize = true;
+            this.lblTodayRevenueValue.AutoSize = false;
             this.lblTodayRevenueValue.Font = new System.Drawing.Font("Segoe UI", 20F, System.Drawing.FontStyle.Bold);
             this.lblTodayRevenueValue.ForeColor = Color.FromArgb(15, 23, 42);
             this.lblTodayRevenueValue.Location = new System.Drawing.Point(18, 40);
             this.lblTodayRevenueValue.Name = "lblTodayRevenueValue";
-            this.lblTodayRevenueValue.Size = new System.Drawing.Size(64, 37);
+            this.lblTodayRevenueValue.Size = new System.Drawing.Size(528, 37);
+            this.lblTodayRevenueValue.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.lblTodayRevenueValue.TabIndex = 2;
             this.lblTodayRevenueValue.Text = "0.00";
             //
             // lblTodayRevenueTitle
             //
-            this.lblTodayRevenueTitle.AutoSize = true;
+            this.lblTodayRevenueTitle.AutoSize = false;
             this.lblTodayRevenueTitle.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             this.lblTodayRevenueTitle.ForeColor = Color.FromArgb(71, 85, 105);
-            this.lblTodayRevenueTitle.Location = new System.Drawing.Point(20, 14);
+            this.lblTodayRevenueTitle.Location = new System.Drawing.Point(18, 14);
             this.lblTodayRevenueTitle.Name = "lblTodayRevenueTitle";
-            this.lblTodayRevenueTitle.Size = new System.Drawing.Size(93, 19);
+            this.lblTodayRevenueTitle.Size = new System.Drawing.Size(528, 19);
+            this.lblTodayRevenueTitle.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             this.lblTodayRevenueTitle.TabIndex = 1;
             this.lblTodayRevenueTitle.Text = "إيرادات اليوم";
             //
             // accentTodayRevenue
             //
             this.accentTodayRevenue.BackColor = Color.FromArgb(245, 158, 11);
-            this.accentTodayRevenue.Dock = System.Windows.Forms.DockStyle.Left;
+            this.accentTodayRevenue.Dock = System.Windows.Forms.DockStyle.Right;
             this.accentTodayRevenue.Location = new System.Drawing.Point(0, 0);
             this.accentTodayRevenue.Name = "accentTodayRevenue";
             this.accentTodayRevenue.Size = new System.Drawing.Size(6, 120);
@@ -419,7 +433,7 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             this.labelRecent.AutoSize = true;
             this.labelRecent.Font = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Bold);
             this.labelRecent.ForeColor = Color.FromArgb(15, 23, 42);
-            this.labelRecent.Location = new System.Drawing.Point(24, 390);
+            this.labelRecent.Location = new System.Drawing.Point(24, 368);
             this.labelRecent.Name = "labelRecent";
             this.labelRecent.Size = new System.Drawing.Size(99, 21);
             this.labelRecent.TabIndex = 10;
@@ -453,12 +467,12 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             dataGridViewCellStyle3.WrapMode = System.Windows.Forms.DataGridViewTriState.False;
             this.DGV_RecentCustomers.DefaultCellStyle = dataGridViewCellStyle3;
             this.DGV_RecentCustomers.GridColor = Color.FromArgb(226, 232, 240);
-            this.DGV_RecentCustomers.Location = new System.Drawing.Point(24, 420);
+            this.DGV_RecentCustomers.Location = new System.Drawing.Point(24, 396);
             this.DGV_RecentCustomers.Name = "DGV_RecentCustomers";
             this.DGV_RecentCustomers.ReadOnly = true;
             this.DGV_RecentCustomers.RowHeadersVisible = false;
             this.DGV_RecentCustomers.RowTemplate.Height = 28;
-            this.DGV_RecentCustomers.Size = new System.Drawing.Size(1106, 80);
+            this.DGV_RecentCustomers.Size = new System.Drawing.Size(1144, 264);
             this.DGV_RecentCustomers.TabIndex = 11;
             this.DGV_RecentCustomers.ThemeStyle.AlternatingRowsStyle.BackColor = Color.White;
             this.DGV_RecentCustomers.ThemeStyle.AlternatingRowsStyle.Font = null;
@@ -467,18 +481,18 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             this.DGV_RecentCustomers.ThemeStyle.AlternatingRowsStyle.SelectionForeColor = Color.Empty;
             this.DGV_RecentCustomers.ThemeStyle.BackColor = Color.White;
             this.DGV_RecentCustomers.ThemeStyle.GridColor = Color.FromArgb(226, 232, 240);
-            this.DGV_RecentCustomers.ThemeStyle.HeaderStyle.BackColor = Color.FromArgb(15, 23, 42);
+            this.DGV_RecentCustomers.ThemeStyle.HeaderStyle.BackColor = Color.FromArgb(241, 245, 249);
             this.DGV_RecentCustomers.ThemeStyle.HeaderStyle.BorderStyle = System.Windows.Forms.DataGridViewHeaderBorderStyle.None;
             this.DGV_RecentCustomers.ThemeStyle.HeaderStyle.Font = new System.Drawing.Font("Segoe UI", 9.5F, System.Drawing.FontStyle.Bold);
-            this.DGV_RecentCustomers.ThemeStyle.HeaderStyle.ForeColor = Color.White;
-            this.DGV_RecentCustomers.ThemeStyle.HeaderStyle.Height = 32;
+            this.DGV_RecentCustomers.ThemeStyle.HeaderStyle.ForeColor = Color.FromArgb(15, 23, 42);
+            this.DGV_RecentCustomers.ThemeStyle.HeaderStyle.Height = 38;
             this.DGV_RecentCustomers.ThemeStyle.ReadOnly = true;
             this.DGV_RecentCustomers.ThemeStyle.RowsStyle.BackColor = Color.White;
             this.DGV_RecentCustomers.ThemeStyle.RowsStyle.BorderStyle = System.Windows.Forms.DataGridViewCellBorderStyle.SingleHorizontal;
             this.DGV_RecentCustomers.ThemeStyle.RowsStyle.Font = new System.Drawing.Font("Segoe UI", 9.5F);
             this.DGV_RecentCustomers.ThemeStyle.RowsStyle.ForeColor = Color.FromArgb(71, 85, 105);
-            this.DGV_RecentCustomers.ThemeStyle.RowsStyle.Height = 28;
-            this.DGV_RecentCustomers.ThemeStyle.RowsStyle.SelectionBackColor = Color.FromArgb(243, 246, 249);
+            this.DGV_RecentCustomers.ThemeStyle.RowsStyle.Height = 34;
+            this.DGV_RecentCustomers.ThemeStyle.RowsStyle.SelectionBackColor = Color.FromArgb(219, 234, 254);
             this.DGV_RecentCustomers.ThemeStyle.RowsStyle.SelectionForeColor = Color.FromArgb(15, 23, 42);
             //
             // UC_Booking

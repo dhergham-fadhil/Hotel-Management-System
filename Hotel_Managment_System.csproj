@@ -54,6 +54,7 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="function.cs" />
+    <Compile Include="Localization.cs" />
     <Compile Include="Logger.cs" />
     <Compile Include="PasswordHasher.cs" />
     <Compile Include="StaffUser.cs" />

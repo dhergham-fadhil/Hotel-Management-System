@@ -1,3 +1,4 @@
+using System;
 using System.Drawing;
 using System.Windows.Forms;
 using Guna.UI2.WinForms;
@@ -144,6 +145,167 @@ namespace Hotel_Managment_System
             dtp.FillColor = Surface;
             dtp.ForeColor = TextPrimary;
             dtp.Font = BodyFont;
+        }
+
+        // ------------------------------------------------------------------
+        // Shared screen layout helpers
+        // ------------------------------------------------------------------
+
+        /// <summary>Applies the standard page heading style (20pt bold).</summary>
+        public static void StyleScreenTitle(Label lbl)
+        {
+            lbl.AutoSize = true;
+            lbl.Font = TitleFont;
+            lbl.ForeColor = TextPrimary;
+        }
+
+        /// <summary>Applies the standard page subtitle style (10pt muted).</summary>
+        public static void StyleScreenSubtitle(Label lbl)
+        {
+            lbl.AutoSize = true;
+            lbl.Font = BodyFont;
+            lbl.ForeColor = TextSecondary;
+        }
+
+        /// <summary>
+        /// Adds a rounded white "card" behind the existing controls.
+        /// The panel is sent to the back so it never covers a field or a grid.
+        /// </summary>
+        public static Guna2Panel AddCard(Control parent, Rectangle bounds)
+        {
+            Guna2Panel card = new Guna2Panel
+            {
+                Location = bounds.Location,
+                Size = bounds.Size,
+                FillColor = Surface,
+                BorderColor = Border,
+                BorderThickness = 1,
+                BorderRadius = 14,
+                BackColor = Color.Transparent
+            };
+
+            parent.Controls.Add(card);
+            card.SendToBack();
+            return card;
+        }
+
+        /// <summary>
+        /// Creates a styled search text box in the page header.
+        /// </summary>
+        public static Guna2TextBox AddSearchBox(Control parent, Point location, Size size,
+                                                string placeholder, EventHandler onTextChanged)
+        {
+            Guna2TextBox box = new Guna2TextBox
+            {
+                PlaceholderText = placeholder,
+                BorderRadius = 10,
+                BorderColor = Border,
+                FillColor = Surface,
+                ForeColor = TextPrimary,
+                Font = BodyFont,
+                HoverState = { BorderColor = SidebarActive },
+                FocusedState = { BorderColor = SidebarActive }
+            };
+
+            if (onTextChanged != null)
+                box.TextChanged += onTextChanged;
+
+            parent.Controls.Add(box);
+
+            // The bounds are applied after parenting: WinForms may scale a new
+            // child while it is being added, which would shift a fixed layout.
+            box.Bounds = new Rectangle(location, size);
+            box.BringToFront();
+            return box;
+        }
+
+        /// <summary>
+        /// Creates a styled filter combo box in the page header.
+        /// </summary>
+        public static Guna2ComboBox AddFilterCombo(Control parent, Point location, Size size,
+                                                   string[] items, EventHandler onSelectedIndexChanged)
+        {
+            Guna2ComboBox combo = new Guna2ComboBox
+            {
+                BorderRadius = 10,
+                BorderColor = Border,
+                FillColor = Surface,
+                ForeColor = TextPrimary,
+                Font = BodyFont,
+                HoverState = { BorderColor = SidebarActive },
+                FocusedState = { BorderColor = SidebarActive }
+            };
+
+            combo.Items.AddRange(items);
+
+            if (onSelectedIndexChanged != null)
+                combo.SelectedIndexChanged += onSelectedIndexChanged;
+
+            parent.Controls.Add(combo);
+            combo.Bounds = new Rectangle(location, size);
+            combo.BringToFront();
+            return combo;
+        }
+
+        /// <summary>
+        /// Right-aligns the small labels that sit directly above an input.
+        /// Arabic forms read naturally when the label hugs the right edge of
+        /// its field, so the label is widened to match the field below it.
+        /// </summary>
+        public static void AlignFieldLabels(Control root)
+        {
+            foreach (Control child in root.Controls)
+            {
+                Label label = child as Label;
+                if (label != null && label.AutoSize)
+                {
+                    Control field = FindFieldBelow(root, label);
+                    if (field != null)
+                    {
+                        int height = label.Height;
+                        label.AutoSize = false;
+                        label.Width = field.Width;
+                        label.Height = height;
+                        label.TextAlign = ContentAlignment.MiddleRight;
+                    }
+                }
+
+                if (child.HasChildren)
+                    AlignFieldLabels(child);
+            }
+        }
+
+        private static Control FindFieldBelow(Control root, Label label)
+        {
+            Control best = null;
+            int bestDistance = int.MaxValue;
+
+            foreach (Control candidate in root.Controls)
+            {
+                if (!IsInput(candidate))
+                    continue;
+
+                int horizontal = Math.Abs(candidate.Left - label.Left);
+                int vertical = candidate.Top - label.Top;
+
+                if (horizontal <= 8 && vertical > 4 && vertical <= 40 && vertical < bestDistance)
+                {
+                    best = candidate;
+                    bestDistance = vertical;
+                }
+            }
+
+            return best;
+        }
+
+        private static bool IsInput(Control control)
+        {
+            return control is Guna2TextBox
+                || control is Guna2ComboBox
+                || control is Guna2DateTimePicker
+                || control is TextBox
+                || control is ComboBox
+                || control is DateTimePicker;
         }
     }
 }

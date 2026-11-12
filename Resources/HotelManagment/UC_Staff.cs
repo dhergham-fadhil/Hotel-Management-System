@@ -7,38 +7,302 @@ using Guna.UI2.WinForms;
 
 namespace Hotel_Managment_System.Resources.HotelManagment
 {
+    /// <summary>
+    /// Single-page staff management screen: a searchable grid on the left and
+    /// an add/edit form on the right. The password field doubles as the reset
+    /// action: typing a new password and saving updates the stored hash.
+    /// </summary>
     public partial class UC_Staff : UserControl
     {
         private readonly function fn = new function();
 
+        private int selectedStaffId;
+        private string selectedDbRole;
+        private DataTable staffTable;
+        private bool loadingForm;
+
         public UC_Staff()
         {
             InitializeComponent();
-            ApplyTheme();
+
+            txtSearch.TextChanged += SearchChanged;
+            cmbRoleFilter.SelectedIndexChanged += SearchChanged;
+            btnRefresh.Click += btnRefresh_Click;
+            DGV_Staff.CellClick += DGV_Staff_CellClick;
+            btnSave.Click += btnSave_Click;
+            btnNew.Click += btnNew_Click;
+            btnDelete.Click += btnDelete_Click;
         }
 
-        private void ClearALL()
+        private void UC_Staff_Load(object sender, EventArgs e)
         {
+            ApplyTheme();
+
+            cmbGender.Items.Clear();
+            cmbGender.Items.AddRange(new object[] { "ذكر", "أنثى", "آخر", "أفضل عدم الإجابة" });
+
+            cmbRole.Items.Clear();
+            cmbRole.Items.AddRange(new object[] { "موظف", "مدير" });
+
+            cmbRoleFilter.Items.Clear();
+            cmbRoleFilter.Items.AddRange(new object[] { "كل الصلاحيات", "مدير", "موظف" });
+            cmbRoleFilter.SelectedIndex = 0;
+
+            LoadStaff();
+            ClearForm();
+        }
+
+        // ------------------------------------------------------------------
+        // Data loading and filtering
+        // ------------------------------------------------------------------
+        private void LoadStaff()
+        {
+            try
+            {
+                Cursor = Cursors.WaitCursor;
+
+                DataTable source = fn.getData(@"
+                    SELECT Staff_ID, Staff_Name, Staff_Mobile, Staff_Gender,
+                           Staff_Email, Staff_UserName, Staff_Role
+                    FROM Staff
+                    ORDER BY Staff_ID");
+
+                staffTable = new DataTable();
+                staffTable.Columns.Add("ID", typeof(int));
+                staffTable.Columns.Add("Name", typeof(string));
+                staffTable.Columns.Add("Mobile", typeof(string));
+                staffTable.Columns.Add("Gender", typeof(string));
+                staffTable.Columns.Add("Email", typeof(string));
+                staffTable.Columns.Add("UserName", typeof(string));
+                staffTable.Columns.Add("Role", typeof(string));
+                staffTable.Columns.Add("DbGender", typeof(string));
+                staffTable.Columns.Add("DbRole", typeof(string));
+
+                foreach (DataRow row in source.Rows)
+                {
+                    string dbGender = Convert.ToString(row["Staff_Gender"]);
+                    string dbRole = Convert.ToString(row["Staff_Role"]);
+
+                    staffTable.Rows.Add(
+                        Convert.ToInt32(row["Staff_ID"]),
+                        Convert.ToString(row["Staff_Name"]),
+                        Convert.ToString(row["Staff_Mobile"]),
+                        Localization.GenderToArabic(dbGender),
+                        Convert.ToString(row["Staff_Email"]),
+                        Convert.ToString(row["Staff_UserName"]),
+                        Localization.RoleToArabic(dbRole),
+                        dbGender,
+                        dbRole);
+                }
+
+                DGV_Staff.DataSource = new DataView(staffTable);
+                ConfigureGrid();
+                ApplyFilter();
+            }
+            catch (Exception ex)
+            {
+                Logger.Error(ex);
+                MessageBox.Show("تعذّر تحميل بيانات الموظفين.", "خطأ",
+                    MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+            finally
+            {
+                Cursor = Cursors.Default;
+            }
+        }
+
+        private void ConfigureGrid()
+        {
+            if (DGV_Staff.Columns.Count == 0)
+                return;
+
+            HideColumn("ID");
+            HideColumn("DbGender");
+            HideColumn("DbRole");
+
+            SetHeader("Name", "الاسم", 130);
+            SetHeader("Mobile", "رقم الجوال", 100);
+            SetHeader("Gender", "الجنس", 60);
+            SetHeader("Email", "البريد الإلكتروني", 170);
+            SetHeader("UserName", "اسم المستخدم", 120);
+            SetHeader("Role", "الصلاحية", 70);
+        }
+
+        private void HideColumn(string name)
+        {
+            if (DGV_Staff.Columns[name] != null)
+                DGV_Staff.Columns[name].Visible = false;
+        }
+
+        private void SetHeader(string name, string title, int weight)
+        {
+            if (DGV_Staff.Columns[name] == null)
+                return;
+
+            DGV_Staff.Columns[name].HeaderText = title;
+            DGV_Staff.Columns[name].FillWeight = weight;
+        }
+
+        private void SearchChanged(object sender, EventArgs e)
+        {
+            ApplyFilter();
+        }
+
+        private void ApplyFilter()
+        {
+            if (!(DGV_Staff.DataSource is DataView view))
+                return;
+
+            string search = (txtSearch.Text ?? string.Empty).Trim().Replace("'", "''");
+
+            string role = null;
+            if (cmbRoleFilter.SelectedIndex == 1)
+                role = "مدير";
+            else if (cmbRoleFilter.SelectedIndex == 2)
+                role = "موظف";
+
+            string filter = string.Empty;
+
+            if (search.Length > 0)
+            {
+                filter = "(Name LIKE '%" + search + "%'" +
+                         " OR UserName LIKE '%" + search + "%'" +
+                         " OR Mobile LIKE '%" + search + "%'" +
+                         " OR Email LIKE '%" + search + "%'" +
+                         " OR Role LIKE '%" + search + "%')";
+            }
+
+            if (role != null)
+            {
+                string roleFilter = "Role = '" + role + "'";
+                filter = filter.Length == 0 ? roleFilter : filter + " AND " + roleFilter;
+            }
+
+            view.RowFilter = filter;
+            lblCount.Text = "عدد الموظفين: " + view.Count;
+        }
+
+        private void btnRefresh_Click(object sender, EventArgs e)
+        {
+            int keep = selectedStaffId;
+            LoadStaff();
+
+            if (keep > 0)
+                SelectRowById(keep);
+            else
+                ClearForm();
+        }
+
+        // ------------------------------------------------------------------
+        // Grid selection
+        // ------------------------------------------------------------------
+        private void DGV_Staff_CellClick(object sender, DataGridViewCellEventArgs e)
+        {
+            if (e.RowIndex < 0)
+                return;
+
+            DataGridViewRow row = DGV_Staff.Rows[e.RowIndex];
+            object id = row.Cells["ID"].Value;
+
+            if (id == null || id == DBNull.Value)
+                return;
+
+            selectedStaffId = Convert.ToInt32(id);
+            selectedDbRole = Convert.ToString(row.Cells["DbRole"].Value);
+
+            loadingForm = true;
+
+            txtName.Text = Convert.ToString(row.Cells["Name"].Value);
+            txtMobile.Text = Convert.ToString(row.Cells["Mobile"].Value);
+            txtEmail.Text = Convert.ToString(row.Cells["Email"].Value);
+            txtUserName.Text = Convert.ToString(row.Cells["UserName"].Value);
+            txtPassword.Clear();
+            cmbGender.SelectedItem = Convert.ToString(row.Cells["Gender"].Value);
+            cmbRole.SelectedItem = Convert.ToString(row.Cells["Role"].Value);
+
+            loadingForm = false;
+
+            labelFormTitle.Text = "تعديل بيانات الموظف";
+            lblFormHint.Text = "اترك كلمة المرور فارغة للإبقاء على الكلمة الحالية.";
+            txtPassword.PlaceholderText = "اتركها فارغة لعدم التغيير";
+            btnSave.Text = "حفظ التعديلات";
+            btnDelete.Enabled = true;
+        }
+
+        private void SelectRowById(int staffId)
+        {
+            foreach (DataGridViewRow row in DGV_Staff.Rows)
+            {
+                object value = row.Cells["ID"].Value;
+
+                if (value != null && value != DBNull.Value && Convert.ToInt32(value) == staffId)
+                {
+                    row.Selected = true;
+                    DGV_Staff_CellClick(this, new DataGridViewCellEventArgs(0, row.Index));
+                    return;
+                }
+            }
+
+            ClearForm();
+        }
+
+        private void ClearForm()
+        {
+            loadingForm = true;
+
+            selectedStaffId = 0;
+            selectedDbRole = null;
+
             txtName.Clear();
-            txtMobileNo.Clear();
-            cmBoxGender.SelectedIndex = -1;
+            txtMobile.Clear();
             txtEmail.Clear();
             txtUserName.Clear();
             txtPassword.Clear();
-            cmBoxRole.SelectedIndex = 0;
+            cmbGender.SelectedIndex = -1;
+            cmbRole.SelectedIndex = 0;
+
+            loadingForm = false;
+
+            DGV_Staff.ClearSelection();
+
+            labelFormTitle.Text = "موظف جديد";
+            lblFormHint.Text = "املأ الحقول ثم اضغط تسجيل.";
+            txtPassword.PlaceholderText = "8 أحرف على الأقل";
+            btnSave.Text = "تسجيل";
+            btnDelete.Enabled = false;
         }
 
-        private void registerbtn_Click(object sender, EventArgs e)
+        private void btnNew_Click(object sender, EventArgs e)
         {
-            if (!ValidateStaffInput(out string userName, out string role))
+            ClearForm();
+            txtName.Focus();
+        }
+
+        // ------------------------------------------------------------------
+        // Save (insert / update)
+        // ------------------------------------------------------------------
+        private void btnSave_Click(object sender, EventArgs e)
+        {
+            if (loadingForm)
                 return;
 
-            if (UserNameExists(userName))
+            if (!ValidateInput(out string gender, out string role))
+                return;
+
+            if (UserNameExists(txtUserName.Text.Trim(), selectedStaffId))
             {
                 Fail("اسم المستخدم مستخدم بالفعل.", txtUserName);
                 return;
             }
 
+            if (selectedStaffId == 0)
+                InsertStaff(gender, role);
+            else
+                UpdateStaff(gender, role);
+        }
+
+        private void InsertStaff(string gender, string role)
+        {
             const string query = @"
                 INSERT INTO Staff
                     (Staff_Name, Staff_Mobile, Staff_Gender, Staff_Email, Staff_UserName, Staff_Password, Staff_Role)
@@ -48,10 +312,10 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             SqlParameter[] parameters =
             {
                 new SqlParameter("@name", SqlDbType.VarChar, 75) { Value = txtName.Text.Trim() },
-                new SqlParameter("@mobile", SqlDbType.VarChar, 25) { Value = txtMobileNo.Text.Trim() },
-                new SqlParameter("@gender", SqlDbType.VarChar, 50) { Value = ToDatabaseGender(cmBoxGender.Text) },
+                new SqlParameter("@mobile", SqlDbType.VarChar, 25) { Value = txtMobile.Text.Trim() },
+                new SqlParameter("@gender", SqlDbType.VarChar, 50) { Value = gender },
                 new SqlParameter("@email", SqlDbType.VarChar, 120) { Value = txtEmail.Text.Trim() },
-                new SqlParameter("@userName", SqlDbType.VarChar, 150) { Value = userName },
+                new SqlParameter("@userName", SqlDbType.VarChar, 150) { Value = txtUserName.Text.Trim() },
                 new SqlParameter("@password", SqlDbType.VarChar, 150) { Value = PasswordHasher.Hash(txtPassword.Text) },
                 new SqlParameter("@role", SqlDbType.VarChar, 20) { Value = role }
             };
@@ -63,262 +327,84 @@ namespace Hotel_Managment_System.Resources.HotelManagment
                 MessageBox.Show("تم تسجيل الموظف.", "نجاح",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                ClearALL();
+                LoadStaff();
+                ClearForm();
             }
-            else if (affected == 0)
+            else
             {
                 MessageBox.Show("لم تتم إضافة أي سجل.", "تنبيه",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
         }
 
-        private static string ToDatabaseRole(string value)
+        private void UpdateStaff(string gender, string role)
         {
-            switch (value)
-            {
-                case "مدير":
-                    return "Admin";
-                case "موظف":
-                    return "Staff";
-                default:
-                    return value;
-            }
-        }
-
-        private static string ToDatabaseGender(string value)
-        {
-            switch (value)
-            {
-                case "ذكر":
-                    return "Male";
-                case "أنثى":
-                    return "Female";
-                case "آخر":
-                    return "Other";
-                case "أفضل عدم الإجابة":
-                    return "I Rather Do Not Answer";
-                default:
-                    return value;
-            }
-        }
-
-        private bool ValidateStaffInput(out string userName, out string role)
-        {
-            userName = (txtUserName.Text ?? string.Empty).Trim();
-            role = ToDatabaseRole((cmBoxRole.Text ?? string.Empty).Trim());
-
-            string name = (txtName.Text ?? string.Empty).Trim();
-            if (name.Length == 0)
-                return Fail("اسم الموظف مطلوب.", txtName);
-            if (name.Length < 2)
-                return Fail("يجب أن يكون اسم الموظف حرفين على الأقل.", txtName);
-            if (name.Length > 75)
-                return Fail("لا يمكن أن يتجاوز اسم الموظف 75 حرفاً.", txtName);
-
-            if (!Validation.IsValidMobile(txtMobileNo.Text))
-                return Fail("أدخل رقم جوال صحيحاً (7-15 رقماً).", txtMobileNo);
-
-            if (cmBoxGender.SelectedIndex < 0)
-                return Fail("اختر الجنس.", cmBoxGender);
-
-            string email = (txtEmail.Text ?? string.Empty).Trim();
-            if (!Validation.IsValidEmail(email))
-                return Fail("أدخل بريداً إلكترونياً صحيحاً.", txtEmail);
-            if (email.Length > 120)
-                return Fail("لا يمكن أن يتجاوز البريد الإلكتروني 120 حرفاً.", txtEmail);
-
-            if (!Validation.IsValidUserName(userName))
-                return Fail("اسم المستخدم من 3 إلى 150 حرفاً (حروف، أرقام، نقطة، شرطة سفلية، شرطة).",
-                    txtUserName);
-
-            if (!Validation.IsValidPassword(txtPassword.Text))
-                return Fail("كلمة المرور 8 أحرف على الأقل وتحتوي على حرف ورقم.",
-                    txtPassword);
-
-            if (txtPassword.Text.Length > 128)
-                return Fail("لا يمكن أن تتجاوز كلمة المرور 128 حرفاً.", txtPassword);
-
-            if (role != "Admin" && role != "Staff")
-                return Fail("اختر الصلاحية.", cmBoxRole);
-
-            return true;
-        }
-
-        private bool UserNameExists(string userName)
-        {
-            DataTable table = fn.getData(
-                "SELECT Staff_ID FROM Staff WHERE Staff_UserName = @userName",
-                new SqlParameter("@userName", SqlDbType.VarChar, 150) { Value = userName });
-
-            return table.Rows.Count > 0;
-        }
-
-        private void LoadStaff(Guna2DataGridView grid)
-        {
-            // Never select Staff_Password: it must not be shown on screen.
             const string query = @"
-                SELECT Staff_ID, Staff_Name, Staff_Mobile, Staff_Gender, Staff_Email, Staff_UserName, Staff_Role
-                FROM Staff
-                ORDER BY Staff_ID";
+                UPDATE Staff
+                SET Staff_Name = @name,
+                    Staff_Mobile = @mobile,
+                    Staff_Gender = @gender,
+                    Staff_Email = @email,
+                    Staff_UserName = @userName,
+                    Staff_Role = @role
+                WHERE Staff_ID = @id";
 
-            grid.DataSource = fn.getData(query);
-            ApplyStaffGridHeaders(grid);
-        }
-
-        /// <summary>
-        /// Replaces the raw column names with Arabic headers after a data bind.
-        /// </summary>
-        private static void ApplyStaffGridHeaders(Guna2DataGridView grid)
-        {
-            if (grid.Columns.Count == 0)
+            SqlParameter[] parameters =
             {
-                return;
-            }
+                new SqlParameter("@name", SqlDbType.VarChar, 75) { Value = txtName.Text.Trim() },
+                new SqlParameter("@mobile", SqlDbType.VarChar, 25) { Value = txtMobile.Text.Trim() },
+                new SqlParameter("@gender", SqlDbType.VarChar, 50) { Value = gender },
+                new SqlParameter("@email", SqlDbType.VarChar, 120) { Value = txtEmail.Text.Trim() },
+                new SqlParameter("@userName", SqlDbType.VarChar, 150) { Value = txtUserName.Text.Trim() },
+                new SqlParameter("@role", SqlDbType.VarChar, 20) { Value = role },
+                new SqlParameter("@id", SqlDbType.Int) { Value = selectedStaffId }
+            };
 
-            grid.Columns["Staff_ID"].HeaderText = "الرقم";
-            grid.Columns["Staff_Name"].HeaderText = "الاسم";
-            grid.Columns["Staff_Mobile"].HeaderText = "رقم الجوال";
-            grid.Columns["Staff_Gender"].HeaderText = "الجنس";
-            grid.Columns["Staff_Email"].HeaderText = "البريد الإلكتروني";
-            grid.Columns["Staff_UserName"].HeaderText = "اسم المستخدم";
-            grid.Columns["Staff_Role"].HeaderText = "الصلاحية";
-        }
+            int affected = fn.setData(query, parameters);
 
-        private void DGV_StaffDelete_CellClick(object sender, DataGridViewCellEventArgs e)
-        {
-            if (e.RowIndex < 0)
+            if (affected <= 0)
             {
-                return;
-            }
-
-            object value = DGV_StaffDelete.Rows[e.RowIndex].Cells["Staff_ID"].Value;
-
-            if (value != null && value != DBNull.Value)
-            {
-                txtStaffDeleteID.Text = value.ToString();
-            }
-        }
-
-        private void tabStaff_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (tabStaff.SelectedIndex == 1)
-            {
-                LoadStaff(DGV_StaffDetails);
-            }
-            else if (tabStaff.SelectedIndex == 2)
-            {
-                LoadStaff(DGV_StaffDelete);
-            }
-            else if (tabStaff.SelectedIndex == 3)
-            {
-                LoadResetStaff();
-            }
-        }
-
-        private void LoadResetStaff()
-        {
-            DataTable table = fn.getData(
-                "SELECT Staff_ID, Staff_UserName, Staff_Name FROM Staff ORDER BY Staff_ID");
-
-            cmBoxResetStaff.Items.Clear();
-
-            foreach (DataRow row in table.Rows)
-            {
-                cmBoxResetStaff.Items.Add(
-                    Convert.ToInt32(row["Staff_ID"]) + " - " + Convert.ToString(row["Staff_UserName"]));
-            }
-        }
-
-        private void btnResetPassword_Click(object sender, EventArgs e)
-        {
-            if (cmBoxResetStaff.SelectedIndex < 0)
-            {
-                MessageBox.Show("اختر موظفاً.", "تحذير",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            string selection = cmBoxResetStaff.SelectedItem.ToString();
-
-            if (!int.TryParse(selection.Split('-')[0], out int staffId))
-            {
-                MessageBox.Show("اختر موظفاً.", "تحذير",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            string newPassword = txtNewPassword.Text;
-            string confirmPassword = txtConfirmPassword.Text;
-
-            if (!Validation.IsValidPassword(newPassword))
-            {
-                MessageBox.Show("كلمة المرور 8 أحرف على الأقل وتحتوي على حرف ورقم.",
-                    "تحقق", MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            if (newPassword.Length > 128)
-            {
-                MessageBox.Show("لا يمكن أن تتجاوز كلمة المرور 128 حرفاً.", "تحقق",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            if (newPassword != confirmPassword)
-            {
-                MessageBox.Show("كلمتا المرور غير متطابقتين.", "تحقق",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                return;
-            }
-
-            if (!fn.ResetStaffPassword(staffId, newPassword, out string error))
-            {
-                MessageBox.Show(error ?? "تعذّر إعادة تعيين كلمة المرور.", "فشل إعادة التعيين",
-                    MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
-            }
-
-            MessageBox.Show("تمت إعادة تعيين كلمة المرور بنجاح.", "نجاح",
-                MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-            ClearResetForm();
-        }
-
-        private void ClearResetForm()
-        {
-            cmBoxResetStaff.SelectedIndex = -1;
-            txtNewPassword.Clear();
-            txtConfirmPassword.Clear();
-        }
-
-        private void staffDeletebtn_Click(object sender, EventArgs e)
-        {
-            if (!int.TryParse(txtStaffDeleteID.Text.Trim(), out int staffId))
-            {
-                MessageBox.Show("أدخل رقم موظف صحيحاً.", "تحذير",
-                    MessageBoxButtons.OK, MessageBoxIcon.Warning);
-                txtStaffDeleteID.Focus();
-                return;
-            }
-
-            DataTable target = fn.getData(
-                "SELECT Staff_Role FROM Staff WHERE Staff_ID = @staffId",
-                new SqlParameter("@staffId", SqlDbType.Int) { Value = staffId });
-
-            if (target.Rows.Count == 0)
-            {
-                MessageBox.Show("رقم الموظف غير موجود.", "تنبيه",
+                MessageBox.Show("لم يتم تحديث أي سجل.", "تنبيه",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
                 return;
             }
 
-            string targetRole = Convert.ToString(target.Rows[0]["Staff_Role"]);
+            string password = txtPassword.Text;
 
-            if (targetRole == "Admin")
+            if (password.Length > 0 &&
+                !fn.ResetStaffPassword(selectedStaffId, password, out string error))
+            {
+                MessageBox.Show(LocalizeResetPasswordError(error) ??
+                                    "تعذّر تحديث كلمة المرور.",
+                                "فشل",
+                                MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return;
+            }
+
+            MessageBox.Show("تم تحديث بيانات الموظف.", "نجاح",
+                MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+            LoadStaff();
+            SelectRowById(selectedStaffId);
+        }
+
+        // ------------------------------------------------------------------
+        // Delete
+        // ------------------------------------------------------------------
+        private void btnDelete_Click(object sender, EventArgs e)
+        {
+            if (selectedStaffId <= 0)
+            {
+                MessageBox.Show("اختر موظفاً من الجدول أولاً.", "تنبيه",
+                    MessageBoxButtons.OK, MessageBoxIcon.Information);
+                return;
+            }
+
+            if (selectedDbRole == "Admin")
             {
                 DataTable otherAdmins = fn.getData(
-                    "SELECT COUNT(*) AS AdminCount FROM Staff WHERE Staff_Role = 'Admin' AND Staff_ID <> @staffId",
-                    new SqlParameter("@staffId", SqlDbType.Int) { Value = staffId });
+                    "SELECT COUNT(*) AS AdminCount FROM Staff WHERE Staff_Role = 'Admin' AND Staff_ID <> @id",
+                    new SqlParameter("@id", SqlDbType.Int) { Value = selectedStaffId });
 
                 int adminCount = otherAdmins.Rows.Count == 0
                     ? 0
@@ -326,37 +412,110 @@ namespace Hotel_Managment_System.Resources.HotelManagment
 
                 if (adminCount == 0)
                 {
-                    MessageBox.Show("لا يمكن حذف آخر حساب مدير.",
-                        "غير مسموح", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                    MessageBox.Show("لا يمكن حذف آخر حساب مدير.", "غير مسموح",
+                        MessageBoxButtons.OK, MessageBoxIcon.Warning);
                     return;
                 }
             }
 
-            if (MessageBox.Show("هل أنت متأكد من حذف هذا الموظف؟", "تأكيد",
+            string question = "هل أنت متأكد من حذف الموظف " + txtName.Text.Trim() + "؟";
+
+            if (MessageBox.Show(question, "تأكيد",
                     MessageBoxButtons.YesNo, MessageBoxIcon.Warning) != DialogResult.Yes)
             {
                 return;
             }
 
-            const string query = "DELETE FROM Staff WHERE Staff_ID = @staffId";
-
-            int affected = fn.setData(query,
-                new SqlParameter("@staffId", SqlDbType.Int) { Value = staffId });
+            int affected = fn.setData(
+                "DELETE FROM Staff WHERE Staff_ID = @id",
+                new SqlParameter("@id", SqlDbType.Int) { Value = selectedStaffId });
 
             if (affected > 0)
             {
-                MessageBox.Show("تم حذف السجل.", "نجاح",
+                MessageBox.Show("تم حذف الموظف.", "نجاح",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-                txtStaffDeleteID.Clear();
-                LoadStaff(DGV_StaffDetails);
-                LoadStaff(DGV_StaffDelete);
+                LoadStaff();
+                ClearForm();
             }
-            else if (affected == 0)
+            else
             {
-                MessageBox.Show("رقم الموظف غير موجود.", "تنبيه",
+                MessageBox.Show("لم يتم حذف أي سجل.", "تنبيه",
                     MessageBoxButtons.OK, MessageBoxIcon.Information);
             }
+        }
+
+        // ------------------------------------------------------------------
+        // Validation helpers
+        // ------------------------------------------------------------------
+        private bool ValidateInput(out string gender, out string role)
+        {
+            gender = Localization.GenderToDatabase(cmbGender.Text);
+            role = Localization.RoleToDatabase(cmbRole.Text);
+
+            string name = (txtName.Text ?? string.Empty).Trim();
+
+            if (name.Length == 0)
+                return Fail("اسم الموظف مطلوب.", txtName);
+
+            if (name.Length < 2)
+                return Fail("اسم الموظف يجب أن يكون حرفين على الأقل.", txtName);
+
+            if (name.Length > 75)
+                return Fail("اسم الموظف لا يتجاوز 75 حرفاً.", txtName);
+
+            string mobile = (txtMobile.Text ?? string.Empty).Trim();
+
+            if (!Validation.IsValidMobile(mobile))
+                return Fail("أدخل رقم جوال صحيحاً (7-15 رقماً).", txtMobile);
+
+            if (cmbGender.SelectedIndex < 0)
+                return Fail("اختر الجنس.", cmbGender);
+
+            string email = (txtEmail.Text ?? string.Empty).Trim();
+
+            if (!Validation.IsValidEmail(email))
+                return Fail("أدخل بريداً إلكترونياً صحيحاً.", txtEmail);
+
+            if (email.Length > 120)
+                return Fail("البريد الإلكتروني لا يتجاوز 120 حرفاً.", txtEmail);
+
+            string userName = (txtUserName.Text ?? string.Empty).Trim();
+
+            if (!Validation.IsValidUserName(userName))
+                return Fail("اسم المستخدم من 3 إلى 150 حرفاً (حروف، أرقام، نقطة، شرطة سفلية، شرطة).", txtUserName);
+
+            string password = txtPassword.Text ?? string.Empty;
+            bool passwordRequired = selectedStaffId == 0;
+
+            if (passwordRequired || password.Length > 0)
+            {
+                if (!Validation.IsValidPassword(password))
+                    return Fail("كلمة المرور 8 أحرف على الأقل وتحتوي على حرف ورقم.", txtPassword);
+
+                if (password.Length > 128)
+                    return Fail("كلمة المرور لا تتجاوز 128 حرفاً.", txtPassword);
+            }
+
+            if (role != "Admin" && role != "Staff")
+                return Fail("اختر الصلاحية.", cmbRole);
+
+            return true;
+        }
+
+        private bool UserNameExists(string userName, int excludeId)
+        {
+            const string query = @"
+                SELECT Staff_ID
+                FROM Staff
+                WHERE Staff_UserName = @userName
+                  AND Staff_ID <> @id";
+
+            DataTable table = fn.getData(query,
+                new SqlParameter("@userName", SqlDbType.VarChar, 150) { Value = userName },
+                new SqlParameter("@id", SqlDbType.Int) { Value = excludeId });
+
+            return table.Rows.Count > 0;
         }
 
         private bool Fail(string message, Control focus)
@@ -368,74 +527,60 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             return false;
         }
 
+        private static string LocalizeResetPasswordError(string error)
+        {
+            if (string.IsNullOrEmpty(error))
+                return null;
+
+            if (error == "Select a staff member.")
+                return "اختر موظفاً.";
+            if (error == "Password must be at least 8 characters and contain a letter and a digit.")
+                return "كلمة المرور 8 أحرف على الأقل وتحتوي على حرف ورقم.";
+            if (error == "Password cannot exceed 128 characters.")
+                return "كلمة المرور لا تتجاوز 128 حرفاً.";
+            if (error == "Staff member not found.")
+                return "الموظف غير موجود.";
+            if (error == "A database error occurred. Please try again.")
+                return "حدث خطأ في قاعدة البيانات. يرجى المحاولة مرة أخرى.";
+
+            return error;
+        }
+
+        // ------------------------------------------------------------------
+        // Theme
+        // ------------------------------------------------------------------
         private void ApplyTheme()
         {
-            // Form fields
+            Theme.StyleScreenTitle(labelTitle);
+            Theme.StyleScreenSubtitle(labelSubtitle);
+
+            Theme.StyleInput(txtSearch);
+            Theme.StyleCombo(cmbRoleFilter);
+            Theme.StyleActionButton(btnRefresh, true);
+
             Theme.StyleInput(txtName);
-            Theme.StyleInput(txtMobileNo);
+            Theme.StyleInput(txtMobile);
             Theme.StyleInput(txtEmail);
             Theme.StyleInput(txtUserName);
             Theme.StyleInput(txtPassword);
+            Theme.StyleCombo(cmbGender);
+            Theme.StyleCombo(cmbRole);
 
-            Theme.StyleCombo(cmBoxGender);
-            Theme.StyleCombo(cmBoxRole);
+            Theme.StyleActionButton(btnSave, true);
+            Theme.StyleDangerButton(btnDelete);
 
-            Theme.StyleActionButton(registerbtn, true);
+            btnNew.BorderRadius = 10;
+            btnNew.FillColor = Color.FromArgb(241, 245, 249);
+            btnNew.ForeColor = Theme.TextPrimary;
+            btnNew.Font = new Font("Segoe UI", 10F);
+            btnNew.HoverState.FillColor = Theme.Border;
 
-            // Buttons
-            Theme.StyleDangerButton(staffDeletebtn);
-            Theme.StyleActionButton(btnResetPassword, true);
+            lblGridTitle.ForeColor = Theme.TextPrimary;
+            lblCount.ForeColor = Theme.TextMuted;
+            labelFormTitle.ForeColor = Theme.TextPrimary;
+            lblFormHint.ForeColor = Theme.TextMuted;
 
-            // Inputs for delete/reset
-            Theme.StyleInput(txtStaffDeleteID);
-            Theme.StyleInput(txtNewPassword);
-            Theme.StyleInput(txtConfirmPassword);
-            Theme.StyleCombo(cmBoxResetStaff);
-
-            // Labels
-            label1.ForeColor = Theme.TextSecondary;
-            label2.ForeColor = Theme.TextSecondary;
-            label4.ForeColor = Theme.TextSecondary;
-            label8.ForeColor = Theme.TextSecondary;
-            label9.ForeColor = Theme.TextSecondary;
-            label10.ForeColor = Theme.TextSecondary;
-            label11.ForeColor = Theme.TextSecondary;
-            label3.ForeColor = Theme.TextSecondary;
-            label6.ForeColor = Theme.TextSecondary;
-            labelResetTitle.ForeColor = Theme.TextSecondary;
-            labelResetStaff.ForeColor = Theme.TextSecondary;
-            labelNewPassword.ForeColor = Theme.TextSecondary;
-            labelConfirmPassword.ForeColor = Theme.TextSecondary;
-            lblResetHint.ForeColor = Theme.TextMuted;
-
-            label1.Font = new Font("Segoe UI", 9.5F);
-            label2.Font = new Font("Segoe UI", 9.5F);
-            label4.Font = new Font("Segoe UI", 9.5F);
-            label8.Font = new Font("Segoe UI", 9.5F);
-            label9.Font = new Font("Segoe UI", 9.5F);
-            label10.Font = new Font("Segoe UI", 9.5F);
-            label11.Font = new Font("Segoe UI", 9.5F);
-            label3.Font = new Font("Segoe UI", 9.5F);
-            label6.Font = new Font("Segoe UI", 9.5F);
-
-            // Headings and tab pages follow the shared theme.
-            label3.Font = new Font("Segoe UI", 12F, FontStyle.Bold);
-            label3.ForeColor = Theme.TextPrimary;
-            labelResetTitle.Font = new Font("Segoe UI", 14F, FontStyle.Bold);
-            labelResetTitle.ForeColor = Theme.TextPrimary;
-
-            tabRegisteration.BackColor = Theme.Background;
-            tabDetails.BackColor = Theme.Background;
-            tabDelete.BackColor = Theme.Background;
-            tabResetPassword.BackColor = Theme.Background;
-
-            // Grids: readable font and a visible header row.
-            DGV_StaffDetails.ThemeStyle.RowsStyle.Font = new Font("Segoe UI", 9F);
-            DGV_StaffDetails.ThemeStyle.HeaderStyle.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            DGV_StaffDelete.ThemeStyle.RowsStyle.Font = new Font("Segoe UI", 9F);
-            DGV_StaffDelete.ThemeStyle.HeaderStyle.Font = new Font("Segoe UI", 9F, FontStyle.Bold);
-            DGV_StaffDetails.Font = new Font("Segoe UI", 9F);
-            DGV_StaffDelete.Font = new Font("Segoe UI", 9F);
+            Theme.AlignFieldLabels(this);
         }
     }
 }

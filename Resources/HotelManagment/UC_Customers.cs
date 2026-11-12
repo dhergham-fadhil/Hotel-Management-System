@@ -1,8 +1,9 @@
-﻿using System;
+using System;
 using System.Data;
 using System.Data.SqlClient;
 using System.Drawing;
 using System.Windows.Forms;
+using Guna.UI2.WinForms;
 
 namespace Hotel_Managment_System.Resources.HotelManagment
 {
@@ -39,8 +40,8 @@ namespace Hotel_Managment_System.Resources.HotelManagment
 
             SqlParameter[] parameters =
             {
-                new SqlParameter("@bed", SqlDbType.VarChar, 10) { Value = cmboxBed.Text.Trim() },
-                new SqlParameter("@roomType", SqlDbType.VarChar, 10) { Value = cmBoxRoomType.Text.Trim() }
+                new SqlParameter("@bed", SqlDbType.VarChar, 10) { Value = Localization.BedToDatabase(cmboxBed.Text) },
+                new SqlParameter("@roomType", SqlDbType.VarChar, 10) { Value = Localization.RoomTypeToDatabase(cmBoxRoomType.Text) }
             };
 
             foreach (string roomNo in fn.getForCombo(query, parameters))
@@ -112,7 +113,7 @@ namespace Hotel_Managment_System.Resources.HotelManagment
                 txtName.Text.Trim(),
                 txtMobileNo.Text.Trim(),
                 txtNationality.Text.Trim(),
-                cmBoxGender.Text,
+                Localization.GenderToDatabase(cmBoxGender.Text),
                 DTP_DateOfBirth.Value.Date,
                 txtIDProof.Text.Trim(),
                 txtAddress.Text.Trim(),
@@ -121,15 +122,15 @@ namespace Hotel_Managment_System.Resources.HotelManagment
 
             if (allocated)
             {
-                MessageBox.Show("Room " + selectedRoom + " allocated successfully.",
-                    "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                MessageBox.Show("تم تخصيص الغرفة " + selectedRoom + " بنجاح.",
+                    "نجاح", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
                 ClearALL();
             }
             else
             {
-                MessageBox.Show(error ?? "The room could not be allocated.",
-                    "Allocation Failed", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                MessageBox.Show(error ?? "تعذّر تخصيص الغرفة.",
+                    "فشل التخصيص", MessageBoxButtons.OK, MessageBoxIcon.Warning);
             }
         }
 
@@ -137,52 +138,63 @@ namespace Hotel_Managment_System.Resources.HotelManagment
         {
             string name = (txtName.Text ?? string.Empty).Trim();
             if (name.Length == 0)
-                return Fail("Customer name is required.", txtName);
+                return Fail("اسم النزيل مطلوب.", txtName);
             if (name.Length < 2)
-                return Fail("Customer name must be at least 2 characters.", txtName);
+                return Fail("اسم النزيل يجب أن يكون حرفين على الأقل.", txtName);
             if (name.Length > 75)
-                return Fail("Customer name cannot exceed 75 characters.", txtName);
+                return Fail("اسم النزيل لا يتجاوز 75 حرفاً.", txtName);
 
             string nationality = (txtNationality.Text ?? string.Empty).Trim();
             if (nationality.Length == 0)
-                return Fail("Nationality is required.", txtNationality);
+                return Fail("الجنسية مطلوبة.", txtNationality);
             if (nationality.Length > 25)
-                return Fail("Nationality cannot exceed 25 characters.", txtNationality);
+                return Fail("الجنسية لا تتجاوز 25 حرفاً.", txtNationality);
 
             string mobile = (txtMobileNo.Text ?? string.Empty).Trim();
             if (!Validation.IsValidMobile(mobile))
-                return Fail("Enter a valid mobile number (7-15 digits).", txtMobileNo);
+                return Fail("أدخل رقم جوال صحيحاً (7-15 رقماً).", txtMobileNo);
 
             if (cmBoxGender.SelectedIndex < 0)
-                return Fail("Select a gender.", cmBoxGender);
+                return Fail("اختر الجنس.", cmBoxGender);
 
             string idProof = (txtIDProof.Text ?? string.Empty).Trim();
             if (idProof.Length == 0)
-                return Fail("ID proof is required.", txtIDProof);
+                return Fail("إثبات الهوية مطلوب.", txtIDProof);
             if (idProof.Length > 30)
-                return Fail("ID proof cannot exceed 30 characters.", txtIDProof);
+                return Fail("إثبات الهوية لا يتجاوز 30 حرفاً.", txtIDProof);
 
             string address = (txtAddress.Text ?? string.Empty).Trim();
             if (address.Length < 5)
-                return Fail("Enter a valid address (at least 5 characters).", txtAddress);
+                return Fail("أدخل عنواناً صحيحاً (5 أحرف على الأقل).", txtAddress);
             if (address.Length > 350)
-                return Fail("Address cannot exceed 350 characters.", txtAddress);
+                return Fail("العنوان لا يتجاوز 350 حرفاً.", txtAddress);
 
             if (roomId <= 0)
-                return Fail("Select a free room first.", cmBoxRoomNo);
+                return Fail("اختر غرفة شاغرة أولاً.", cmBoxRoomNo);
 
             if (DTP_DateOfBirth.Value.Date >= DateTime.Today)
-                return Fail("Date of birth must be before today.", DTP_DateOfBirth);
+                return Fail("تاريخ الميلاد يجب أن يكون قبل اليوم.", DTP_DateOfBirth);
 
             if (DTP_CheckIn.Value.Date < DateTime.Today)
-                return Fail("Check-in date cannot be in the past.", DTP_CheckIn);
+                return Fail("تاريخ الوصول لا يكون في الماضي.", DTP_CheckIn);
 
             return true;
         }
 
+        private static void SetComboItems(Guna2ComboBox combo, string[] items)
+        {
+            string current = combo.Text;
+
+            combo.Items.Clear();
+            combo.Items.AddRange(items);
+
+            if (!string.IsNullOrEmpty(current) && combo.Items.Contains(current))
+                combo.SelectedItem = current;
+        }
+
         private bool Fail(string message, Control focus)
         {
-            MessageBox.Show(message, "Validation",
+            MessageBox.Show(message, "تحقق",
                 MessageBoxButtons.OK, MessageBoxIcon.Warning);
 
             focus.Focus();
@@ -192,10 +204,10 @@ namespace Hotel_Managment_System.Resources.HotelManagment
         private void ApplyTheme()
         {
             labelTitle.ForeColor = Theme.TextPrimary;
-            labelTitle.Font = new Font("Segoe UI", 20F, FontStyle.Bold);
+            Theme.StyleScreenTitle(labelTitle);
 
             labelSubtitle.ForeColor = Theme.TextSecondary;
-            labelSubtitle.Font = new Font("Segoe UI", 10F);
+            Theme.StyleScreenSubtitle(labelSubtitle);
 
             Theme.StyleInput(txtName);
             Theme.StyleInput(txtMobileNo);
@@ -239,6 +251,14 @@ namespace Hotel_Managment_System.Resources.HotelManagment
             label2.Font = new Font("Segoe UI", 9.5F);
             label6.Font = new Font("Segoe UI", 9.5F);
             label10.Font = new Font("Segoe UI", 9.5F);
+
+            SetComboItems(cmBoxGender, new[] { "ذكر", "أنثى", "آخر", "أفضل عدم الإجابة" });
+            SetComboItems(cmBoxRoomType, new[] { "فردية", "مزدوجة", "توأم", "ثلاثية", "جناح" });
+            SetComboItems(cmboxBed, new[] { "فردي", "مزدوج", "كوين", "كينغ", "توأم", "بطابقين" });
+
+            Theme.AddCard(this, new Rectangle(24, 86, 904, 402));
+
+            Theme.AlignFieldLabels(this);
         }
     }
 }
