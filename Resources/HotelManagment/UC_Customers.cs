@@ -15,6 +15,14 @@ namespace Hotel_Managment_System.Resources.HotelManagment
         public UC_Customers()
         {
             InitializeComponent();
+
+            // The room-number list depends on the room type and bed type.
+            // These handlers were missing from the designer, so selecting a
+            // room never filled the price and "Allocate" always failed.
+            cmBoxRoomType.SelectedIndexChanged += cmBoxRoomType_SelectedIndexChanged;
+            cmboxBed.SelectedIndexChanged += cmboxBed_SelectedIndexChanged;
+            cmBoxRoomNo.SelectedIndexChanged += cmBoxRoomNo_SelectedIndexChanged;
+
             ApplyTheme();
         }
 
